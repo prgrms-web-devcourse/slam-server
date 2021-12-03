@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/test
+    url: jdbc:mysql://localhost:11112/slam
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root1234!
+    username: dev
+    password: dev
 
   jpa:
     generate-ddl: true
