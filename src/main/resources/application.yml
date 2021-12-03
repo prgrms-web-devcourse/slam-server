@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:11112/slam
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: dev
+    password: dev
+
+  jpa:
+    generate-ddl: true
+    database: mysql
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        hbm2ddl:
+          query.in_clause_parameter_padding: true
+          auto: create
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
