@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ApiResponse<T> {
 
+	private Boolean success;
 	private T data;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddTHH:mm:ss", timezone = "Asia/Seoul")
 	private LocalDateTime serverDateTime;
 
-	public ApiResponse(T data) {
+	public ApiResponse(Boolean success, T data) {
+		this.success = success;
 		this.data = data;
 		this.serverDateTime = LocalDateTime.now();
 	}
@@ -22,11 +24,11 @@ public class ApiResponse<T> {
 	public static <T> ApiResponse<T> ok(T data) {
 		String message = "save";
 
-		return new ApiResponse<>(data);
+		return new ApiResponse<>(true, data);
 	}
 
 	public static <T> ApiResponse<T> fail(T data) {
-		return new ApiResponse<>(data);
+		return new ApiResponse<>(false, data);
 	}
 
 }
