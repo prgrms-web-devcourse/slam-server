@@ -23,7 +23,7 @@ public class Court extends BaseEntity {
     private Long id;
 
 
-    @Column(nullable = false,length=25)
+    @Column(nullable = false,length=50)
     private String name;
 
     @Column(nullable = false)
@@ -32,7 +32,7 @@ public class Court extends BaseEntity {
     @Column(nullable = false)
     private double longitude;
 
-    @Column(nullable = false,length=130)
+    @Column(nullable = false,length=255)
     private String image;
 
     @Column(nullable = false, name = "basket_count")
