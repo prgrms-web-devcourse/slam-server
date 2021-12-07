@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class CursorPageResponse<T> {
 
-	private T content;
+	private T data;
 	private Long lastId;
 
 }
