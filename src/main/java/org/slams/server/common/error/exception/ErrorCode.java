@@ -15,7 +15,8 @@ public enum ErrorCode {
 
 	// User
 	USER_NOT_AUTHENTICATION(401, "User has No Authentication"),
-	USER_NOT_AUTHORIZED(403, "User is Denied to Access")
+	USER_NOT_AUTHORIZED(403, "User is Denied to Access"),
+	NOT_EXIST_MEMBER(404,"존재하지 않는 회원입니다.")
 	;
 
 	private final String message;
