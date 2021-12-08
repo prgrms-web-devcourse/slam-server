@@ -1,6 +1,7 @@
 package org.slams.server.court.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
@@ -15,6 +16,7 @@ import org.slams.server.court.entity.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Builder
 @Table(name = "court")
 public class Court extends BaseEntity {
     @Id
