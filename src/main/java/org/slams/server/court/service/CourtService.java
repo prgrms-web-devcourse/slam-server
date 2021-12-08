@@ -1,5 +1,6 @@
 package org.slams.server.court.service;
 
+import lombok.AllArgsConstructor;
 import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.entity.Court;
@@ -27,22 +28,22 @@ public class CourtService {
 
 
     @Transactional
-    public void insert(CourtInsertRequestDto request, Long id) {
+    public Long insert(CourtInsertRequestDto request, Long id) {
         // user검색후 없으면 반환
         User user = getUser(id);
-        Court court = request.insertRequestDtoToEntity(request, user);
+        Court court = request.insertRequestDtoToEntity(request, id);
 
-        post.addPost(user);
+//        court.addPost(user); // 양방향을 해야할까?!
 
-        Post insertedPost = postRepository.save(post);
-        return new PostDetailResponse(insertedPost);
+        return courtRepository.save(court).getId();
+//        return new PostDetailResponse(insertedPost);
     }
 
 
     @Transactional
     public User getUser(Long userId) {
         return userTempRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException(ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new UserNotFountException("해당 유저 없어",ErrorCode.NOT_EXIST_MEMBER));
     }
 
 

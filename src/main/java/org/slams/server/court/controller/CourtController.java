@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/v1/courts")
 public class CourtController {
 
-    public final CourtService courtService;
+    private final CourtService courtService;
 
     public CourtController(CourtService courtService) {
         this.courtService=courtService;
@@ -23,8 +23,8 @@ public class CourtController {
     // 사용자에 의한 코트 추가
     @PostMapping("/{id}/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<?> insert(@RequestBody CourtInsertRequestDto request, @PathVariable final Long id) {
-        return ApiResponse.ok(CourtService.insert(request, id));
+    public ApiResponse<?> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
+        return ApiResponse.ok(courtService.insert(request, id));
     }
 
     // 전체 코트 조회
