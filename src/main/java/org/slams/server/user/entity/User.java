@@ -7,6 +7,7 @@ import org.slams.server.common.BaseEntity;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.text.MessageFormat;
 
 @Getter
@@ -24,8 +25,9 @@ public class User extends BaseEntity {
 	private Long id;
 
 	@Column(name = "social_id", nullable = false, unique = true)
-	private Long socialId;
+	private String socialId;
 
+	@Pattern(regexp = "\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b")
 	@Column(name = "email", nullable = false, length = 50, unique = true)
 	private String email;
 
@@ -38,16 +40,19 @@ public class User extends BaseEntity {
 	@Column(name = "description", length = MAX_DESCRIPTION_LENGTH)
 	private String description;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role", nullable = false)
 	private Role role;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "skill")
 	private Skill skill;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "position")
 	private Position position;
 
-	private User(Long socialId, String email, String nickname, String profileImage,
+	private User(String socialId, String email, String nickname, String profileImage,
 				 String description, Role role, Skill skill, Position position) {
 		Assert.notNull(socialId, "socialId는 null이 될 수 없습니다.");
 		Assert.notNull(email, "email은 null이 될 수 없습니다.");
@@ -66,7 +71,7 @@ public class User extends BaseEntity {
 		this.position = position;
 	}
 
-	public static User of(Long socialId, String email, String nickname, String profileImage,
+	public static User of(String socialId, String email, String nickname, String profileImage,
 						  String description, Role role, Skill skill, Position position) {
 		return new User(socialId, email, nickname, profileImage, description, role, skill, position);
 	}
