@@ -16,6 +16,39 @@ spring:
           query.in_clause_parameter_padding: true
           auto: create
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-name: kakao
+            client-id: 529839ee72199bbe32919f0ef14d600f
+            client-secret: XUjgULq3hk4MFBLf5lJxs6qHaDqcldcO
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+jwt:
+  header: token
+  issuer: slams
+  client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
+  expiry-seconds: 60
+
+app:
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth/redirect
+
 server:
   servlet:
     encoding:
