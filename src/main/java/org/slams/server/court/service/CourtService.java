@@ -28,14 +28,14 @@ public class CourtService {
 
 
     @Transactional
-    public Long insert(CourtInsertRequestDto request, Long id) {
+    public void insert(CourtInsertRequestDto request, Long id) {
         // user검색후 없으면 반환
         User user = getUser(id);
-        Court court = request.insertRequestDtoToEntity(request, id);
+        Court court = request.insertRequestDtoToEntity(request);
 
 //        court.addPost(user); // 양방향을 해야할까?!
 
-        return courtRepository.save(court).getId();
+        courtRepository.save(court);
 //        return new PostDetailResponse(insertedPost);
     }
 
@@ -43,7 +43,7 @@ public class CourtService {
     @Transactional
     public User getUser(Long userId) {
         return userTempRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException("해당 유저 없어",ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new UserNotFountException("해당 유저 없습니다.",ErrorCode.NOT_EXIST_MEMBER));
     }
 
 

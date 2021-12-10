@@ -17,7 +17,7 @@ public class CourtInsertRequestDto {
     private int basketCount;
 
     // requestDto -> Entity
-    public Court insertRequestDtoToEntity(CourtInsertRequestDto requestDto, Long id) {
+    public Court insertRequestDtoToEntity(CourtInsertRequestDto requestDto) {
         return Court.builder()
                 .name(requestDto.getName())
                 .latitude(requestDto.getLatitude())
