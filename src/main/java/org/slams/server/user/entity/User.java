@@ -2,6 +2,7 @@ package org.slams.server.user.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.slams.server.common.BaseEntity;
@@ -13,6 +14,7 @@ import javax.persistence.*;
  */
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate

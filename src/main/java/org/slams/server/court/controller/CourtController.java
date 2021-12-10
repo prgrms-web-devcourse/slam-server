@@ -19,12 +19,13 @@ public class CourtController {
         this.courtService=courtService;
     }
 
-
+//     /api/v1/courts/{userId}/new
     // 사용자에 의한 코트 추가
     @PostMapping("/{id}/new")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<?> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
-        courtService.insert(request, id);
+    public ApiResponse<Void> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
+//        courtService.insert(request, id);
+        courtService.insert(request,id);
         return ApiResponse.ok(null);
     }
 

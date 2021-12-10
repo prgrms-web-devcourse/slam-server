@@ -1,11 +1,13 @@
 package org.slams.server.court.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class CourtInsertRequestDto {
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
+import org.slams.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
 class CourtServiceTest {
 
     @Autowired

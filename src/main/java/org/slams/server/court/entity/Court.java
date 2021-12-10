@@ -1,9 +1,6 @@
 package org.slams.server.court.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slams.server.common.BaseEntity;
 
 import javax.persistence.*;
@@ -14,6 +11,7 @@ import org.slams.server.court.entity.*;
  */
 
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Builder
