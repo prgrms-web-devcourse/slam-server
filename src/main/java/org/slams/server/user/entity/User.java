@@ -1,13 +1,23 @@
 package org.slams.server.user.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.slams.server.common.BaseEntity;
+
 import javax.persistence.*;
 
 /**
  * Created by yunyun on 2021/12/03.
  */
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@DynamicUpdate
 @Table(name="user")
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
