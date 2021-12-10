@@ -24,7 +24,8 @@ public class CourtController {
     @PostMapping("/{id}/new")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<?> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
-        return ApiResponse.ok(courtService.insert(request, id));
+        courtService.insert(request, id);
+        return ApiResponse.ok(null);
     }
 
     // 전체 코트 조회
