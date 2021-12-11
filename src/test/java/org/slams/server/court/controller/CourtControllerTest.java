@@ -7,7 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.entity.Court;
+import org.slams.server.court.entity.Status;
 import org.slams.server.court.entity.Texture;
+import org.slams.server.court.repository.CourtRepository;
+import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Skill;
@@ -44,10 +47,16 @@ public class CourtControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+    @Autowired
     private CourtService courtService;
     private User user;
     private Court court;
+
+    @Autowired
+    private UserTempRepository userTempRepository;
+
+    @Autowired
+    private CourtRepository courtRepository;
 
 
 
@@ -70,6 +79,8 @@ public class CourtControllerTest {
         user.setCreatedAt(now);
         user.setUpdateAt(now);
 
+        userTempRepository.save(user);
+
 
 
     }
@@ -86,10 +97,12 @@ public class CourtControllerTest {
                 .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
                 .texture(Texture.ASPHALT)
                 .basketCount(2)
+                .status(Status.READY)
                 .build();
 
 
         log.info(givenRequest.toString());
+
 
         RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/courts/"+user.getId()+"/new")
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
@@ -106,11 +119,87 @@ public class CourtControllerTest {
                                 fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("경도"),
                                 fieldWithPath("image").type(JsonFieldType.STRING).description("코트 이미지"),
                                 fieldWithPath("texture").type(JsonFieldType.STRING).description("코트 재질"),
-                                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수")
+                                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("농구장 준비상태")
                         ),
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.NULL).description("응답시간"),
+                                fieldWithPath("data").type(JsonFieldType.NULL).description("데이터"),
                                 fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("응답시간"),
+                                fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공여부")
+                        )
+                ));
+    }
+
+
+    @Test
+    @DisplayName("[GET] '/api/v1/courts/all")
+    void testAllCourt() throws Exception {
+        // GIVEN
+        LocalDateTime now = LocalDateTime.now();
+        court = Court.builder()
+                .name("관악구민운동장 농구장")
+                .latitude(38.987654)
+                .longitude(12.309472)
+                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+                .texture(Texture.ASPHALT)
+                .basketCount(2)
+                .build();
+
+        court.setCreatedAt(now);
+        court.setUpdateAt(now);
+        courtRepository.save(court);
+
+
+        court = Court.builder()
+                .name("서울시 농구장")
+                .latitude(209.987654)
+                .longitude(1123.309472)
+                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+                .texture(Texture.ASPHALT)
+                .basketCount(3)
+                .build();
+
+        court.setCreatedAt(now);
+        court.setUpdateAt(now);
+
+        courtRepository.save(court);
+
+        court = Court.builder()
+                .name("한강 농구장")
+                .latitude(7777.987654)
+                .longitude(888.309472)
+                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+                .texture(Texture.RUBBER)
+                .basketCount(4)
+                .build();
+
+        court.setCreatedAt(now);
+        court.setUpdateAt(now);
+
+        courtRepository.save(court);
+
+
+
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts//all")
+                .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
+
+        // WHEN // THEN
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("AllCourt-select",
+                        responseFields(
+                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("data"),
+                                fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("코트 이름"),
+                                fieldWithPath("data.[].latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("data.[].longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("data.[].image").type(JsonFieldType.STRING).description("코트 이미지"),
+                                fieldWithPath("data.[].texture").type(JsonFieldType.STRING).description("코트 재질"),
+                                fieldWithPath("data.[].basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                                fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자"),
+                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("serverDateTime"),
                                 fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공여부")
                         )
                 ));

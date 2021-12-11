@@ -4,7 +4,9 @@ import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.AllCourtResponseDto;
 import org.slams.server.court.entity.Court;
+import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.repository.CourtRepository;
+import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.user.entity.User;
 import org.springframework.stereotype.Service;
@@ -15,17 +17,22 @@ import org.springframework.data.domain.Pageable;
 
 import org.slams.server.court.exception.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CourtService {
 
     private final CourtRepository courtRepository;
     private final UserTempRepository userTempRepository;
+    private final NewCourtRepository newCourtRepository;
 
 
 
-    public CourtService(CourtRepository courtRepository, UserTempRepository userTempRepository) {
+    public CourtService(CourtRepository courtRepository, UserTempRepository userTempRepository, NewCourtRepository newCourtRepository) {
         this.courtRepository=courtRepository;
         this.userTempRepository=userTempRepository;
+        this.newCourtRepository=newCourtRepository;
     }
 
 
@@ -33,9 +40,9 @@ public class CourtService {
     public void insert(CourtInsertRequestDto request, Long id) {
         // user검색후 없으면 반환
         User user = getUser(id);
-        Court court = request.insertRequestDtoToEntity(request);
+        NewCourt newCourt = request.insertRequestDtoToEntity(request);
 
-        courtRepository.save(court);
+        newCourtRepository.save(newCourt);
 //        return new PostDetailResponse(insertedPost);
     }
 
@@ -48,9 +55,10 @@ public class CourtService {
 
 
     @Transactional
-    public Page<AllCourtResponseDto> findAll(Pageable pageable) {
-        return courtRepository.findAll(pageable)
-                .map(AllCourtResponseDto::new);
+    public List<AllCourtResponseDto> findAll() {
+        return courtRepository.findAll().stream()
+                .map(AllCourtResponseDto::new)
+                .collect(Collectors.toList());
     }
 
 
