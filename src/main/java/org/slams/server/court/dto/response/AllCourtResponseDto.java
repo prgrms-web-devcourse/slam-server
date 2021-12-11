@@ -1,12 +1,14 @@
 package org.slams.server.court.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 
 @Getter
+@EqualsAndHashCode
 public class AllCourtResponseDto extends BaseResponse {
 
     private String name;
@@ -18,13 +20,12 @@ public class AllCourtResponseDto extends BaseResponse {
 
     public AllCourtResponseDto(Court court) {
         super(court.getCreatedAt(), court.getUpdateAt());
-        name = user.getName();
-        email = user.getEmail();
-        picture = user.getPicture();
-        role = user.getRole();
-        temperature = user.getTemperature();
-        address = user.getAddress();
-        phoneNumber = user.getPhoneNumber();
+        name=court.getName();
+        latitude=court.getLatitude();
+        longitude=court.getLongitude();
+        image=court.getImage();
+        texture=court.getTexture();
+        basketCount=court.getBasketCount();
     }
 
 

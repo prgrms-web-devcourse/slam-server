@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/courts")
@@ -34,8 +36,8 @@ public class CourtController {
     // 전체 코트 조회
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<Page<AllCourtResponseDto>> getAll(Pageable pageable) {
-        return ApiResponse.ok(courtService.findAll(pageable));
+    public ApiResponse<List<AllCourtResponseDto>> getAll() {
+        return ApiResponse.ok(courtService.findAll());
     }
 
 
