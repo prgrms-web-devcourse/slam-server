@@ -35,4 +35,17 @@ public class Reservation extends BaseEntity {
 
     @Column(nullable = false)
     private boolean hasBall;
+
+
+
+    public void addReservation(Court court) {
+        this.court = court;
+        this.court.addReservation(this);
+    }
+
+    public void removeReservation() {
+        this.court.removeReservation(this);
+        this.court=null;
+    }
+
 }
