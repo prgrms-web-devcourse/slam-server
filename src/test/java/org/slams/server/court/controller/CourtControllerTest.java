@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.entity.Court;
@@ -12,6 +13,8 @@ import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.court.service.CourtService;
+import org.slams.server.reservation.entity.Reservation;
+import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
@@ -51,12 +54,16 @@ public class CourtControllerTest {
     private CourtService courtService;
     private User user;
     private Court court;
+    private Reservation reservation;
 
     @Autowired
     private UserTempRepository userTempRepository;
 
     @Autowired
     private CourtRepository courtRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
 
 
@@ -87,6 +94,7 @@ public class CourtControllerTest {
 
     @Test
     @DisplayName("[POST] '/api/v1/courts/{id}/new'")
+    @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
         CourtInsertRequestDto givenRequest = CourtInsertRequestDto.builder()
@@ -139,6 +147,7 @@ public class CourtControllerTest {
 
     @Test
     @DisplayName("[GET] '/api/v1/courts/all")
+    @Order(2)
     void testAllCourt() throws Exception {
         // GIVEN
         LocalDateTime now = LocalDateTime.now();
@@ -185,8 +194,6 @@ public class CourtControllerTest {
         courtRepository.save(court);
 
 
-
-
         RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts//all")
                 .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
 
@@ -205,6 +212,88 @@ public class CourtControllerTest {
                                 fieldWithPath("courts.[].basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
                                 fieldWithPath("courts.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
                                 fieldWithPath("courts.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                        )
+                ));
+    }
+
+
+    @Test
+    @DisplayName("[GET] '/api/v1/courts/detail/{courtId}")
+    @Order(3)
+    void testDetailCourt() throws Exception {
+
+//         시나리오
+//         이미 만들어져있는 유저 1, 코트 3개
+//         코트 1에 예약 2개하기 (총 예약 3개)
+//         코트 아이디 1을 넣어 예약 2개 확인하기
+
+        // GIVEN
+        LocalDateTime now = LocalDateTime.now();
+
+        court=courtService.getCourt(1L);
+        Court tempCourt=courtService.getCourt(2L);
+
+        reservation = Reservation.builder()
+                .user(user)
+                .court(court)
+                .startTime("2021-01-01T12:20:10")
+                .endTime("2021-01-01T12:20:10")
+                .hasBall(false)
+                .build();
+
+        reservation.setCreatedAt(now);
+        reservation.setUpdateAt(now);
+        reservationRepository.save(reservation);
+
+
+        reservation = Reservation.builder()
+                .user(user)
+                .court(tempCourt)
+                .startTime("2021-01-01T12:20:10")
+                .endTime("2021-01-01T12:20:10")
+                .hasBall(false)
+                .build();
+
+        reservation.setCreatedAt(now);
+        reservation.setUpdateAt(now);
+        reservationRepository.save(reservation);
+
+
+        reservation = Reservation.builder()
+                .user(user)
+                .court(court)
+                .startTime("2021-01-01T12:20:10")
+                .endTime("2021-01-01T12:20:10")
+                .hasBall(false)
+                .build();
+
+        reservation.setCreatedAt(now);
+        reservation.setUpdateAt(now);
+        reservationRepository.save(reservation);
+
+
+
+
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts/detail/"+1)
+                .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
+
+        // WHEN // THEN
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("AllCourt-select",
+                        responseFields(
+
+                fieldWithPath("courtName").type(JsonFieldType.STRING).description("코트 이름"),
+                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("위도"),
+                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("경도"),
+                fieldWithPath("image").type(JsonFieldType.STRING).description("코트 이미지"),
+                fieldWithPath("texture").type(JsonFieldType.STRING).description("코트 재질"),
+                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                fieldWithPath("courtReservation").type(JsonFieldType.NUMBER).description("농구장 준비상태"),
+                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }

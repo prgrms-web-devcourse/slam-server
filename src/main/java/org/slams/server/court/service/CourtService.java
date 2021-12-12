@@ -3,6 +3,7 @@ package org.slams.server.court.service;
 import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.AllCourtResponseDto;
+import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
@@ -10,6 +11,7 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.user.entity.User;
+import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +62,23 @@ public class CourtService {
         return courtRepository.findAll().stream()
                 .map(AllCourtResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public CourtDetailResponseDto findDetail(Long courtId) {
+
+        return courtRepository.findById(courtId)
+                .map(CourtDetailResponseDto::new)
+                .orElseThrow(() -> new CourtNotFoundException("해당 코트가 없습니다.",ErrorCode.NOT_EXIST_COURT));
+    }
+
+
+    @Transactional
+    public Court getCourt(Long CourtId) {
+        return courtRepository.findById(CourtId)
+                .orElseThrow(() -> new CourtNotFoundException("해당 코트가 없습니다.",ErrorCode.NOT_EXIST_COURT));
+
     }
 
 

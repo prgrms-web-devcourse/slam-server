@@ -45,7 +45,8 @@ public class ReservationService {
         Reservation reservation = request.insertRequestDtoToEntity(request);
         reservation.addReservation(court,user);
 
-
+        //Todo 동일한 유저가 같은 코트를 예약할 수 없다.
+//        reservationRepository.get
 
         reservationRepository.save(reservation);
         return new ReservationInsertResponseDto(reservation);
@@ -72,6 +73,8 @@ public class ReservationService {
         return courtRepository.findById(courtId)
                 .orElseThrow(() -> new UserNotFountException("해당 코트 없습니다.", ErrorCode.NOT_EXIST_COURT));
     }
+
+
 
 
 //    @Transactional
