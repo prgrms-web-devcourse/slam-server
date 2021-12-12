@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,10 +38,17 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
 			String registrationId = oauth2Token.getAuthorizedClientRegistrationId();
 
 			User user = processUserOAuth2UserJoin(principal, registrationId);
-			String loginSuccessJson = generateLoginSuccessJson(user);
-			response.setContentType("application/json;charset=UTF-8");
-			response.setContentLength(loginSuccessJson.getBytes(StandardCharsets.UTF_8).length);
-			response.getWriter().write(loginSuccessJson);
+
+			String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:3000/login/redirect")
+				.queryParam("token", generateToken(user))
+				.build().toUriString();
+
+			getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
+//			String loginSuccessJson = generateLoginSuccessJson(user);
+//			response.setContentType("application/json;charset=UTF-8");
+//			response.setContentLength(loginSuccessJson.getBytes(StandardCharsets.UTF_8).length);
+//			response.getWriter().write(loginSuccessJson);
 		} else {
 			super.onAuthenticationSuccess(request, response, authentication);
 		}
