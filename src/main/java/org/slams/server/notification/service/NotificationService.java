@@ -1,6 +1,7 @@
 package org.slams.server.notification.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slams.server.notification.convertor.NotificationConvertor;
 import org.slams.server.notification.dto.NotificationRequest;
 import org.slams.server.notification.dto.NotificationResponse;
 import org.slams.server.notification.dto.CursorRequest;
@@ -24,7 +25,7 @@ public class NotificationService {
 
     private final NotificationRepository alarmRepository;
     private final UserRepository userRepository;
-
+    private final NotificationConvertor notificationConvertor;
 
     public void saveForLoudSpeaker(NotificationRequest alarmDto){
         alarmRepository.save(
@@ -48,11 +49,9 @@ public class NotificationService {
         );
     }
 
-    /** 무한스크롤 적용해야함. **/
-    public CursorPageResponse<List<NotificationResponse>> findAllByUserId(Long userId, CursorRequest cursorRequest){
+    public List<NotificationResponse> findAllByUserId(Long userId, CursorRequest cursorRequest){
         List<Notification> alarmList = cursorPageForFindAllByUserId(userId, cursorRequest);
-
-        return null;
+        return notificationConvertor.toDtoList(alarmList);
     }
 
     public List<Notification> cursorPageForFindAllByUserId(Long userId, CursorRequest cursorRequest){

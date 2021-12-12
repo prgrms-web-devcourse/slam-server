@@ -13,15 +13,20 @@ import java.time.LocalDateTime;
 
 @Getter
 public class NotificationResponse {
-    private final Long alarmId;
+    private final Long notificationId;
     private final String message;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
     private final NotificationType notificationType;
 
     @Builder
-    public NotificationResponse(Long alarmId, String message, NotificationType notificationType, LocalDateTime createdAt, LocalDateTime updatedAt){
-        this.alarmId = alarmId;
+    public NotificationResponse(Long notificationId,
+                                String message,
+                                NotificationType notificationType,
+                                LocalDateTime createdAt,
+                                LocalDateTime updatedAt
+                                ){
+        this.notificationId = notificationId;
         this.message = message;
         this.notificationType = notificationType;
         this.createdAt = createdAt;
