@@ -45,7 +45,6 @@ public class CourtService {
 
         newCourtRepository.save(newCourt);
         return new CourtInsertResponseDto(newCourt);
-//        return new PostDetailResponse(insertedPost);
     }
 
 

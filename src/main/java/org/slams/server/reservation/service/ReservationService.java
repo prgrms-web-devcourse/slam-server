@@ -1,6 +1,7 @@
 package org.slams.server.reservation.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.AllCourtResponseDto;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Slf4j
 @Service
 public class ReservationService {
 
@@ -38,13 +40,24 @@ public class ReservationService {
         // token으로 찾으면 getUser 필요없음
         User user = getUser(id);
 
+
         Court court=getCourt(request.getCourtId());
-        Reservation reservation = request.insertRequestDtoToEntity(request,user);
-        reservation.addReservation(court);
+        Reservation reservation = request.insertRequestDtoToEntity(request);
+        reservation.addReservation(court,user);
 
 
-        Reservation insertedReservation=reservationRepository.save(reservation);
-        return new ReservationInsertResponseDto(insertedReservation);
+
+        reservationRepository.save(reservation);
+        return new ReservationInsertResponseDto(reservation);
+
+
+
+//        User user = getUser(id);
+//        NewCourt newCourt = request.insertRequestDtoToEntity(request);
+//
+//        newCourtRepository.save(newCourt);
+//        return new CourtInsertResponseDto(newCourt);
+
     }
 
 

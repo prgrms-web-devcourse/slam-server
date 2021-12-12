@@ -1,12 +1,14 @@
 package org.slams.server.reservation.dto.response;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.court.entity.NewCourt;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.entity.Reservation;
 
 
+@Getter
 @EqualsAndHashCode
 public class ReservationInsertResponseDto extends BaseResponse {
 

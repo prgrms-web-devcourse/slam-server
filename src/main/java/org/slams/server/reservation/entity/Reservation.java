@@ -42,10 +42,15 @@ public class Reservation extends BaseEntity {
     private boolean hasBall;
 
 
-
-    public void addReservation(Court court) {
+    public Reservation(Court court, User user) {
         this.court = court;
-        this.court.addReservation(this);
+        this.user=user;
+    }
+
+
+    public void addReservation(Court court, User user) {
+        this.court = court;
+        this.user=user;
     }
 
     public void removeReservation() {
