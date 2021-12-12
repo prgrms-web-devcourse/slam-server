@@ -1,5 +1,6 @@
 package org.slams.server.reservation.entity;
 
+import lombok.*;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
 import org.slams.server.user.entity.User;
@@ -8,10 +9,14 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Created by yunyun on 2021/12/03.
+ * Created by dongsung on 2021/12/03.
  */
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
+@Builder
 @Table(name="reservation")
 public class Reservation extends BaseEntity {
     @Id
@@ -28,10 +33,10 @@ public class Reservation extends BaseEntity {
     private User user;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private String startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private String endTime;
 
     @Column(nullable = false)
     private boolean hasBall;
@@ -47,5 +52,6 @@ public class Reservation extends BaseEntity {
         this.court.removeReservation(this);
         this.court=null;
     }
+
 
 }

@@ -114,4 +114,9 @@ public class User extends BaseEntity {
 		}
 	}
 
+
+
+    // 동성 추가
+
+
 }

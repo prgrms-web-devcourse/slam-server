@@ -2,20 +2,14 @@ package org.slams.server.court.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.slams.server.common.api.ApiResponse;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
-import org.slams.server.court.dto.response.AllCourtResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.service.CourtService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -48,8 +42,12 @@ public class CourtController {
 
 
     @PostMapping("/{id}/new")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CourtInsertResponseDto> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
+
+
+        // 여기에 추가로 header 토큰 정보가 들어가야 함.
+        // id로 추가하게 해야 함.
+
 //        return ResponseEntity.ok(courtService.insert(request, id));
         return new ResponseEntity<CourtInsertResponseDto>(courtService.insert(request, id), HttpStatus.CREATED);
     }
