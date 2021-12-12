@@ -1,24 +1,23 @@
-package org.slams.server.alarm.entity;
+package org.slams.server.notification.entity;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 /**
  * Created by yunyun on 2021/12/07.
  */
-class AlarmTest {
+class NotificationTest {
 
     /** request로 받은 정보를 활용하여, 팔로우 정보를 담은 알람 테스트 **/
     @Test
     void request로_받은_정보를_활용하여_팔로우_정보를_담은_알람_엔터티를_생성할_수_있다(){
 
         // Given, When
-        Alarm alarmCreated = Alarm.createAlarmForFollowing(
+        Notification alarmCreated = Notification.createNotificationForFollowing(
                 null,
                 1L,
                 "flora"
@@ -26,7 +25,7 @@ class AlarmTest {
 
 
         // Then
-        assertThat(alarmCreated.getAlarmType(), is(AlarmType.FOLLOWING_ALARM));
+        assertThat(alarmCreated.getNotificationType(), is(NotificationType.FOLLOWING_ALARM));
         assertThat(alarmCreated.getContent(), containsString("팔로우"));
         assertThat(alarmCreated.getUserId(), is(1L));
     }
@@ -35,7 +34,7 @@ class AlarmTest {
     void request로_받은_정보를_활용하여_팔로우_정보를_담은_알람에서_userId는_0이상이어야_한다(){
         //Given, When
         var msg =Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.createAlarmForFollowing(
+            Notification.createNotificationForFollowing(
                     null,
                     -1L,
                     "flora"
@@ -50,7 +49,7 @@ class AlarmTest {
     void request로_받은_정보를_활용하여_팔로우_정보를_담은_알람에서_nickname은_빈값을_허용하지_않는다(){
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.createAlarmForFollowing(
+            Notification.createNotificationForFollowing(
                     null,
                     1L,
                     ""
@@ -64,7 +63,7 @@ class AlarmTest {
     @Test
     void request로_받은_정보를_활용하여_팔로우_정보를_담은_알람에서_Content_내용을_수정할_수_있다(){
         //Given
-        Alarm alarmCreated = Alarm.createAlarmForFollowing(
+        Notification alarmCreated = Notification.createNotificationForFollowing(
                 null,
                 1L,
                 "flora"
@@ -83,14 +82,14 @@ class AlarmTest {
     void request로_받은_정보를_활용하여_농구_인원_급구_정보를_담은_알람_엔터티를_생성할_수_있다(){
         // Given, When
         Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-        Alarm alarmCreated = Alarm.createAlarmForLoudSpeaker(
+        Notification alarmCreated = Notification.createNotificationForLoudSpeaker(
                 10L,
                 1L,
                 13,
                 "잠실농구장");
 
         // Then
-        assertThat(alarmCreated.getAlarmType(), is(AlarmType.LOUDSPEAKER));
+        assertThat(alarmCreated.getNotificationType(), is(NotificationType.LOUDSPEAKER));
         assertThat(alarmCreated.getContent(), containsString("잠실농구장"));
         assertThat(alarmCreated.getUserId(), is(1L));
         assertThat(alarmCreated.getCourtId(), is(10L));
@@ -101,7 +100,7 @@ class AlarmTest {
         //Given, When
         var msg =Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-            Alarm.createAlarmForLoudSpeaker(
+            Notification.createNotificationForLoudSpeaker(
                     10L,
                     -1L,
                     13,
@@ -117,7 +116,7 @@ class AlarmTest {
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-            Alarm.createAlarmForLoudSpeaker(
+            Notification.createNotificationForLoudSpeaker(
                     10L,
                     1L,
                     25,
@@ -133,7 +132,7 @@ class AlarmTest {
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-            Alarm.createAlarmForLoudSpeaker(
+            Notification.createNotificationForLoudSpeaker(
                     10L,
                     1L,
                     13,
@@ -147,7 +146,7 @@ class AlarmTest {
     void request로_받은_정보를_활용하여_농구_인원_급구_정보를_담은_알람에서_Content_내용을_수정할_수_있다(){
         //Given
         Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-        Alarm alarmCreated = Alarm.createAlarmForLoudSpeaker(
+        Notification alarmCreated = Notification.createNotificationForLoudSpeaker(
                 10L,
                 1L,
                 13,
@@ -165,17 +164,17 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_팔로우_정보를_담은_알람_엔터티를_생성할_수_있다(){
 
         // Given, When
-        Alarm alarmCreated = Alarm.builder()
+        Notification alarmCreated = Notification.builder()
                 .id(1L)
                 .courtId(null)
                 .userId(1L)
-                .alarmType(AlarmType.FOLLOWING_ALARM)
+                .notificationType(NotificationType.FOLLOWING_ALARM)
                 .content("flora가 당신을 팔로우하였습니다.")
                 .build();
 
 
         // Then
-        assertThat(alarmCreated.getAlarmType(), is(AlarmType.FOLLOWING_ALARM));
+        assertThat(alarmCreated.getNotificationType(), is(NotificationType.FOLLOWING_ALARM));
         assertThat(alarmCreated.getContent(), containsString("팔로우"));
         assertThat(alarmCreated.getUserId(), is(1L));
     }
@@ -184,11 +183,11 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_팔로우_정보를_담은_알람에서_userId는_0이상이어야_한다(){
         //Given, When
         var msg =Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(null)
                     .userId(-1L)
-                    .alarmType(AlarmType.FOLLOWING_ALARM)
+                    .notificationType(NotificationType.FOLLOWING_ALARM)
                     .content("flora가 당신을 팔로우하였습니다.")
                     .build();
         });
@@ -201,11 +200,11 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_팔로우_정보를_담은_알람에서_content은_빈값을_허용하지_않는다(){
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(null)
                     .userId(1L)
-                    .alarmType(AlarmType.FOLLOWING_ALARM)
+                    .notificationType(NotificationType.FOLLOWING_ALARM)
                     .content("")
                     .build();
         });
@@ -218,11 +217,11 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_팔로우_정보를_담은_알람에서_alarmType은_null을_허용하지_않는다(){
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(null)
                     .userId(1L)
-                    .alarmType(null)
+                    .notificationType(null)
                     .content("")
                     .build();
         });
@@ -234,11 +233,11 @@ class AlarmTest {
     @Test
     void db에서_추출한_정보를_활용하여_팔로우_정보를_담은_알람에서_Content_내용을_수정할_수_있다(){
         //Given
-        Alarm alarmCreated = Alarm.builder()
+        Notification alarmCreated = Notification.builder()
                 .id(1L)
                 .courtId(null)
                 .userId(1L)
-                .alarmType(AlarmType.FOLLOWING_ALARM)
+                .notificationType(NotificationType.FOLLOWING_ALARM)
                 .content("flora가 당신을 팔로우하였습니다.")
                 .build();
 
@@ -256,16 +255,16 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_농구_인원_급구_정보를_담은_알람_엔터티를_생성할_수_있다(){
         // Given, When
         Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-        Alarm alarmCreated = Alarm.builder()
+        Notification alarmCreated = Notification.builder()
                 .id(1L)
                 .courtId(10L)
                 .userId(1L)
-                .alarmType(AlarmType.LOUDSPEAKER)
+                .notificationType(NotificationType.LOUDSPEAKER)
                 .content("13시에 시작하는 잠실농구장에서 사람을 구합니다.")
                 .build();
 
         // Then
-        assertThat(alarmCreated.getAlarmType(), is(AlarmType.LOUDSPEAKER));
+        assertThat(alarmCreated.getNotificationType(), is(NotificationType.LOUDSPEAKER));
         assertThat(alarmCreated.getContent(), containsString("잠실농구장"));
         assertThat(alarmCreated.getUserId(), is(1L));
         assertThat(alarmCreated.getCourtId(), is(10L));
@@ -276,11 +275,11 @@ class AlarmTest {
         //Given, When
         var msg =Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(10L)
                     .userId(-1L)
-                    .alarmType(AlarmType.LOUDSPEAKER)
+                    .notificationType(NotificationType.LOUDSPEAKER)
                     .content("13시에 시작하는 잠실농구장에서 사람을 구합니다.")
                     .build();
         });
@@ -293,11 +292,11 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_농구_인원_급구_정보를_담은_알람에서_court정보는_null을_허용_하지_않는다(){
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(null)
                     .userId(1L)
-                    .alarmType(AlarmType.LOUDSPEAKER)
+                    .notificationType(NotificationType.LOUDSPEAKER)
                     .content("13시에 시작하는 잠실농구장에서 사람을 구합니다.")
                     .build();
         });
@@ -311,11 +310,11 @@ class AlarmTest {
         //Given, When
         var msg = Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-            Alarm.builder()
+            Notification.builder()
                     .id(1L)
                     .courtId(10L)
                     .userId(1L)
-                    .alarmType(null)
+                    .notificationType(null)
                     .content("13시에 시작하는 잠실농구장에서 사람을 구합니다.")
                     .build();
         });
@@ -327,11 +326,11 @@ class AlarmTest {
     void db에서_추출한_정보를_활용하여_농구_인원_급구_정보를_담은_알람에서_Content_내용을_수정할_수_있다(){
         //Given
         Court court = new Court(1L, "잠실농구장", 132.2304, 209.102387, "http://test-image", 1, Texture.TEST);
-        Alarm alarmCreated = Alarm.builder()
+        Notification alarmCreated = Notification.builder()
                 .id(1L)
                 .courtId(10L)
                 .userId(1L)
-                .alarmType(AlarmType.LOUDSPEAKER)
+                .notificationType(NotificationType.LOUDSPEAKER)
                 .content("13시에 시작하는 잠실농구장에서 사람을 구합니다.")
                 .build();
 

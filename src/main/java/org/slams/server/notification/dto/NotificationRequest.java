@@ -1,17 +1,15 @@
-package org.slams.server.alarm.dto;
+package org.slams.server.notification.dto;
 
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 /**
  * Created by yunyun on 2021/12/08.
  */
 
 @Getter
-public class AlarmRequest {
+public class NotificationRequest {
     private final Long courtId;
     private final String courtName;
     private final String startDate;
@@ -19,7 +17,7 @@ public class AlarmRequest {
     private final long userId;
     private final Long reservationId;
 
-    public AlarmRequest(Long courtId, String courtName, String startDate, int startTime, long userId, Long reservationId){
+    public NotificationRequest(Long courtId, String courtName, String startDate, int startTime, long userId, Long reservationId){
         checkArgument(courtId != null, "courtId는 null을 허용하지 않습니다.");
         checkArgument(isNotEmpty(courtName), "courtName는 빈값을 허용하지 않습니다.");
         checkArgument(isNotEmpty(startDate), "startDate는 빈값을 허용하지 않습니다.");

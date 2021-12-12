@@ -1,4 +1,4 @@
-package org.slams.server.alarm.entity;
+package org.slams.server.notification.entity;
 
 import com.google.common.base.Objects;
 import lombok.AccessLevel;
@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "alarm")
-public class Alarm extends BaseEntity {
+public class Notification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -35,60 +35,60 @@ public class Alarm extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private AlarmType alarmType;
+    private NotificationType notificationType;
 
     @Builder
-    public Alarm(
+    public Notification(
             Long id,
             Long courtId,
             String content,
             Long userId,
-            AlarmType alarmType
+            NotificationType notificationType
     ){
         checkArgument(userId > -1, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(alarmType != null, "alarmType는 null을 허용하지 않습니다.");
+        checkArgument(notificationType != null, "notificationType는 null을 허용하지 않습니다.");
         checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
-        if(alarmType.equals(AlarmType.LOUDSPEAKER)){
+        if(notificationType.equals(NotificationType.LOUDSPEAKER)){
             checkArgument(courtId != null, "확성기 정보에서의 court는 null을 허용하지 않습니다.");
         }
 
         this.id = id;
         this.courtId = courtId;
         this.userId = userId;
-        this.alarmType = alarmType;
+        this.notificationType = notificationType;
         this.content = content;
     }
 
-    private Alarm(
+    private Notification(
             Long courtId,
             Long userId,
-            AlarmType alarmType
+            NotificationType notificationType
     ){
         checkArgument(userId > -1, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(alarmType != null, "alarmType는 null을 허용하지 않습니다.");
+        checkArgument(notificationType != null, "notificationType는 null을 허용하지 않습니다.");
 
         this.courtId = courtId;
         this.userId = userId;
-        this.alarmType = alarmType;
+        this.notificationType = notificationType;
     }
 
-    public static Alarm createAlarmForFollowing(
+    public static Notification createNotificationForFollowing(
             Long courtId,
             Long userId,
             String nickName
     ){
-        Alarm alarm = new Alarm(courtId, userId, AlarmType.FOLLOWING_ALARM);
+        Notification alarm = new Notification(courtId, userId, NotificationType.FOLLOWING_ALARM);
         alarm.createContentForFollowing(nickName);
         return alarm;
     }
 
-    public static Alarm createAlarmForLoudSpeaker(
+    public static Notification createNotificationForLoudSpeaker(
             Long courtId,
             Long userId,
             int startTime,
             String courtName
     ){
-        Alarm alarm = new Alarm(courtId, userId, AlarmType.LOUDSPEAKER);
+        Notification alarm = new Notification(courtId, userId, NotificationType.LOUDSPEAKER);
         alarm.createContentForLoudSpeaker(startTime, courtName);
         return alarm;
     }
@@ -114,13 +114,13 @@ public class Alarm extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Alarm alarm = (Alarm) o;
-        return Objects.equal(id, alarm.id) && Objects.equal(courtId, alarm.courtId) && Objects.equal(userId, alarm.userId) && Objects.equal(content, alarm.content) && alarmType == alarm.alarmType;
+        Notification alarm = (Notification) o;
+        return Objects.equal(id, alarm.id) && Objects.equal(courtId, alarm.courtId) && Objects.equal(userId, alarm.userId) && Objects.equal(content, alarm.content) && notificationType == alarm.notificationType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id, courtId, userId, content, alarmType);
+        return Objects.hashCode(id, courtId, userId, content, notificationType);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class Alarm extends BaseEntity {
         sb.append(", courtId=").append(courtId);
         sb.append(", userId=").append(userId);
         sb.append(", content='").append(content).append('\'');
-        sb.append(", alarmType=").append(alarmType);
+        sb.append(", notificationType=").append(notificationType);
         sb.append('}');
         return sb.toString();
     }
