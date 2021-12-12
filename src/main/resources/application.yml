@@ -42,7 +42,7 @@ jwt:
   header: token
   issuer: slams
   client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
-  expiry-seconds: 60
+  expiry-seconds: 604800 # 7 days
 
 app:
   oauth2:
