@@ -3,6 +3,7 @@ package org.slams.server.court.service;
 import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.AllCourtResponseDto;
+import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.repository.CourtRepository;
@@ -37,12 +38,13 @@ public class CourtService {
 
 
     @Transactional
-    public void insert(CourtInsertRequestDto request, Long id) {
+    public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long id) {
         // user검색후 없으면 반환
         User user = getUser(id);
         NewCourt newCourt = request.insertRequestDtoToEntity(request);
 
         newCourtRepository.save(newCourt);
+        return new CourtInsertResponseDto(newCourt);
 //        return new PostDetailResponse(insertedPost);
     }
 

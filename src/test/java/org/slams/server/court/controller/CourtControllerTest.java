@@ -123,9 +123,16 @@ public class CourtControllerTest {
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("농구장 준비상태")
                         ),
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.NULL).description("데이터"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("응답시간"),
-                                fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공여부")
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("코트 이름"),
+                                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("image").type(JsonFieldType.STRING).description("코트 이미지"),
+                                fieldWithPath("texture").type(JsonFieldType.STRING).description("코트 재질"),
+                                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("농구장 준비상태"),
+                                fieldWithPath("newCourtId").type(JsonFieldType.NUMBER).description("농구장 코트 번호"),
+                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }
@@ -190,17 +197,15 @@ public class CourtControllerTest {
                 .andDo(print())
                 .andDo(document("AllCourt-select",
                         responseFields(
-                                fieldWithPath("data").type(JsonFieldType.ARRAY).description("data"),
-                                fieldWithPath("data.[].name").type(JsonFieldType.STRING).description("코트 이름"),
-                                fieldWithPath("data.[].latitude").type(JsonFieldType.NUMBER).description("위도"),
-                                fieldWithPath("data.[].longitude").type(JsonFieldType.NUMBER).description("경도"),
-                                fieldWithPath("data.[].image").type(JsonFieldType.STRING).description("코트 이미지"),
-                                fieldWithPath("data.[].texture").type(JsonFieldType.STRING).description("코트 재질"),
-                                fieldWithPath("data.[].basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
-                                fieldWithPath("data.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
-                                fieldWithPath("data.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자"),
-                                fieldWithPath("serverDateTime").type(JsonFieldType.STRING).description("serverDateTime"),
-                                fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공여부")
+                                fieldWithPath("courts").type(JsonFieldType.ARRAY).description("data"),
+                                fieldWithPath("courts.[].name").type(JsonFieldType.STRING).description("코트 이름"),
+                                fieldWithPath("courts.[].latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("courts.[].longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("courts.[].image").type(JsonFieldType.STRING).description("코트 이미지"),
+                                fieldWithPath("courts.[].texture").type(JsonFieldType.STRING).description("코트 재질"),
+                                fieldWithPath("courts.[].basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                                fieldWithPath("courts.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("courts.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }

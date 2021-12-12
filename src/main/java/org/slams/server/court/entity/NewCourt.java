@@ -11,9 +11,9 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Builder
-@AllArgsConstructor
 @Table(name = "newCourt")
 public class NewCourt extends BaseEntity {
 

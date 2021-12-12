@@ -1,8 +1,6 @@
 package org.slams.server.court.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
