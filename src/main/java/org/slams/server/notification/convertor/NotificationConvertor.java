@@ -15,7 +15,7 @@ import java.util.List;
 public class NotificationConvertor {
     public NotificationResponse toDto(Notification notificationEntity){
         return NotificationResponse.builder()
-                .alarmId(notificationEntity.getId())
+                .notificationId(notificationEntity.getId())
                 .createdAt(notificationEntity.getCreatedAt())
                 .updatedAt(notificationEntity.getUpdateAt())
                 .message(notificationEntity.getContent())
