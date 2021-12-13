@@ -3,25 +3,19 @@ package org.slams.server.reservation.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.error.exception.ErrorCode;
-import org.slams.server.court.dto.request.CourtInsertRequestDto;
-import org.slams.server.court.dto.response.AllCourtResponseDto;
-import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.entity.Court;
-import org.slams.server.court.entity.NewCourt;
-import org.slams.server.court.exception.UserNotFountException;
+import org.slams.server.court.exception.CourtNotFoundException;
+import org.slams.server.court.exception.UserNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
-import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
+import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -62,16 +56,27 @@ public class ReservationService {
     }
 
 
+
+    @Transactional
+    public ReservationUpdateResponseDto update(Long reservationId) {
+
+        Reservation reservation=reservationRepository.findById(reservationId)
+                .orElseThrow(()->new NotFoun)
+
+
+    }
+
+
     @Transactional
     public User getUser(Long userId) {
         return userTempRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException("해당 유저 없습니다.", ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
     }
 
     @Transactional
     public Court getCourt(Long courtId) {
         return courtRepository.findById(courtId)
-                .orElseThrow(() -> new UserNotFountException("해당 코트 없습니다.", ErrorCode.NOT_EXIST_COURT));
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
     }
 
 

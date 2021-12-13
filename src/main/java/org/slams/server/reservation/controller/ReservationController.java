@@ -4,6 +4,7 @@ package org.slams.server.reservation.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
+import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.service.ReservationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,18 +36,17 @@ public class ReservationController {
     }
 
 
-    // 전체 코트 조회
-//    @GetMapping("/all")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<Map<String,Object>> getAll() {
-//
-//        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-//
-//        Map<String,Object>result=new HashMap<>();
-//        result.put("courts",courtService.findAll());
-//
-//        return ResponseEntity.ok().body(result);
-//    }
+    // 경기장 예약 변경하기
+    @PatchMapping("/{reservationId}")
+    public ResponseEntity<ReservationUpdateResponseDto> update(@PathVariable Long id) {
+
+        return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.insert(request, id), HttpStatus.CREATED);
+
+    }
+
+
+
+
 
 
 }

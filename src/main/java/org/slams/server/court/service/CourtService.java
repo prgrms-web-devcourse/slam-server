@@ -11,12 +11,8 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.user.entity.User;
-import org.springframework.messaging.support.ErrorMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import org.slams.server.court.exception.*;
 
@@ -53,7 +49,7 @@ public class CourtService {
     @Transactional
     public User getUser(Long userId) {
         return userTempRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException("해당 유저 없습니다.",ErrorCode.NOT_EXIST_MEMBER));
+                .orElseThrow(() -> new UserNotFoundException("해당 유저 없습니다."));
     }
 
 
@@ -70,14 +66,14 @@ public class CourtService {
 
         return courtRepository.findById(courtId)
                 .map(CourtDetailResponseDto::new)
-                .orElseThrow(() -> new CourtNotFoundException("해당 코트가 없습니다.",ErrorCode.NOT_EXIST_COURT));
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
     }
 
 
     @Transactional
     public Court getCourt(Long CourtId) {
         return courtRepository.findById(CourtId)
-                .orElseThrow(() -> new CourtNotFoundException("해당 코트가 없습니다.",ErrorCode.NOT_EXIST_COURT));
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
 
     }
 
