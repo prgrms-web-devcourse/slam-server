@@ -9,8 +9,10 @@ import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtraUserInfoResponse {
@@ -23,9 +25,11 @@ public class ExtraUserInfoResponse {
 	private Role role;
 	private Proficiency proficiency;
 	private List<Position> positions;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
-	private ExtraUserInfoResponse(Long id, String email, String nickname, String profileImage, String description,
-								 Role role, Proficiency proficiency, List<Position> positions) {
+	private ExtraUserInfoResponse(Long id, String email, String nickname, String profileImage, String description, Role role,
+								  Proficiency proficiency, List<Position> positions, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.id = id;
 		this.email = email;
 		this.nickname = nickname;
@@ -34,11 +38,13 @@ public class ExtraUserInfoResponse {
 		this.role = role;
 		this.proficiency = proficiency;
 		this.positions = positions;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	public static ExtraUserInfoResponse entityToResponse(User user) {
 		return new ExtraUserInfoResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(),
-			user.getDescription(), user.getRole(), user.getProficiency(), user.getPositions());
+			user.getDescription(), user.getRole(), user.getProficiency(), user.getPositions(), user.getCreatedAt(), user.getUpdateAt());
 	}
 
 }

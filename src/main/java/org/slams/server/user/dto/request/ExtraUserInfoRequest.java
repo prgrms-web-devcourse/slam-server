@@ -1,8 +1,6 @@
 package org.slams.server.user.dto.request;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 
@@ -11,8 +9,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class ExtraUserInfoRequest {
 
 	private static final int MAX_LENGTH_NICKNAME = 15;
