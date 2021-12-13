@@ -71,7 +71,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(extraUserInfoResponse);
 	}
 
-	@PutMapping("/my-profile/image")
+	@PutMapping("/myprofile/image")
 	public ResponseEntity<ProfileImageResponse> updateUserProfileImage(HttpServletRequest request, @RequestBody ProfileImageRequest profileImageRequest) {
 		String authorization = request.getHeader("Authorization");
 		String[] tokenString = authorization.split(" ");
