@@ -55,6 +55,7 @@ public class Jwt {
 
 
 	// 토큰을 만들거나 검증할 때 필요한 데이터를 넘겨주는 inner class
+	@Getter
 	public static class Claims {
 		Long userId;
 		String[] roles;
