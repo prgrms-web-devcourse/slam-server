@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.response.ExtraUserInfoResponse;
+import org.slams.server.user.dto.response.ProfileImageResponse;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
@@ -49,8 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("dev")
 class UserControllerTest {
 
-	private static String jwtToken = "Bearer ";
-
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -59,6 +58,8 @@ class UserControllerTest {
 
 	@MockBean
 	private UserService userService;
+
+	private String jwtToken;
 
 	@BeforeEach
 	void setUp() throws IOException {
@@ -76,7 +77,7 @@ class UserControllerTest {
 
 		// 프로퍼티 정보 얻기
 		String token = env.getProperty("token");
-		jwtToken += token;
+		jwtToken = "Bearer " + token;
 	}
 
 	@Test
@@ -139,6 +140,30 @@ class UserControllerTest {
 					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
 					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
 					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+				)
+			));
+	}
+
+	@Test
+	void deleteUserProfileImage() throws Exception {
+		// given
+		ProfileImageResponse response = new ProfileImageResponse(null);
+
+		given(userService.deleteUserProfileImage(anyLong())).willReturn(response);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/myprofile/image")
+				.header("Authorization", jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print());
+
+		// then
+		resultActions.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andDo(document("users/user-addExtraUserInfo", preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("profileImage").type(JsonFieldType.NULL).description("사용자 프로필 이미지")
 				)
 			));
 	}
