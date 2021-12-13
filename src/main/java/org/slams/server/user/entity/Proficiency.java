@@ -1,5 +1,5 @@
 package org.slams.server.user.entity;
 
-public enum Skill {
+public enum Proficiency {
 	BEGINNER, INTERMEDIATE, MASTER
 }
