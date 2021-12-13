@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:11112/slam
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${MYSQL_USERNAME}
+    username: ${env:MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
 
   jpa:
