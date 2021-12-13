@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.error.exception.EntityNotFoundException;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.response.ExtraUserInfoResponse;
+import org.slams.server.user.dto.response.ProfileImageResponse;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
@@ -32,6 +33,16 @@ public class UserService {
 		return ExtraUserInfoResponse.entityToResponse(user);
 	}
 
+	@Transactional
+	public ProfileImageResponse deleteUserProfileImage(Long userId){
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		user.deleteProfileImage();
+
+		return new ProfileImageResponse(null);
+	}
 //	public String findUserNickname(Long id){
 //		User user = userRepository.findById(id)
 //			.orElseThrow(()-> new EntityNotFoundException("X"));
