@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:11112/slam
+    url: ${MYSQL_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: dev
-    password: dev
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
 
   jpa:
     generate-ddl: true
@@ -14,7 +14,7 @@ spring:
       hibernate:
         hbm2ddl:
           query.in_clause_parameter_padding: true
-          auto: none
+          auto: update
 
   security:
     oauth2:
@@ -22,8 +22,8 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id: 529839ee72199bbe32919f0ef14d600f
-            client-secret: XUjgULq3hk4MFBLf5lJxs6qHaDqcldcO
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
             scope:
               - profile_nickname
               - profile_image
@@ -41,7 +41,7 @@ spring:
 jwt:
   header: token
   issuer: slams
-  client-secret: EENY5W0eegTf1naQB2eDeyCLl5kRS2b8xa5c4qLdS0hmVjtbvo8tOyhPMcAmtPuQ
+  client-secret: ${CLIENT_SECRET}
   expiry-seconds: 604800 # 7 days
 
 app:

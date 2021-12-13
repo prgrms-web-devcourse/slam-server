@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtraUserInfoResponse {
 
-	private Long id;
+	private Long userId;
 	private String email;
 	private String nickname;
 	private String profileImage;
@@ -28,9 +28,9 @@ public class ExtraUserInfoResponse {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	private ExtraUserInfoResponse(Long id, String email, String nickname, String profileImage, String description, Role role,
+	private ExtraUserInfoResponse(Long userId, String email, String nickname, String profileImage, String description, Role role,
 								  Proficiency proficiency, List<Position> positions, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		this.id = id;
+		this.userId = userId;
 		this.email = email;
 		this.nickname = nickname;
 		this.profileImage = profileImage;
