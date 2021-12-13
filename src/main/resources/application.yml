@@ -2,8 +2,8 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:11112/slam
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${env:MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    username: "${MYSQL_USERNAME}"
+    password: "${MYSQL_PASSWORD}"
 
   jpa:
     generate-ddl: true
@@ -22,8 +22,8 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-id: "${KAKAO_CLIENT_ID}"
+            client-secret: "${KAKAO_CLIENT_SECRET}"
             scope:
               - profile_nickname
               - profile_image
@@ -41,7 +41,7 @@ spring:
 jwt:
   header: token
   issuer: slams
-  client-secret: ${CLIENT_SECRET}
+  client-secret: "${CLIENT_SECRET}"
   expiry-seconds: 604800 # 7 days
 
 app:
