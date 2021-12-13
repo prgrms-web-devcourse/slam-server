@@ -1,6 +1,7 @@
 package org.slams.server.user.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
@@ -71,6 +72,16 @@ public class User extends BaseEntity {
 		this.position = position;
 	}
 
+//                .nickname("test")
+//                .email("sds1zzang@naver.com")
+//                .id(1L)
+//                .description("my name is sds")
+//                .profileImage("desktop Image")
+//                .role(Role.USER)
+//                .skill(Skill.BEGINNER)
+//                .position(Position.PF)
+
+
 	public static User of(String socialId, String email, String nickname, String profileImage,
 						  String description, Role role, Skill skill, Position position) {
 		return new User(socialId, email, nickname, profileImage, description, role, skill, position);
@@ -114,9 +125,18 @@ public class User extends BaseEntity {
 		}
 	}
 
-
-
-    // 동성 추가
+	@Builder
+	public User(String nickname, String email, Long id, String description, String profileImage, Role role, Skill skill, Position position,String socialId) {
+		this.nickname = nickname;
+		this.email = email;
+		this.id=id;
+		this.description=description;
+		this.profileImage=profileImage;
+		this.role=role;
+		this.skill=skill;
+		this.position=position;
+		this.socialId=socialId;
+	}
 
 
 }
