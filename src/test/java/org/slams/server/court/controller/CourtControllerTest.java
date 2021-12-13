@@ -16,6 +16,7 @@ import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -40,6 +42,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@ActiveProfiles("dev")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -75,11 +79,12 @@ public class CourtControllerTest {
                 .nickname("test")
                 .email("sds1zzang@naver.com")
                 .id(1L)
+                .socialId("1L")
                 .description("my name is sds")
                 .profileImage("desktop Image")
-                .role("user")
+                .role(Role.USER)
                 .skill(Skill.BEGINNER)
-                .position(Position.forward)
+                .position(Position.PF)
                 .build();
 
 

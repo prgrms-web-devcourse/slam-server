@@ -3,6 +3,9 @@ package org.slams.server.reservation.entity;
 import lombok.*;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
+import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
+import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
+import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.user.entity.User;
 
 import javax.persistence.*;
@@ -14,8 +17,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
+@AllArgsConstructor
 @Builder
 @Table(name="reservation")
 public class Reservation extends BaseEntity {
@@ -42,11 +45,6 @@ public class Reservation extends BaseEntity {
     private boolean hasBall;
 
 
-    public Reservation(Court court, User user) {
-        this.court = court;
-        this.user=user;
-    }
-
 
     public void addReservation(Court court, User user) {
         this.court = court;
@@ -56,6 +54,20 @@ public class Reservation extends BaseEntity {
     public void removeReservation() {
         this.court.removeReservation(this);
         this.court=null;
+    }
+
+
+    public void update(ReservationUpdateRequestDto request) {
+        startTime=request.getStartTime();
+        endTime=request.getEndTime();
+        hasBall=request.getHasBall();
+    }
+
+
+    public Reservation(ReservationInsertRequestDto requestDto) {
+        hasBall=requestDto.getHasBall();
+        endTime= requestDto.getEndTime();
+        startTime= requestDto.getStartTime();
     }
 
 

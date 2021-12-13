@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.entity.Court;
@@ -13,9 +14,13 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
+import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
+import org.slams.server.reservation.entity.Reservation;
+import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.reservation.service.ReservationService;
 import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -38,7 +44,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@ActiveProfiles("dev")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -54,8 +60,8 @@ public class ReservationControllerTest {
     private ReservationService reservationService;
 
     private User user;
-
     private Court court;
+    private Reservation reservation;
 
     @Autowired
     private UserTempRepository userTempRepository;
@@ -65,6 +71,9 @@ public class ReservationControllerTest {
 
     @Autowired
     private CourtRepository courtRepository;
+
+    @Autowired
+    private ReservationRepository reservationRepository;
 
 
 
@@ -79,11 +88,12 @@ public class ReservationControllerTest {
                 .nickname("test")
                 .email("sds1zzang@naver.com")
                 .id(1L)
+                .socialId("1L")
                 .description("my name is sds")
                 .profileImage("desktop Image")
-                .role("user")
+                .role(Role.USER)
                 .skill(Skill.BEGINNER)
-                .position(Position.forward)
+                .position(Position.PF)
                 .build();
 
         user.setCreatedAt(now);
@@ -127,6 +137,7 @@ public class ReservationControllerTest {
     // 생성한 코트에 예약 해보기
     @Test
     @DisplayName("[POST] '/api/v1/reservations'")
+    @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
         ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
@@ -172,6 +183,72 @@ public class ReservationControllerTest {
                         )
                 ));
     }
+
+
+    //  변경하기
+    @Test
+    @DisplayName("[PATCH] '/api/v1/reservations/{reservationId}'")
+    @Order(2)
+    void testUpdateCall() throws Exception {
+        // 위에서 만든 예약을 변경하기
+        // 예약정보 조회
+        // GIVEN
+        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
+                .courtId(1L)
+                .startTime("2021-01-01T12:20:10")
+                .endTime("2021-01-01T12:20:10")
+                .hasBall(false)
+                .build();
+
+
+        Reservation reservation=new Reservation(givenRequest);
+        reservation.addReservation(court,user);
+
+        Reservation save = reservationRepository.save(reservation);
+        Long reservationId=save.getId();
+
+//        log.info(reservationRepository.findById(reservationId).toString());
+
+
+//        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
+//        given(reservationService.insert(any(), any()));
+
+        ReservationUpdateRequestDto updateRequest=ReservationUpdateRequestDto.builder()
+                .reservationId(reservationId)
+                .endTime("text")
+                .startTime("start")
+                .hasBall(true)
+                .build();
+
+
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+reservationId)
+                .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
+                .content(objectMapper.writeValueAsString(updateRequest));
+
+        // WHEN // THEN
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("reservation-update",
+                        requestFields(
+                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
+                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
+                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부")
+                        ),
+                        responseFields(
+                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
+                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
+                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
+                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부"),
+                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                        )
+                ));
+    }
+
+
 
 
 }

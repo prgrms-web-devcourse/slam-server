@@ -1,33 +1,27 @@
 package org.slams.server.reservation.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.slams.server.court.dto.request.CourtInsertRequestDto;
-import org.slams.server.court.entity.NewCourt;
-import org.slams.server.court.entity.Status;
-import org.slams.server.court.entity.Texture;
 import org.slams.server.reservation.entity.Reservation;
-import org.slams.server.user.entity.User;
 
-@EqualsAndHashCode
 @Getter
 @Builder
-public class ReservationInsertRequestDto {
+public class ReservationUpdateRequestDto {
 
-
-    private Long courtId;
+    private Long reservationId;
     private String startTime;
     private String endTime;
     private Boolean hasBall;
 
     // requestDto -> Entity
-    public Reservation insertRequestDtoToEntity(ReservationInsertRequestDto requestDto) {
+    public Reservation updateRequestDtoToEntity(ReservationUpdateRequestDto requestDto) {
         return Reservation.builder()
+                .id(requestDto.getReservationId())
                 .startTime(requestDto.getStartTime())
                 .endTime(requestDto.getEndTime())
                 .hasBall(requestDto.getHasBall())
                 .build();
     }
+
+
 }

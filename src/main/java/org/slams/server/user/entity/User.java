@@ -80,7 +80,18 @@ public class User extends BaseEntity {
 //                .role(Role.USER)
 //                .skill(Skill.BEGINNER)
 //                .position(Position.PF)
-
+	@Builder
+	public User(String nickname, String email, Long id, String description, String profileImage, Role role, Skill skill, Position position,String socialId) {
+		this.nickname = nickname;
+		this.email = email;
+		this.id=id;
+		this.description=description;
+		this.profileImage=profileImage;
+		this.role=role;
+		this.skill=skill;
+		this.position=position;
+		this.socialId=socialId;
+	}
 
 	public static User of(String socialId, String email, String nickname, String profileImage,
 						  String description, Role role, Skill skill, Position position) {
@@ -125,18 +136,9 @@ public class User extends BaseEntity {
 		}
 	}
 
-	@Builder
-	public User(String nickname, String email, Long id, String description, String profileImage, Role role, Skill skill, Position position,String socialId) {
-		this.nickname = nickname;
-		this.email = email;
-		this.id=id;
-		this.description=description;
-		this.profileImage=profileImage;
-		this.role=role;
-		this.skill=skill;
-		this.position=position;
-		this.socialId=socialId;
-	}
+
+
+    // 동성 추가
 
 
 }

@@ -8,8 +8,12 @@ import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.service.CourtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +30,9 @@ public class CourtController {
 
 
     @PostMapping("/{id}/new")
-    public ResponseEntity<CourtInsertResponseDto> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id) {
+    public ResponseEntity<CourtInsertResponseDto> insert(@RequestBody CourtInsertRequestDto request, @PathVariable Long id, Principal principal) {
+
+
 
 
         // 여기에 추가로 header 토큰 정보가 들어가야 함.

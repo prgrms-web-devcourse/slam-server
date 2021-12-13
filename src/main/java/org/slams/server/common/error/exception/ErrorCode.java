@@ -21,7 +21,11 @@ public enum ErrorCode {
 
 
 	//Court
-	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다.")
+	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다."),
+
+
+	// Reservation
+	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다.")
 
 
 	;

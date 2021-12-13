@@ -9,9 +9,11 @@ import org.slams.server.court.exception.UserNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
+import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
+import org.slams.server.reservation.exception.ReservationNotFoundException;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.User;
 import org.springframework.stereotype.Service;
@@ -46,22 +48,29 @@ public class ReservationService {
         return new ReservationInsertResponseDto(reservation);
 
 
-
-//        User user = getUser(id);
-//        NewCourt newCourt = request.insertRequestDtoToEntity(request);
-//
-//        newCourtRepository.save(newCourt);
-//        return new CourtInsertResponseDto(newCourt);
-
     }
 
 
 
     @Transactional
-    public ReservationUpdateResponseDto update(Long reservationId) {
+    public ReservationUpdateResponseDto update(ReservationUpdateRequestDto requestDto, Long reservationId) {
 
         Reservation reservation=reservationRepository.findById(reservationId)
-                .orElseThrow(()->new NotFoun)
+                .orElseThrow(()->new ReservationNotFoundException(ErrorCode.NOT_EXIST_RESERVATION.getMessage()));
+
+        // 해당 유저만 수정 가능
+        //  Todo
+//        if (!sessionUser.getId().equals(post.getSeller().getId())) { // 작성자만 가능.
+//            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
+//        }
+
+
+        reservation.update(requestDto);
+        return new ReservationUpdateResponseDto(reservation);
+
+
+
+//        return new ReservationUpdateResponseDto(reservation);
 
 
     }
