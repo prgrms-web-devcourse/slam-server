@@ -34,7 +34,6 @@ public class CourtController {
     private final CourtService courtService;
     private final Jwt jwt;
 
-
     @PostMapping("/new")
     public ResponseEntity<CourtInsertResponseDto> insert(@Valid @RequestBody CourtInsertRequestDto courtInsertRequestDto, HttpServletRequest request) {
 

@@ -14,6 +14,7 @@ import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
+import org.slams.server.reservation.exception.ForbiddenException;
 import org.slams.server.reservation.exception.ReservationNotFoundException;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.User;
@@ -54,16 +55,15 @@ public class ReservationService {
 
 
     @Transactional
-    public ReservationUpdateResponseDto update(ReservationUpdateRequestDto requestDto, Long reservationId) {
+    public ReservationUpdateResponseDto update(ReservationUpdateRequestDto requestDto, Long reservationId, Long userId) {
 
         Reservation reservation=reservationRepository.findById(reservationId)
                 .orElseThrow(()->new ReservationNotFoundException(ErrorCode.NOT_EXIST_RESERVATION.getMessage()));
 
         // 해당 유저만 수정 가능
-        //  Todo
-//        if (!sessionUser.getId().equals(post.getSeller().getId())) { // 작성자만 가능.
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
-//        }
+        if (!userId.equals(reservation.getUser().getId())) {
+            throw new ForbiddenException(ErrorCode.NOT_FORBIDDEN_RESERVATION.getMessage());
+        }
 
 
         reservation.update(requestDto);
@@ -77,14 +77,15 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationDeleteResponseDto delete(Long reservationId) {
+    public ReservationDeleteResponseDto delete(Long reservationId, Long userId) {
         Reservation reservation= reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_RESERVATION.getMessage()));
 
-        // 사용자만 삭제 가능 코드 추가
-//        if (!sessionUser.getId().equals(post.getSeller().getId())) {
-//            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
-//        }
+        if (!userId.equals(reservation.getUser().getId())) {
+            throw new ForbiddenException(ErrorCode.NOT_FORBIDDEN_RESERVATION.getMessage());
+        }
+
+
         reservationRepository.delete(reservation);
         return new ReservationDeleteResponseDto(reservation);
 

@@ -1,15 +1,17 @@
 package org.slams.server.common.api;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-
+@RequiredArgsConstructor
 public class TokenGetId {
     private Jwt.Claims claims;
+
 
     public TokenGetId(HttpServletRequest request, Jwt jwt) {
 

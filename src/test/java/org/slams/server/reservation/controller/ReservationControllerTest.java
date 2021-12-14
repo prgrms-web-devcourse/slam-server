@@ -264,6 +264,7 @@ public class ReservationControllerTest {
 
 
         RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+reservationId)
+                .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/formdata
                 .content(objectMapper.writeValueAsString(updateRequest));
 
@@ -317,6 +318,7 @@ public class ReservationControllerTest {
 
 
         mockMvc.perform(delete("/api/v1/reservations/{reservationId}", reservation.getId())
+                        .header("Authorization",jwtToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
 //                .andExpect(jsonPath("id").value(reservation.getId()))
