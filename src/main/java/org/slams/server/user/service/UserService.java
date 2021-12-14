@@ -1,16 +1,12 @@
 package org.slams.server.user.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slams.server.common.error.exception.EntityNotFoundException;
 import org.slams.server.common.utils.AwsS3Uploader;
 
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
-import org.slams.server.user.dto.response.ExtraUserInfoResponse;
-import org.slams.server.user.dto.response.MyProfileResponse;
-import org.slams.server.user.dto.response.ProfileImageResponse;
+import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
@@ -39,7 +35,7 @@ public class UserService {
 			extraUserInfoRequest.getProficiency(), extraUserInfoRequest.getPositions());
 		userRepository.flush(); // updatedAt 반영
 
-		return ExtraUserInfoResponse.entityToResponse(user);
+		return ExtraUserInfoResponse.toResponse(user);
 	}
 
 	public MyProfileResponse getMyInfo(Long userId) {
