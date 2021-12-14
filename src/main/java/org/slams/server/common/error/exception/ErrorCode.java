@@ -16,23 +16,8 @@ public enum ErrorCode {
 	// User
 	USER_NOT_AUTHENTICATION(401, "User has No Authentication"),
 	USER_NOT_AUTHORIZED(403, "User is Denied to Access"),
-	INVALID_INPUT_TOKEN(400, "Invalid Input Token"),
-	NOT_EXIST_MEMBER(404,"존재하지 않는 회원입니다."),
-
-
-	//Court
-	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다."),
-
-
-	// Reservation
-	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다."),
-
-	NOT_FORBIDDEN_RESERVATION(403,"권한이 없습니다")
-
-
+	INVALID_INPUT_TOKEN(400, "Invalid Input Token")
 	;
-
-
 
 	private final String message;
 	private int status;
