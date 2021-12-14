@@ -3,8 +3,11 @@ package org.slams.server.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.error.exception.EntityNotFoundException;
+import org.slams.server.common.utils.AwsS3Uploader;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
+import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.ExtraUserInfoResponse;
+import org.slams.server.user.dto.response.ProfileImageResponse;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
@@ -19,6 +22,8 @@ public class UserService {
 
 	private final UserRepository userRepository;
 
+	private final AwsS3Uploader awsS3Uploader;
+
 	@Transactional
 	public ExtraUserInfoResponse addExtraUserInfo(Long userId, ExtraUserInfoRequest extraUserInfoRequest){
 		User user = userRepository.findById(userId)
@@ -32,6 +37,29 @@ public class UserService {
 		return ExtraUserInfoResponse.entityToResponse(user);
 	}
 
+	@Transactional
+	public ProfileImageResponse updateUserProfileImage(Long userId, ProfileImageRequest profileImageRequest){
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		String profileImageUrl = awsS3Uploader.upload(profileImageRequest.getProfileImage(), "profile");
+
+		String profileImage = user.updateProfileImage(profileImageUrl);
+
+		return new ProfileImageResponse(profileImage);
+	}
+
+	@Transactional
+	public ProfileImageResponse deleteUserProfileImage(Long userId){
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		user.deleteProfileImage();
+
+		return new ProfileImageResponse(null);
+	}
 //	public String findUserNickname(Long id){
 //		User user = userRepository.findById(id)
 //			.orElseThrow(()-> new EntityNotFoundException("X"));
