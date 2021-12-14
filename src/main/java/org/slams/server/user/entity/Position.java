@@ -1,5 +1,5 @@
 package org.slams.server.user.entity;
 
 public enum Position {
-	PG, SG, SF, PF, C, UNDEFINED
+	PG, SG, SF, PF, C, TBD
 }
