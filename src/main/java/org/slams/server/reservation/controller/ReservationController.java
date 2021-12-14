@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/reservations")
@@ -26,7 +28,7 @@ public class ReservationController {
 
     // 경기장 예약하기
     @PostMapping("/{userId}")
-    public ResponseEntity<ReservationInsertResponseDto> insert(@RequestBody ReservationInsertRequestDto request, @PathVariable Long userId) {
+    public ResponseEntity<ReservationInsertResponseDto> insert(@Valid @RequestBody ReservationInsertRequestDto request, @PathVariable Long userId) {
 
         // 여기에 추가로 header 토큰 정보가 들어가야 함.
         // id로 추가하게 해야 함.

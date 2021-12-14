@@ -10,6 +10,7 @@ import org.slams.server.user.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by dongsung on 2021/12/03.
@@ -36,10 +37,10 @@ public class Reservation extends BaseEntity {
     private User user;
 
     @Column(nullable = false)
-    private String startTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private String endTime;
+    private LocalDateTime endTime;
 
     @Column(nullable = false)
     private boolean hasBall;

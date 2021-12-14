@@ -9,6 +9,10 @@ import org.slams.server.reservation.entity.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.util.Assert;
+import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+
 
 /**
  * Created by dongsung on 2021/12/03.
@@ -16,11 +20,13 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Entity
-@Builder
 @Table(name = "court")
+@Builder
+@AllArgsConstructor
 public class Court extends BaseEntity {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -56,5 +62,7 @@ public class Court extends BaseEntity {
     public void removeReservation(Reservation reservation) {
         reservations.remove(reservation);
     }
+
+
 
 }

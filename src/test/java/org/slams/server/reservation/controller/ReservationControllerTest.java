@@ -81,14 +81,13 @@ public class ReservationControllerTest {
     private ReservationRepository reservationRepository;
 
 
-
+    LocalDateTime now = LocalDateTime.now();
 
     @BeforeEach
     void setUp() {
 
 
         // User 생성
-        LocalDateTime now = LocalDateTime.now();
         user = User.builder()
                 .nickname("test")
                 .email("sds1zzang@naver.com")
@@ -145,10 +144,14 @@ public class ReservationControllerTest {
     @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
+
+        LocalDateTime start=now.plusDays(1);
+        LocalDateTime end=now.plusDays(1);
+
         ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
                 .courtId(1L)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(start)
+                .endTime(end)
                 .hasBall(false)
                 .build();
 
@@ -198,10 +201,12 @@ public class ReservationControllerTest {
         // 위에서 만든 예약을 변경하기
         // 예약정보 조회
         // GIVEN
+        LocalDateTime start=now.plusDays(5);
+        LocalDateTime end=now.plusDays(5);
         ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
                 .courtId(1L)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(start)
+                .endTime(end)
                 .hasBall(false)
                 .build();
 
@@ -218,10 +223,14 @@ public class ReservationControllerTest {
 //        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
 //        given(reservationService.insert(any(), any()));
 
+
+        LocalDateTime changeStart=now.plusDays(10);
+        LocalDateTime changeEnd=now.plusDays(10);
+
         ReservationUpdateRequestDto updateRequest=ReservationUpdateRequestDto.builder()
                 .reservationId(reservationId)
-                .endTime("text")
-                .startTime("start")
+                .endTime(changeStart)
+                .startTime(changeEnd)
                 .hasBall(true)
                 .build();
 
@@ -263,8 +272,8 @@ public class ReservationControllerTest {
         // GIVEN
         ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
                 .courtId(1L)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(now)
+                .endTime(now)
                 .hasBall(false)
                 .build();
 

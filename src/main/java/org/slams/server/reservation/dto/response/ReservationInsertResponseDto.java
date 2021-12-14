@@ -7,6 +7,9 @@ import org.slams.server.court.entity.NewCourt;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.entity.Reservation;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 
 @Getter
 @EqualsAndHashCode
@@ -15,8 +18,8 @@ public class ReservationInsertResponseDto extends BaseResponse {
     private Long reservationId;
     private Long userId;
     private Long courtId;
-    private String startTime;
-    private String endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Boolean hasBall;
 
     // requestDto -> Entity

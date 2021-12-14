@@ -7,10 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
+import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.entity.Court;
+import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.entity.Status;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
+import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.entity.Reservation;
@@ -24,6 +27,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -54,10 +61,11 @@ public class CourtControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
+    @MockBean
     private CourtService courtService;
     private User user;
     private Court court;
+    private NewCourt newCourt;
     private Reservation reservation;
 
     @Autowired
@@ -69,10 +77,32 @@ public class CourtControllerTest {
     @Autowired
     private ReservationRepository reservationRepository;
 
+    // JWT 추가 코드
+    private static String jwtToken = "Bearer ";
+
 
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception{
+
+        // JWT 추가 코드
+        // 컨테이너 생성
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+
+        // 환경변수 관리 객체 생성
+        ConfigurableEnvironment env = ctx.getEnvironment();
+
+        // 프로퍼티 관리 객체 생성
+        MutablePropertySources prop = env.getPropertySources();
+
+        // 프로퍼티 관리 객체에 프로퍼티 파일 추가
+        prop.addLast(new ResourcePropertySource("classpath:test.properties"));
+
+        // 프로퍼티 정보 얻기
+        String token = env.getProperty("token");
+        jwtToken += token;
+
+
 
         LocalDateTime now = LocalDateTime.now();
         user = User.builder()
@@ -98,7 +128,7 @@ public class CourtControllerTest {
 
 
     @Test
-    @DisplayName("[POST] '/api/v1/courts/{id}/new'")
+    @DisplayName("[POST] '/api/v1/courts/new'")
     @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
@@ -112,11 +142,24 @@ public class CourtControllerTest {
                 .status(Status.READY)
                 .build();
 
+        newCourt=NewCourt.builder()
+                .name("관악구민운동장 농구장")
+                .latitude(38.987654)
+                .longitude(12.309472)
+                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+                .texture(Texture.ASPHALT)
+                .basketCount(2)
+                .status(Status.READY)
+                .build();
 
-        log.info(givenRequest.toString());
 
 
-        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/courts/"+user.getId()+"/new")
+        CourtInsertResponseDto response = new CourtInsertResponseDto(newCourt);
+
+        given(courtService.insert(any(), any())).willReturn(response);
+
+
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/courts/new")
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
 
@@ -241,8 +284,8 @@ public class CourtControllerTest {
         reservation = Reservation.builder()
                 .user(user)
                 .court(court)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(now)
+                .endTime(now)
                 .hasBall(false)
                 .build();
 
@@ -254,8 +297,8 @@ public class CourtControllerTest {
         reservation = Reservation.builder()
                 .user(user)
                 .court(tempCourt)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(now)
+                .endTime(now)
                 .hasBall(false)
                 .build();
 
@@ -267,8 +310,8 @@ public class CourtControllerTest {
         reservation = Reservation.builder()
                 .user(user)
                 .court(court)
-                .startTime("2021-01-01T12:20:10")
-                .endTime("2021-01-01T12:20:10")
+                .startTime(now)
+                .endTime(now)
                 .hasBall(false)
                 .build();
 

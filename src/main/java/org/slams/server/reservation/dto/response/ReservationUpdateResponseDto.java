@@ -4,14 +4,18 @@ import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.reservation.entity.Reservation;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Getter
 public class ReservationUpdateResponseDto extends BaseResponse {
 
 
     private Long reservationId;
     private Long courtId;
-    private String startTime;
-    private String endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Boolean hasBall;
 
     public ReservationUpdateResponseDto(Reservation reservation) {
