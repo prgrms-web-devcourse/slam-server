@@ -27,12 +27,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import org.springframework.core.io.support.ResourcePropertySource;
 
 import java.time.LocalDateTime;
 
@@ -83,8 +89,29 @@ public class ReservationControllerTest {
 
     LocalDateTime now = LocalDateTime.now();
 
+    // JWT 추가 코드
+    private String jwtToken;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception{
+
+
+        // JWT 추가 코드
+        // 컨테이너 생성
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+
+        // 환경변수 관리 객체 생성
+        ConfigurableEnvironment env = ctx.getEnvironment();
+
+        // 프로퍼티 관리 객체 생성
+        MutablePropertySources prop = env.getPropertySources();
+
+        // 프로퍼티 관리 객체에 프로퍼티 파일 추가
+        prop.addLast(new ResourcePropertySource("classpath:test.properties"));
+
+        // 프로퍼티 정보 얻기
+        String token = env.getProperty("token");
+        jwtToken = "Bearer "+token;
 
 
         // User 생성
@@ -165,6 +192,7 @@ public class ReservationControllerTest {
 //        given(reservationService.insert(any(), any()));
 
         RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations/"+user.getId())
+                .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
 
@@ -236,7 +264,7 @@ public class ReservationControllerTest {
 
 
         RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+reservationId)
-                .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
+                .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/formdata
                 .content(objectMapper.writeValueAsString(updateRequest));
 
         // WHEN // THEN

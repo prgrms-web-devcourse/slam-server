@@ -3,6 +3,7 @@ package org.slams.server.court.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slams.server.common.api.TokenGetId;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
@@ -10,6 +11,7 @@ import org.slams.server.court.service.CourtService;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slams.server.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,33 +32,26 @@ import java.util.Map;
 public class CourtController {
 
     private final CourtService courtService;
-
-    private final UserService userService;
     private final Jwt jwt;
-
-
 
 
     @PostMapping("/new")
     public ResponseEntity<CourtInsertResponseDto> insert(@Valid @RequestBody CourtInsertRequestDto courtInsertRequestDto, HttpServletRequest request) {
 
 
-        String authorization = request.getHeader("Authorization");
-        String[] tokenString = authorization.split(" ");
-        if (!tokenString[0].equals("Bearer")) {
-            throw new InvalidTokenException("토큰 정보가 올바르지 않습니다.");
-        }
-
-        Jwt.Claims claims = jwt.verify(tokenString[1]);
-
-        Long id= claims.getUserId();
+        TokenGetId token=new TokenGetId(request,jwt);
+        Long userId=token.getUserId();
 
 
+//        Long userId=claims.getUserId();
+        log.info("userID: "+userId);
+//        String exp=claims.getExp().toString();
+//        log.info("tokenExp:"+exp);
         // 여기에 추가로 header 토큰 정보가 들어가야 함.
         // id로 추가하게 해야 함.
 
 //        return ResponseEntity.ok(courtService.insert(request, id));
-        return new ResponseEntity<CourtInsertResponseDto>(courtService.insert(courtInsertRequestDto, id), HttpStatus.CREATED);
+        return new ResponseEntity<CourtInsertResponseDto>(courtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
     }
 
 

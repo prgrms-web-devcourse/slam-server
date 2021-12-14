@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isAnyEmpty;
 public class CourtInsertRequestDto {
 
     @NotNull(message ="name은 필수 값입니다.")
-    @Max(value=50,message = "name은 50글자 미만입니다.")
+//    @Max(value=100,message = "name은 50글자 미만입니다.")
     private String name;
     @Positive(message = "위도는 0이상값입니다.")
     private double latitude;

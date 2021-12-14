@@ -61,7 +61,7 @@ public class CourtControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
+    @Autowired
     private CourtService courtService;
     private User user;
     private Court court;
@@ -78,7 +78,7 @@ public class CourtControllerTest {
     private ReservationRepository reservationRepository;
 
     // JWT 추가 코드
-    private static String jwtToken = "Bearer ";
+    private String jwtToken;
 
 
 
@@ -100,10 +100,9 @@ public class CourtControllerTest {
 
         // 프로퍼티 정보 얻기
         String token = env.getProperty("token");
-        jwtToken += token;
+        jwtToken = "Bearer "+token;
 
-
-
+        // user ID + role + 토큰 발행일자 + 만료일자 ==> token
         LocalDateTime now = LocalDateTime.now();
         user = User.builder()
                 .nickname("test")
@@ -136,7 +135,7 @@ public class CourtControllerTest {
                 .name("관악구민운동장 농구장")
                 .latitude(38.987654)
                 .longitude(12.309472)
-                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg") // image ->
                 .texture(Texture.ASPHALT)
                 .basketCount(2)
                 .status(Status.READY)
@@ -154,12 +153,12 @@ public class CourtControllerTest {
 
 
 
-        CourtInsertResponseDto response = new CourtInsertResponseDto(newCourt);
-
-        given(courtService.insert(any(), any())).willReturn(response);
+//        CourtInsertResponseDto response = new CourtInsertResponseDto(newCourt);
+//        given(courtService.insert(any(), any())).willReturn(response);
 
 
         RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/courts/new")
+                .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
 
@@ -243,6 +242,7 @@ public class CourtControllerTest {
 
 
         RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts//all")
+                .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
 
         // WHEN // THEN
@@ -324,6 +324,7 @@ public class CourtControllerTest {
 
 
         RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts/detail/"+1)
+                .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
 
         // WHEN // THEN
