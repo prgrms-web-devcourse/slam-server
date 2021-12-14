@@ -5,6 +5,7 @@ import org.slams.server.notification.dto.NotificationResponse;
 import org.slams.server.notification.entity.Notification;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +25,12 @@ public class NotificationConvertor {
     }
 
     public List<NotificationResponse> toDtoList(List<Notification> notificationEntityList){
-        return notificationEntityList.stream()
-                .map(this::toDto)
-                .toList();
+        List<NotificationResponse> notificationResponses = new ArrayList<>();
+
+        for(Notification notification : notificationEntityList){
+            notificationResponses.add(toDto(notification));
+        }
+        return notificationResponses;
     }
 
 
