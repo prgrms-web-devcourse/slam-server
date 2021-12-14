@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
+import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.oauth.jwt.Jwt;
