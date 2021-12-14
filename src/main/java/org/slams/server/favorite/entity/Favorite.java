@@ -18,17 +18,26 @@ import javax.persistence.*;
 @Entity
 @Table(name = "favorite")
 public class Favorite extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "court_id", nullable = false)
-    private Court court;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "court_id", nullable = false)
+	private Court court;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	private Favorite(Court court, User user) {
+		this.court = court;
+		this.user = user;
+	}
+
+	public static Favorite of(Court court, User user) {
+		return new Favorite(court, user);
+	}
 
 }
