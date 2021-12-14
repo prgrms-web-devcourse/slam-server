@@ -32,8 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-src/main/resources/application-dev.yml
-
-src/test/resources/test.properties
-
-src/main/resources/aws.yaml
+### slam ###
+*.yml
+*.properties
