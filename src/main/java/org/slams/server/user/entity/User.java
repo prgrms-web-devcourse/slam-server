@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,15 +48,14 @@ public class User extends BaseEntity {
 	private Role role;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "skill")
-	private Skill skill;
+	@Column(name = "proficiency")
+	private Proficiency proficiency;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "position")
-	private Position position;
+	@ElementCollection(fetch = FetchType.EAGER)
+	private List<Position> positions = new ArrayList<>();
 
 	private User(String socialId, String email, String nickname, String profileImage,
-				 String description, Role role, Skill skill, Position position) {
+				 String description, Role role, Proficiency proficiency, List<Position> positions) {
 		Assert.notNull(socialId, "socialId는 null이 될 수 없습니다.");
 		Assert.notNull(email, "email은 null이 될 수 없습니다.");
 		Assert.notNull(role, "role은 null이 될 수 없습니다.");
@@ -68,8 +69,8 @@ public class User extends BaseEntity {
 		this.profileImage = profileImage;
 		this.description = description;
 		this.role = role;
-		this.skill = skill;
-		this.position = position;
+		this.proficiency = proficiency;
+		this.positions = positions;
 	}
 
 //                .nickname("test")
@@ -94,23 +95,32 @@ public class User extends BaseEntity {
 	}
 
 	public static User of(String socialId, String email, String nickname, String profileImage,
-						  String description, Role role, Skill skill, Position position) {
-		return new User(socialId, email, nickname, profileImage, description, role, skill, position);
+						  String description, Role role, Proficiency proficiency, List<Position> positions) {
+		return new User(socialId, email, nickname, profileImage, description, role, proficiency, positions);
 	}
 
 	//== Business Method ==//
-	public void updateDetails(String nickname, String description, Skill skill, Position position) {
+	public void clearPositions() {
+		this.positions.clear();
+	}
+
+	public void updateInfo(String nickname, String description, Proficiency proficiency, List<Position> positions) {
 		validateNickname(nickname);
 		validateDescription(description);
+		validatePositions(positions);
+
+		clearPositions();
 
 		this.nickname = nickname;
 		this.description = description;
-		this.skill = skill;
-		this.position = position;
+		this.proficiency = proficiency;
+		this.positions = positions;
 	}
 
-	public void updateProfileImage(String profileImage) {
+	public String updateProfileImage(String profileImage) {
 		this.profileImage = profileImage;
+
+		return this.profileImage;
 	}
 
 	public void deleteProfileImage() {
@@ -136,9 +146,13 @@ public class User extends BaseEntity {
 		}
 	}
 
-
-
-    // 동성 추가
-
+	private void validatePositions(List<Position> positions) {
+		if (positions.contains(Position.TBD) && positions.size() > 1) {
+			throw new IllegalArgumentException("TBD(미정) 선택 시 다른 position은 선택할 수 없습니다.");
+		}
+		if (positions.size() > 2) {
+			throw new IllegalArgumentException("선호하는 포지션은 최대 2개까지 선택 가능합니다.");
+		}
+	}
 
 }

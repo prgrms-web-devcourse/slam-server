@@ -14,7 +14,7 @@ spring:
       hibernate:
         hbm2ddl:
           query.in_clause_parameter_padding: true
-#          auto: create
+          auto: none
 
   security:
     oauth2:
@@ -37,6 +37,9 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
+
+  config:
+    import: classpath:aws.yaml
 
 jwt:
   header: token
