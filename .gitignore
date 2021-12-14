@@ -34,4 +34,5 @@ build/
 
 ### slam ###
 *.yml
+*.yaml
 *.properties

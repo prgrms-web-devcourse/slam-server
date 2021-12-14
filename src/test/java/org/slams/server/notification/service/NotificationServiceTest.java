@@ -12,6 +12,8 @@ import org.slams.server.notification.repository.NotificationRepository;
 import org.slams.server.court.repository.CourtRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,7 +22,6 @@ import static org.hamcrest.CoreMatchers.*;
 /**
  * Created by yunyun on 2021/12/09.
  */
-
 
 @SpringBootTest
 class NotificationServiceTest {
@@ -78,7 +79,7 @@ class NotificationServiceTest {
         List<NotificationResponse> notificationList = alarmService.findAllByUserId(11L, cursorRequest);
 
         //Then
-        assertThat(notificationList.size(), is(2));
+        assertThat(notificationList.size(), is(3));
         assertThat(notificationList.get(0).getNotificationType(), is(NotificationType.FOLLOWING_ALARM));
         assertThat(notificationList.get(0).getMessage(), containsString("flora"));
         assertThat(notificationList.get(1).getNotificationType(), is(NotificationType.LOUDSPEAKER));

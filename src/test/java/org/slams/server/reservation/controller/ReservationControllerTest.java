@@ -20,8 +20,8 @@ import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.reservation.service.ReservationService;
 import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
-import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -41,6 +41,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -55,7 +56,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ActiveProfiles("dev")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -123,8 +123,8 @@ public class ReservationControllerTest {
                 .description("my name is sds")
                 .profileImage("desktop Image")
                 .role(Role.USER)
-                .skill(Skill.BEGINNER)
-                .position(Position.PF)
+                .proficiency(Proficiency.INTERMEDIATE.BEGINNER)
+                .positions(Arrays.asList(Position.PF))
                 .build();
 
         user.setCreatedAt(now);

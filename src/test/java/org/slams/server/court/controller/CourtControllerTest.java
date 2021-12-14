@@ -19,8 +19,8 @@ import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
-import org.slams.server.user.entity.Skill;
 import org.slams.server.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -40,6 +40,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -50,7 +51,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ActiveProfiles("dev")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
@@ -112,8 +112,8 @@ public class CourtControllerTest {
                 .description("my name is sds")
                 .profileImage("desktop Image")
                 .role(Role.USER)
-                .skill(Skill.BEGINNER)
-                .position(Position.PF)
+                .proficiency(Proficiency.BEGINNER)
+                .positions(Arrays.asList(Position.PF))
                 .build();
 
 

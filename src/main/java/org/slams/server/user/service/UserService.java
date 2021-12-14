@@ -29,8 +29,6 @@ public class UserService {
 
 	private final AwsS3Uploader awsS3Uploader;
 
-	private final AwsS3Uploader awsS3Uploader;
-
 	@Transactional
 	public ExtraUserInfoResponse addExtraUserInfo(Long userId, ExtraUserInfoRequest extraUserInfoRequest) {
 		User user = userRepository.findById(userId)

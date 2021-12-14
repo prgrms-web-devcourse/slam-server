@@ -1,8 +1,8 @@
 package org.slams.server.user.dto;
 
 import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
-import org.slams.server.user.entity.Skill;
 
 public class DefaultUserInfoResponse {
 
@@ -12,7 +12,7 @@ public class DefaultUserInfoResponse {
 	private String profileImage;
 	private String description;
 	private Role role;
-	private Skill skill;
+	private Proficiency proficiency;
 	private Position position;
 
 }
