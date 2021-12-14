@@ -2,12 +2,15 @@ package org.slams.server.user.oauth.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.exception.UserNotAuthenticatedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.security.auth.message.AuthException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -18,11 +21,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.isNotEmpty;
+
 
 @Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
@@ -95,5 +101,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			emptyList() :
 			Arrays.stream(roles).map(SimpleGrantedAuthority::new).collect(toList());
 	}
+
+
+
 
 }
