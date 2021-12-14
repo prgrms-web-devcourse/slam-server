@@ -3,13 +3,16 @@ package org.slams.server.notification.controller;
 import lombok.RequiredArgsConstructor;
 import org.slams.server.common.api.ApiResponse;
 import org.slams.server.common.api.CursorPageResponse;
+import org.slams.server.common.api.TokenGetId;
 import org.slams.server.notification.dto.CursorRequest;
 import org.slams.server.notification.dto.NotificationRequest;
 import org.slams.server.notification.dto.NotificationResponse;
 import org.slams.server.notification.service.NotificationService;
+import org.slams.server.user.oauth.jwt.Jwt;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -23,16 +26,13 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final Jwt jwt;
 
-    @PostMapping
-    public ApiResponse<String> save(@Valid @RequestBody final NotificationRequest notificationRequest){
-        return ApiResponse.ok(null);
-    }
 
-    @GetMapping("/{userId}")
-    public CursorPageResponse<List<NotificationResponse>> findByUserId(@PathVariable final long userId,
-                                                                       @RequestParam final CursorRequest cursorRequest){
-        List<NotificationResponse> notificationResponseList = notificationService.findAllByUserId(userId, cursorRequest);
+    @GetMapping
+    public CursorPageResponse<List<NotificationResponse>> findByUserId(@RequestParam final CursorRequest cursorRequest,
+                                                                       HttpServletRequest request){
+        List<NotificationResponse> notificationResponseList = notificationService.findAllByUserId(new TokenGetId(request,jwt).getUserId(), cursorRequest);
         return new CursorPageResponse<>(
                 notificationResponseList,
                 notificationResponseList.get(notificationResponseList.size()-1).getNotificationId()
