@@ -63,6 +63,15 @@ public class Court extends BaseEntity {
         reservations.remove(reservation);
     }
 
+    public Court(String name, double latitude, double longitude, String image, int basketCount, Texture texture) {
+        this.name=name;
+        this.latitude=latitude;
+        this.longitude=longitude;
+        this.image=image;
+        this.basketCount=basketCount;
+        this.texture=texture;
+    }
+
 
 
 }
