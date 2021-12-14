@@ -14,15 +14,6 @@ import java.util.List;
 
 @Component
 public class NotificationConvertor {
-    public NotificationResponse toDto(Notification notificationEntity){
-        return NotificationResponse.builder()
-                .notificationId(notificationEntity.getId())
-                .createdAt(notificationEntity.getCreatedAt())
-                .updatedAt(notificationEntity.getUpdateAt())
-                .message(notificationEntity.getContent())
-                .notificationType(notificationEntity.getNotificationType())
-                .build();
-    }
 
     public List<NotificationResponse> toDtoList(List<Notification> notificationEntityList){
         List<NotificationResponse> notificationResponses = new ArrayList<>();
