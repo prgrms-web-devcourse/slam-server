@@ -50,7 +50,7 @@ public class User extends BaseEntity {
 	@Column(name = "proficiency")
 	private Proficiency proficiency;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	private List<Position> positions = new ArrayList<>();
 
 	private User(String socialId, String email, String nickname, String profileImage,
@@ -61,9 +61,6 @@ public class User extends BaseEntity {
 
 		validateNickname(nickname);
 		validateDescription(description);
-		validatePositions(positions);
-
-		clearPositions();
 
 		this.socialId = socialId;
 		this.email = email;
