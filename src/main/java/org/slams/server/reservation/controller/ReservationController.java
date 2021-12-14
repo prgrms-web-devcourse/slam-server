@@ -4,6 +4,7 @@ package org.slams.server.reservation.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
+import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.service.ReservationService;
@@ -44,6 +45,21 @@ public class ReservationController {
         return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.update(requestDto,reservationId), HttpStatus.CREATED);
 
     }
+
+
+    // 경기장 예약 취소하기
+    @DeleteMapping("/{reservationId}")
+    public ResponseEntity<ReservationDeleteResponseDto> update(@PathVariable Long reservationId) {
+        // 여기에 추가로 header 토큰 정보가 들어가야 함.
+        // id로 추가하게 해야 함.
+        // header를 통해 토큰 검증
+
+        return new ResponseEntity<ReservationDeleteResponseDto>(reservationService.delete(reservationId), HttpStatus.ACCEPTED);
+
+    }
+
+
+
 
 
 

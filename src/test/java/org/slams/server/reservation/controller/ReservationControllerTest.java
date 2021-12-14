@@ -39,10 +39,15 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("dev")
 @SpringBootTest
@@ -247,6 +252,50 @@ public class ReservationControllerTest {
                         )
                 ));
     }
+
+    // 삭제하기
+    @Test
+    @DisplayName("[DELETE] '/api/v1/reservations/{reservationId}'")
+    @Order(3)
+    void testDelete() throws Exception {
+        // 위에서 만든 예약을 변경하기
+        // 예약정보 조회
+        // GIVEN
+        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
+                .courtId(1L)
+                .startTime("2021-01-01T12:20:10")
+                .endTime("2021-01-01T12:20:10")
+                .hasBall(false)
+                .build();
+
+
+        Reservation reservation=new Reservation(givenRequest);
+        reservation.addReservation(court,user);
+
+        Reservation save = reservationRepository.save(reservation);
+        Long reservationId=save.getId();
+
+//        log.info(reservationRepository.findById(reservationId).toString());
+
+
+
+        mockMvc.perform(delete("/api/v1/reservations/{reservationId}", reservation.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isAccepted())
+//                .andExpect(jsonPath("id").value(reservation.getId()))
+                .andDo(print())
+                .andDo(
+                        document("reservation/delete", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("reservationId").description("삭제 요청 reservation 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("reservationId").description("사제된 reservation 아이디")
+                                )
+                        )
+                );
+    }
+
 
 
 

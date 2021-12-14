@@ -10,6 +10,7 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
+import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
@@ -72,6 +73,20 @@ public class ReservationService {
 
 //        return new ReservationUpdateResponseDto(reservation);
 
+
+    }
+
+    @Transactional
+    public ReservationDeleteResponseDto delete(Long reservationId) {
+        Reservation reservation= reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_RESERVATION.getMessage()));
+
+        // 사용자만 삭제 가능 코드 추가
+//        if (!sessionUser.getId().equals(post.getSeller().getId())) {
+//            throw new ForbiddenException(ErrorMessage.FORBIDDEN);
+//        }
+        reservationRepository.delete(reservation);
+        return new ReservationDeleteResponseDto(reservation);
 
     }
 
