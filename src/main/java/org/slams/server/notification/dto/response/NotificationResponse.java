@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.slams.server.notification.entity.NotificationType;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -13,7 +14,7 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 
 @Getter
-public class NotificationResponse {
+public class NotificationResponse implements Comparable<NotificationResponse>{
     private final NotificationType type;
     private final FollowerInfo followerInfo;
     private final LoudspeakerInfo loudspeakerInfo;
@@ -64,4 +65,11 @@ public class NotificationResponse {
     }
 
 
+    @Override
+    public int compareTo(NotificationResponse target) {
+        if(getCreated() == null || target.getCreated()==null){
+            return 0;
+        }
+        return getCreated().compareTo(target.getCreated());
+    }
 }

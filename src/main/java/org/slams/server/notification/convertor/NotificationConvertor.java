@@ -10,9 +10,7 @@ import org.slams.server.notification.entity.Notification;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -85,15 +83,17 @@ public class NotificationConvertor {
         );
     }
 
-//    public List<NotificationResponse> mergeListForFollowNotificationAndLoudspeakerNotification(
-//            List<NotificationResponse> followNotificationList,
-//            List<NotificationResponse> loudSpeakerNotificationList
-//    ){
-//        return Collections.sort(
-//                followNotificationList.addAll(loudSpeakerNotificationList),
-//
-//                );
-//    }
-    /** compare 코드 적야함 **/
+    /** created로 정렬 **/
+    public List<NotificationResponse> mergeListForFollowNotificationAndLoudspeakerNotification(
+            List<NotificationResponse> followNotificationList,
+            List<NotificationResponse> loudSpeakerNotificationList
+    ){
+        if(followNotificationList.addAll(loudSpeakerNotificationList)){
+            Collections.sort(followNotificationList);
+            return followNotificationList;
+        }
+        return Collections.emptyList();
+    }
+
 
 }

@@ -79,14 +79,17 @@ public class NotificationService {
 
     }
 
-//    public List<NotificationResponse> findAllByUserId(Long userId, CursorPageRequest cursorRequest){
-//        List<Long> messageIds = cursorPageForFindAllByUserId(userId, cursorRequest);
-//
-//
-//        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIds);
-//        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIds);
-//
-//    }
+    public List<NotificationResponse> findAllByUserId(Long userId, CursorPageRequest cursorRequest){
+        List<Long> messageIds = cursorPageForFindAllByUserId(userId, cursorRequest);
+
+
+        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIds);
+        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIds);
+
+        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
+                notificationConvertor.toDtoListForFollowNotification(followNotificationList),
+                notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    }
 
     public List<Long> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
