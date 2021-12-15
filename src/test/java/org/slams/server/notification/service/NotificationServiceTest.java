@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slams.server.court.entity.Court;
+import org.slams.server.court.entity.Texture;
 import org.slams.server.notification.dto.CursorRequest;
 import org.slams.server.notification.dto.NotificationResponse;
 import org.slams.server.notification.dto.request.FollowNotificationRequest;
@@ -60,16 +62,30 @@ class NotificationServiceTest {
                 List.of(Position.PG)
         );
         User user = User.of(
-                "socialId",
-                "test@test.com",
-                "receiver",
-                "http://test-image-location",
-                "소개",
+                "socialId-user",
+                "user@test.com",
+                "user",
+                "http://test-image-location-user",
+                "소개-user",
                 Role.USER,
                 Proficiency.INTERMEDIATE,
-                List.of(Position.PG)
+                List.of(Position.TBD)
         );
-        FollowNotification.of()
+
+        userRepository.save(receiver);
+        userRepository.save(user);
+
+        Court court = new Court(
+                "잠실 농구장",
+                1203.20302,
+                2038.2939,
+                "https://court-image",
+                1,
+                Texture.CONCRETE
+        );
+        courtRepository.save(court);
+
+        FollowNotification.of(1L, receiver, )
 
 
 
