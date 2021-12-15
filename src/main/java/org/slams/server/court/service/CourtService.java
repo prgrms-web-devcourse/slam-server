@@ -40,7 +40,7 @@ public class CourtService {
         User user = getUser(id);
 
 
-        request.setMediaUrl(awsS3Uploader.upload(request.getImage(),"court"));
+        request.setImage(awsS3Uploader.upload(request.getImage(),"court"));
 
         NewCourt newCourt = request.insertRequestDtoToEntity(request);
 

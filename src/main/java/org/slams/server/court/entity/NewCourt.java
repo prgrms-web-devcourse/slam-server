@@ -32,7 +32,7 @@ public class NewCourt extends BaseEntity {
     private double longitude;
 
     @Column(nullable = false,length=255)
-    private String medialUrl;
+    private String image;
 
     @Column(nullable = false, name = "basket_count")
     private int basketCount;

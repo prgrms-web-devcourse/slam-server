@@ -32,10 +32,10 @@ public class CourtInsertRequestDto {
     private int basketCount;
     private Status status;
 
-    private String mediaUrl;
+//    private String mediaUrl;
 
-    public void setMediaUrl(String mediaUrl){
-        this.mediaUrl = mediaUrl;
+    public void setImage(String image){
+        this.image = image;
     }
 
 
@@ -46,7 +46,7 @@ public class CourtInsertRequestDto {
                 .name(requestDto.getName())
                 .latitude(requestDto.getLatitude())
                 .longitude(requestDto.getLongitude())
-                .medialUrl(requestDto.getMediaUrl())
+                .image(requestDto.getImage())
                 .texture(requestDto.getTexture())
                 .basketCount(requestDto.getBasketCount())
                 .status(requestDto.getStatus())
