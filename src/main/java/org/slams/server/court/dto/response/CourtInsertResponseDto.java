@@ -31,7 +31,7 @@ public class CourtInsertResponseDto extends BaseResponse {
                 name=newCourt.getName();
                 latitude=newCourt.getLatitude();
                 longitude=newCourt.getLongitude();
-                image=newCourt.getImage();
+                image=newCourt.getMedialUrl();
                 texture=newCourt.getTexture();
                 basketCount=newCourt.getBasketCount();
                 status=newCourt.getStatus();
