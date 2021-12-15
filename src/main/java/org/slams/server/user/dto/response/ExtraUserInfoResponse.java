@@ -42,7 +42,7 @@ public class ExtraUserInfoResponse {
 		this.updatedAt = updatedAt;
 	}
 
-	public static ExtraUserInfoResponse entityToResponse(User user) {
+	public static ExtraUserInfoResponse toResponse(User user) {
 		return new ExtraUserInfoResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(),
 			user.getDescription(), user.getRole(), user.getProficiency(), user.getPositions(), user.getCreatedAt(), user.getUpdateAt());
 	}

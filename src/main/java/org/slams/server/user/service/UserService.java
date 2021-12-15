@@ -1,16 +1,13 @@
 package org.slams.server.user.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slams.server.common.error.exception.EntityNotFoundException;
 import org.slams.server.common.utils.AwsS3Uploader;
 
+import org.slams.server.favorite.repository.FavoriteRepository;
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
-import org.slams.server.user.dto.response.ExtraUserInfoResponse;
-import org.slams.server.user.dto.response.MyProfileResponse;
-import org.slams.server.user.dto.response.ProfileImageResponse;
+import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
@@ -18,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -26,8 +25,17 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
+	private final FavoriteRepository favoriteRepository;
 
 	private final AwsS3Uploader awsS3Uploader;
+
+	public DefaultUserInfoResponse getDefaultInfo(Long userId){
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		return DefaultUserInfoResponse.toResponse(user, null);
+	}
 
 	@Transactional
 	public ExtraUserInfoResponse addExtraUserInfo(Long userId, ExtraUserInfoRequest extraUserInfoRequest) {
@@ -39,7 +47,7 @@ public class UserService {
 			extraUserInfoRequest.getProficiency(), extraUserInfoRequest.getPositions());
 		userRepository.flush(); // updatedAt 반영
 
-		return ExtraUserInfoResponse.entityToResponse(user);
+		return ExtraUserInfoResponse.toResponse(user);
 	}
 
 	public MyProfileResponse getMyInfo(Long userId) {
@@ -51,6 +59,21 @@ public class UserService {
 		Long followingCount = followRepository.countByFollowing(user);
 
 		return MyProfileResponse.toResponse(user, followerCount, followingCount);
+	}
+
+	public UserProfileResponse getUserInfo(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		Long followerCount = followRepository.countByFollower(user);
+		Long followingCount = followRepository.countByFollowing(user);
+
+		List<FavoriteCourtResponse> favoriteCourts = favoriteRepository.findAllByUser(user)
+			.stream().map(favorite -> new FavoriteCourtResponse(favorite.getCourt().getId(), favorite.getCourt().getName()))
+			.collect(Collectors.toList());
+
+		return UserProfileResponse.toResponse(user, followerCount, followingCount, favoriteCourts);
 	}
 
 	@Transactional
