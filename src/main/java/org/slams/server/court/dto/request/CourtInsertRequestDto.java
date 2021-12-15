@@ -32,6 +32,12 @@ public class CourtInsertRequestDto {
     private int basketCount;
     private Status status;
 
+    private String mediaUrl;
+
+    public void setMediaUrl(String mediaUrl){
+        this.mediaUrl = mediaUrl;
+    }
+
 
 
     // requestDto -> Entity
@@ -40,7 +46,7 @@ public class CourtInsertRequestDto {
                 .name(requestDto.getName())
                 .latitude(requestDto.getLatitude())
                 .longitude(requestDto.getLongitude())
-                .image(requestDto.getImage())
+                .medialUrl(requestDto.getMediaUrl())
                 .texture(requestDto.getTexture())
                 .basketCount(requestDto.getBasketCount())
                 .status(requestDto.getStatus())
