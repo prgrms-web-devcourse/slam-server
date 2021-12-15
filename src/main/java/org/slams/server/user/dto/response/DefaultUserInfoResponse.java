@@ -1,5 +1,8 @@
 package org.slams.server.user.dto.response;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.slams.server.notification.dto.NotificationResponse;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
@@ -9,6 +12,8 @@ import org.slams.server.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultUserInfoResponse {
 
 	private Long id;
