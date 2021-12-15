@@ -1,5 +1,7 @@
 package org.slams.server.notification.controller;
 
+import org.slams.server.notification.dto.SocketRequest;
+import org.slams.server.notification.dto.SocketResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -74,6 +76,27 @@ public class WebSocketController {
         String testUserId = token;
         // token 유효성 검사
 
-        websoket.convertAndSend("/topic/"+testUserId, "success");
+        websoket.convertAndSend("/topic/teston", "success");
+    }
+
+    @MessageMapping("/object")
+    //@SendTo("/topic/teston")
+    //public void convertAndSendTest(MessageRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+    public void objectTest(SocketRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+        logger.info("들어옴");
+        logger.info(message.toString());
+
+        String token = (String) headerAccessor.getHeader("token");
+        /** token parsing **/
+
+        logger.info("token: {0}", token);
+        // userId 추출
+        Long testUserId = message.getId();
+        // token 유효성 검사
+
+        websoket.convertAndSend(
+                "/topic/"+message.getId(),
+                new SocketResponse(message.getId(), message.getMessage())
+        );
     }
 }
