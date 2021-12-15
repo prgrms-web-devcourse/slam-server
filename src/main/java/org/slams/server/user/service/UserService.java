@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class UserService {
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		return DefaultUserInfoResponse.toResponse(user, null);
+		return DefaultUserInfoResponse.toResponse(user, Collections.emptyList());
 	}
 
 	@Transactional
