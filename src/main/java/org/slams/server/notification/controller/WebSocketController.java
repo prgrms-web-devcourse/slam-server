@@ -100,10 +100,11 @@ public class WebSocketController {
 
         Long testUserId = jwt.verify(tokenString[1]).getUserId();
         // token 유효성 검사
-
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUserId(message.getUserId());
         websoket.convertAndSend(
                 "/topic/"+message.getUserId(),
-                new UserRequest(testUserId)
+                userRequest
         );
     }
 }
