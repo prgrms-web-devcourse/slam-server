@@ -3,12 +3,15 @@ package org.slams.server.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slams.server.court.entity.Court;
+import org.slams.server.court.entity.Texture;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
+import org.slams.server.user.entity.User;
 import org.slams.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -29,6 +32,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -186,6 +190,87 @@ class UserControllerTest {
 					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
 					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
 					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
+					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+				)
+			));
+	}
+
+	@Test
+	void getUserInfo() throws Exception {
+		// given
+		User user = User.builder()
+			.id(1L)
+			.email("jelly@gmail.com")
+			.nickname("젤리")
+			.description("나는 젤리가 정말 좋아")
+			.profileImage("s3에 저장된 프로필 이미지 url")
+			.role(Role.USER)
+			.positions(Arrays.asList(Position.SG, Position.PG))
+			.proficiency(Proficiency.INTERMEDIATE)
+			.createdAt(LocalDateTime.now())
+			.updatedAt(LocalDateTime.now())
+			.build();
+		Court court1 = Court.builder()
+			.id(1L)
+			.name("관악구민운동장 농구장")
+			.latitude(38.987654)
+			.longitude(124.309472)
+			.image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+			.texture(Texture.ASPHALT)
+			.basketCount(2)
+			.build();
+		Court court2 = Court.builder()
+			.id(2L)
+			.name("용산구민운동장 농구장")
+			.latitude(37.987654)
+			.longitude(125.309472)
+			.image("aHR0cHM6Ly9pYmIuY28v123g")
+			.texture(Texture.ASPHALT)
+			.basketCount(4)
+			.build();
+
+		List<FavoriteCourtResponse> favoriteCourts = List.of(
+			new FavoriteCourtResponse(court1.getId(), court1.getName()),
+			new FavoriteCourtResponse(court2.getId(), court2.getName()));
+
+		Long followerCount = 325L;
+		Long followingCount = 129L;
+
+		UserProfileResponse response = UserProfileResponse.toResponse(user, followerCount, followingCount, favoriteCourts);
+
+		given(userService.getUserInfo(anyLong())).willReturn(response);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/{userId}", user.getId())
+				.header("Authorization", jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print());
+
+		// then
+		resultActions.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andExpect(jsonPath("userId").value(user.getId()))
+			.andExpect(jsonPath("nickname").value(user.getNickname()))
+			.andExpect(jsonPath("description").value(user.getDescription()))
+			.andExpect(jsonPath("profileImage").value(user.getProfileImage()))
+			.andExpect(jsonPath("proficiency").value(user.getProficiency().toString()))
+			.andExpect(jsonPath("followerCount").value(followerCount))
+			.andExpect(jsonPath("followingCount").value(followingCount))
+			.andDo(document("users/user-getUserInfo", preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
+					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
+					fieldWithPath("favoriteCourts").type(JsonFieldType.ARRAY).description("즐겨찾기한 농구장 목록"),
+					fieldWithPath("favoriteCourts[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기한 농구장 구별키"),
+					fieldWithPath("favoriteCourts[].courtName").type(JsonFieldType.STRING).description("즐겨찾기한 농구장 이름"),
 					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
 					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
 				)

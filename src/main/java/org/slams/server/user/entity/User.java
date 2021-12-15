@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,8 @@ public class User extends BaseEntity {
 	}
 
 	@Builder
-	public User(String nickname, String email, Long id, String description, String profileImage, Role role, Proficiency proficiency, List<Position> positions, String socialId) {
+	public User(LocalDateTime createdAt, LocalDateTime updatedAt, String nickname, String email, Long id, String description, String profileImage, Role role, Proficiency proficiency, List<Position> positions, String socialId) {
+		super(createdAt, updatedAt);
 		this.nickname = nickname;
 		this.email = email;
 		this.id = id;
