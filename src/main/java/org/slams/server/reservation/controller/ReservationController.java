@@ -54,7 +54,7 @@ public class ReservationController {
     // 경기장 예약 취소하기
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<ReservationDeleteResponseDto> update(@PathVariable Long reservationId, HttpServletRequest request) {
-
+        
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
