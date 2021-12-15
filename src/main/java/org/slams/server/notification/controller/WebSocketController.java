@@ -2,6 +2,9 @@ package org.slams.server.notification.controller;
 
 import org.slams.server.notification.dto.SocketRequest;
 import org.slams.server.notification.dto.SocketResponse;
+import org.slams.server.notification.dto.UserRequest;
+import org.slams.server.user.exception.InvalidTokenException;
+import org.slams.server.user.oauth.jwt.Jwt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -20,8 +23,11 @@ public class WebSocketController {
 
     private final SimpMessagingTemplate websoket;
 
-    public WebSocketController(SimpMessagingTemplate websoket){
+    private final Jwt jwt;
+
+    public WebSocketController(SimpMessagingTemplate websoket,Jwt jwt){
         this.websoket = websoket;
+        this.jwt = jwt;
     }
     //@MessageMapping("/chat")
 //    @SendTo("/topic/chat")
@@ -50,7 +56,6 @@ public class WebSocketController {
 //    }
 
     @MessageMapping("/teston")
-    //@SendTo("/topic/teston")
     public void testNone() throws Exception {
         logger.info("들어옴");
         //logger.info(message.toString());
@@ -63,9 +68,7 @@ public class WebSocketController {
     }
 
     @MessageMapping("/chat")
-    //@SendTo("/topic/teston")
-    //public void convertAndSendTest(MessageRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-    public void convertAndSendTest(String message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+    public void convertAndSendTest(UserRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         logger.info("들어옴");
         logger.info(message.toString());
 
@@ -76,13 +79,11 @@ public class WebSocketController {
         String testUserId = token;
         // token 유효성 검사
 
-        websoket.convertAndSend("/topic/teston", "success");
+        websoket.convertAndSend("/topic/teston", message.getUserId());
     }
 
     @MessageMapping("/object")
-    //@SendTo("/topic/teston")
-    //public void convertAndSendTest(MessageRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-    public void objectTest(SocketRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+    public void objectTest(UserRequest message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         logger.info("들어옴");
         logger.info(message.toString());
 
@@ -91,12 +92,18 @@ public class WebSocketController {
 
         logger.info("token: {0}", token);
         // userId 추출
-        Long testUserId = message.getId();
+        String[] tokenString = token.split(" ");
+        if (!tokenString[0].equals("Bearer")) {
+            throw new InvalidTokenException("토큰 정보가 올바르지 않습니다.");
+        }
+
+
+        Long testUserId = jwt.verify(tokenString[1]).getUserId();
         // token 유효성 검사
 
         websoket.convertAndSend(
-                "/topic/"+message.getId(),
-                new SocketResponse(message.getId(), message.getMessage())
+                "/topic/"+message.getUserId(),
+                new UserRequest(testUserId)
         );
     }
 }
