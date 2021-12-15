@@ -19,4 +19,12 @@ public class UserRequest {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("UserRequest{");
+        sb.append("userId=").append(userId);
+        sb.append('}');
+        return sb.toString();
+    }
 }
