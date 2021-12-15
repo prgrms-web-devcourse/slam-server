@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +80,58 @@ class UserControllerTest {
 		// 프로퍼티 정보 얻기
 		String token = env.getProperty("token");
 		jwtToken = "Bearer " + token;
+	}
+
+	@Test
+	void getDefaultInfo() throws Exception {
+		// given
+		DefaultUserInfoResponse response = DefaultUserInfoResponse.builder()
+			.userId(1L)
+			.email("jelly@gmail.com")
+			.nickname("젤리")
+			.description("나는 젤리가 정말 좋아")
+			.profileImage("s3에 저장된 프로필 이미지 url")
+			.role(Role.USER)
+			.positions(Arrays.asList(Position.SG, Position.PG))
+			.proficiency(Proficiency.INTERMEDIATE)
+			.notifications(Collections.emptyList())
+			.createdAt(LocalDateTime.now())
+			.updatedAt(LocalDateTime.now())
+			.build();
+
+		given(userService.getDefaultInfo(anyLong())).willReturn(response);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/me")
+				.header("Authorization", jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print());
+
+		// then
+		resultActions.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andExpect(jsonPath("userId").value(1L))
+			.andExpect(jsonPath("email").value("jelly@gmail.com"))
+			.andExpect(jsonPath("nickname").value("젤리"))
+			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
+			.andExpect(jsonPath("profileImage").value("s3에 저장된 프로필 이미지 url"))
+			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
+			.andDo(document("users/user-getMyInfo", preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+					fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+					fieldWithPath("role").type(JsonFieldType.STRING).description("사용자 권한"),
+					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("notifications").type(JsonFieldType.ARRAY).description("최근 알람목록(최대 10개)"),
+					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+				)
+			));
 	}
 
 	@Test

@@ -1,6 +1,7 @@
 package org.slams.server.user.dto.response;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.notification.dto.response.NotificationResponse;
@@ -12,11 +13,12 @@ import org.slams.server.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultUserInfoResponse {
 
-	private Long id;
+	private Long userId;
 	private String email;
 	private String nickname;
 	private String profileImage;
@@ -28,12 +30,12 @@ public class DefaultUserInfoResponse {
 	private LocalDateTime updatedAt;
 	private List<NotificationResponse> notifications;
 
-	public DefaultUserInfoResponse(Long id, String email, String nickname,
+	public DefaultUserInfoResponse(Long userId, String email, String nickname,
 								   String profileImage, String description, Role role,
 								   Proficiency proficiency, List<Position> positions,
 								   LocalDateTime createdAt, LocalDateTime updatedAt,
 								   List<NotificationResponse> notifications) {
-		this.id = id;
+		this.userId = userId;
 		this.email = email;
 		this.nickname = nickname;
 		this.profileImage = profileImage;
