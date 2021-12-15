@@ -46,7 +46,7 @@ public class CourtInsertRequestDto {
                 .name(requestDto.getName())
                 .latitude(requestDto.getLatitude())
                 .longitude(requestDto.getLongitude())
-                .medialUrl(requestDto.getMediaUrl())
+                .image(requestDto.getImage())
                 .texture(requestDto.getTexture())
                 .basketCount(requestDto.getBasketCount())
                 .status(requestDto.getStatus())
