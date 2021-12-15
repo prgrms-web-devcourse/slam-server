@@ -5,9 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
-import org.slams.server.user.dto.response.ExtraUserInfoResponse;
-import org.slams.server.user.dto.response.MyProfileResponse;
-import org.slams.server.user.dto.response.ProfileImageResponse;
+import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
@@ -36,8 +34,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -107,7 +103,7 @@ class UserControllerTest {
 		given(userService.addExtraUserInfo(anyLong(), any())).willReturn(response);
 
 		// when
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/me")
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/myprofile")
 				.header("Authorization", jwtToken)
 				.content(objectMapper.writeValueAsString(request))
 				.contentType(MediaType.APPLICATION_JSON))

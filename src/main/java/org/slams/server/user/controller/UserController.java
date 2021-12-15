@@ -66,7 +66,7 @@ public class UserController {
 		return ResponseEntity.ok(userProfileResponse);
 	}
 
-	@PostMapping("/myprofile")
+	@PutMapping("/myprofile")
 	public ResponseEntity<ExtraUserInfoResponse> addExtraUserInfo(HttpServletRequest request, @RequestBody ExtraUserInfoRequest extraUserInfoRequest) {
 		String authorization = request.getHeader("Authorization");
 		String[] tokenString = authorization.split(" ");
