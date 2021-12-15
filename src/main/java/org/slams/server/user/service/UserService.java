@@ -29,6 +29,14 @@ public class UserService {
 
 	private final AwsS3Uploader awsS3Uploader;
 
+	public DefaultUserInfoResponse getDefaultInfo(Long userId){
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		return DefaultUserInfoResponse.toResponse(user, null);
+	}
+
 	@Transactional
 	public ExtraUserInfoResponse addExtraUserInfo(Long userId, ExtraUserInfoRequest extraUserInfoRequest) {
 		User user = userRepository.findById(userId)
