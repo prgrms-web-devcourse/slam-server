@@ -29,11 +29,32 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
+    @Column
     private Long userId;
 
+    @Column(columnDefinition = "default false")
     private boolean isRead;
+
+    @Column(columnDefinition = "default false")
     private boolean isClicked;
 
-    private Long messageId;
+//    private String messageId;
 
+    private Notification(NotificationType notificationType, Long userId){
+        this.notificationType = notificationType;
+        this.userId = userId;
+    }
+
+    @Builder
+    public Notification(Long id, NotificationType notificationType, Long userId, boolean isClicked, boolean isRead){
+        this.id = id;
+        this.notificationType = notificationType;
+        this.userId = userId;
+        this.isClicked = isClicked;
+        this.isRead = isRead;
+    }
+
+    public static Notification of(NotificationType notificationType, Long userId){
+        return new Notification(notificationType, userId);
+    }
 }
