@@ -6,10 +6,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slams.server.notification.dto.CursorRequest;
 import org.slams.server.notification.dto.NotificationResponse;
+import org.slams.server.notification.dto.request.FollowNotificationRequest;
+import org.slams.server.notification.entity.FollowNotification;
 import org.slams.server.notification.entity.Notification;
 import org.slams.server.notification.entity.NotificationType;
 import org.slams.server.notification.repository.NotificationRepository;
 import org.slams.server.court.repository.CourtRepository;
+import org.slams.server.user.entity.Position;
+import org.slams.server.user.entity.Proficiency;
+import org.slams.server.user.entity.Role;
+import org.slams.server.user.entity.User;
+import org.slams.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,22 +34,44 @@ import static org.hamcrest.CoreMatchers.*;
 class NotificationServiceTest {
 
     @Autowired
-    private NotificationRepository alarmRepository;
+    private NotificationRepository notificationRepository;
 
     @Autowired
-    private NotificationService alarmService;
+    private NotificationService notificationService;
 
     @Autowired
     private CourtRepository courtRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+
     @BeforeEach
     void setUp(){
         /** following 알림 메시지 **/
-        Notification alarmForFollowing1 = Notification.createNotificationForFollowing(
-                null,
-                11L,
-                "flora"
+        User receiver = User.of(
+                "receiver-socialId",
+                "receiver@test.com",
+                "receiver",
+                "http://test-image-location-receiver",
+                "소개-receiver",
+                Role.USER,
+                Proficiency.INTERMEDIATE,
+                List.of(Position.PG)
         );
+        User user = User.of(
+                "socialId",
+                "test@test.com",
+                "receiver",
+                "http://test-image-location",
+                "소개",
+                Role.USER,
+                Proficiency.INTERMEDIATE,
+                List.of(Position.PG)
+        );
+        FollowNotification.of()
+
+
 
         /** 농구장 확성기 알림 메시지 **/
         Notification alarmForLoudSpeaker = Notification.createNotificationForLoudSpeaker(
