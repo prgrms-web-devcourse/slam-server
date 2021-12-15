@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
-import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.oauth.jwt.Jwt;
@@ -29,7 +28,7 @@ public class UserController {
 	private final Jwt jwt;
 
 	@GetMapping("/me")
-	public ResponseEntity<Void> login(HttpServletRequest request) {
+	public ResponseEntity<DefaultUserInfoResponse> getDefaultInfo(HttpServletRequest request) {
 		String authorization = request.getHeader("Authorization");
 		String[] tokenString = authorization.split(" ");
 		if (!tokenString[0].equals("Bearer")) {
@@ -38,10 +37,9 @@ public class UserController {
 
 		Jwt.Claims claims = jwt.verify(tokenString[1]);
 
-//		String userNickname = userService.findUserNickname(claims.getUserId());
-//		log.info(userNickname);
+		DefaultUserInfoResponse defaultUserInfoResponse = userService.getDefaultInfo(claims.getUserId());
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(defaultUserInfoResponse);
 	}
 
 	@GetMapping(value = "/myprofile", produces = "application/json; charset=utf-8;")
