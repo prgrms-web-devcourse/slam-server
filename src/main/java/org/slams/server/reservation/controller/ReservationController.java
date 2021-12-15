@@ -29,17 +29,11 @@ public class ReservationController {
 
 
     // 경기장 예약하기
-    @PostMapping("/{userId}")
+    @PostMapping()
     public ResponseEntity<ReservationInsertResponseDto> insert(@Valid @RequestBody ReservationInsertRequestDto requestDto, HttpServletRequest request) {
 
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
-
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-        // id로 추가하게 해야 함.
-        // header를 통해 토큰 검증
-//        System.err.println("id"+id);
-
 
         return new ResponseEntity<ReservationInsertResponseDto>(reservationService.insert(requestDto, userId), HttpStatus.CREATED);
     }
@@ -60,10 +54,7 @@ public class ReservationController {
     // 경기장 예약 취소하기
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<ReservationDeleteResponseDto> update(@PathVariable Long reservationId, HttpServletRequest request) {
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-        // id로 추가하게 해야 함.
-        // header를 통해 토큰 검증
-
+        
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
