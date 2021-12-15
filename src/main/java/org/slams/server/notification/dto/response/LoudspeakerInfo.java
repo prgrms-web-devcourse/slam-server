@@ -1,10 +1,9 @@
-package org.slams.server.notification.dto;
+package org.slams.server.notification.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Created by yunyun on 2021/12/14.
