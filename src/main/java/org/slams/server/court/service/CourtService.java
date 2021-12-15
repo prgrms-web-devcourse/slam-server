@@ -10,8 +10,8 @@ import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.NewCourtRepository;
-import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.user.entity.User;
+import org.slams.server.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class CourtService {
 
     private final CourtRepository courtRepository;
-    private final UserTempRepository userTempRepository;
+    private final UserRepository userRepository;
     private final NewCourtRepository newCourtRepository;
 
 //    private final AwsS3Uploader awsS3Uploader;
@@ -48,7 +48,7 @@ public class CourtService {
 
     @Transactional
     public User getUser(Long userId) {
-        return userTempRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                         MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
     }

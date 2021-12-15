@@ -7,7 +7,6 @@ import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
 import org.slams.server.court.exception.UserNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
-import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
@@ -18,6 +17,7 @@ import org.slams.server.reservation.exception.ForbiddenException;
 import org.slams.server.reservation.exception.ReservationNotFoundException;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.User;
+import org.slams.server.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final UserTempRepository userTempRepository;
+    private final UserRepository userRepository;
     private final CourtRepository courtRepository;
 
 
@@ -94,7 +94,7 @@ public class ReservationService {
 
     @Transactional
     public User getUser(Long userId) {
-        return userTempRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
     }
 

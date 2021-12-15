@@ -7,14 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
-import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.entity.Status;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
-import org.slams.server.court.repository.NewCourtRepository;
-import org.slams.server.court.repository.UserTempRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
@@ -22,19 +19,17 @@ import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.User;
+import org.slams.server.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -43,7 +38,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -69,7 +63,7 @@ public class CourtControllerTest {
     private Reservation reservation;
 
     @Autowired
-    private UserTempRepository userTempRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private CourtRepository courtRepository;
@@ -120,7 +114,7 @@ public class CourtControllerTest {
         user.setCreatedAt(now);
         user.setUpdateAt(now);
 
-        userTempRepository.save(user);
+        userRepository.save(user);
 
 
     }
