@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
-import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.InvalidTokenException;
-import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slams.server.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -15,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
