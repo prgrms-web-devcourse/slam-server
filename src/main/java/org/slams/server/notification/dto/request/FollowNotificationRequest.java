@@ -1,4 +1,4 @@
-package org.slams.server.notification.dto;
+package org.slams.server.notification.dto.request;
 
 import lombok.Getter;
 
