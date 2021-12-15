@@ -1,19 +1,15 @@
 package org.slams.server.notification.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.slams.server.common.api.ApiResponse;
 import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.api.TokenGetId;
-import org.slams.server.notification.dto.CursorRequest;
-import org.slams.server.notification.dto.NotificationRequest;
-import org.slams.server.notification.dto.NotificationResponse;
+import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 
 /**
