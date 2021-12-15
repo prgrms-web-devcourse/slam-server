@@ -24,6 +24,8 @@ public class FollowNotification {
     @Id
     private String id;
 
+    private Long userId;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "follower_id", nullable = false, referencedColumnName = "id")
     private User follower;
@@ -32,25 +34,27 @@ public class FollowNotification {
     @JoinColumn(name = "notification_id", nullable = false, referencedColumnName = "id")
     private Notification notification;
 
-    private FollowNotification(User follower, Notification notification){
+    private FollowNotification(Long userId, User follower, Notification notification){
         checkArgument(follower != null, "follower 정보는 null을 허용하지 않습니다.");
         this.id = UUID.randomUUID().toString();
+        this.userId = userId;
         this.follower = follower;
         this.notification = notification;
     }
 
     @Builder
-    public FollowNotification(String id, User follower, Notification notification){
+    public FollowNotification(String id, Long userId, User follower, Notification notification){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(follower != null, "follower 정보는 null을 허용하지 않습니다.");
 
         this.id = id;
         this.follower = follower;
         this.notification = notification;
+        this.userId = userId;
     }
 
-    public static FollowNotification of(User follower, Notification notification){
+    public static FollowNotification of(Long userId, User follower, Notification notification){
         checkArgument(follower != null, "follower 정보는 null을 허용하지 않습니다.");
-        return new FollowNotification(follower, notification);
+        return new FollowNotification(userId, follower, notification);
     }
 }

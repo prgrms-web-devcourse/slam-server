@@ -74,7 +74,7 @@ public class NotificationService {
         );
 
         followNotificationRepository.save(
-                FollowNotification.of(receiver, notification)
+                FollowNotification.of(userId, receiver, notification)
         );
 
     }
