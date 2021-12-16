@@ -1,6 +1,7 @@
 package org.slams.server.user.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slams.server.common.utils.JSONObjectMapper;
 import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.repository.UserRepository;
@@ -45,6 +46,7 @@ public class OAuthUserService {
 			// 새로 가입하려는 사용자
 			.orElseGet(() -> {
 				Map<String, Object> attributes = oauth2User.getAttributes();
+				log.info(JSONObjectMapper.toJson(attributes));
 				@SuppressWarnings("unchecked")
 				Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
 				checkArgument(properties != null, "OAuth2User properties is empty");
