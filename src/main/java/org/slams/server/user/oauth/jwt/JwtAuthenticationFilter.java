@@ -20,10 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.http.HttpHeaders;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -79,7 +77,13 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 	}
 
 	private String getToken(HttpServletRequest request) {
-		String token = request.getHeader(headerKey);
+		String authorization = request.getHeader(org.apache.http.HttpHeaders.AUTHORIZATION);
+		if (Objects.isNull(authorization)) {
+			return null;
+		}
+		String[] tokenString = authorization.split(" ");
+		String token = tokenString[1];
+
 		if (isNotEmpty(token)) {
 			log.debug("Jwt authorization api detected: {}", token);
 			try {
@@ -88,6 +92,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				log.error(e.getMessage(), e);
 			}
 		}
+
 		return null;
 	}
 
@@ -101,8 +106,5 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			emptyList() :
 			Arrays.stream(roles).map(SimpleGrantedAuthority::new).collect(toList());
 	}
-
-
-
 
 }

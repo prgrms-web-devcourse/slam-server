@@ -7,6 +7,8 @@ import org.slams.server.user.oauth.jwt.JwtAuthenticationFilter;
 import org.slams.server.user.service.OAuthUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtConfig jwtConfig;
@@ -41,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-//			.antMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+			.antMatchers("/api/v1/**").hasAnyAuthority("USER", "ADMIN")
 			.anyRequest().permitAll()
 			.and()
 			/**
@@ -81,6 +85,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * Jwt 필터
 			 */
 			.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class)
+			.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
 		;
 	}
 
