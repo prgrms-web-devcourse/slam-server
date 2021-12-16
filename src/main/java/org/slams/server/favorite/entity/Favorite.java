@@ -1,8 +1,6 @@
 package org.slams.server.favorite.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
 import org.slams.server.user.entity.User;
@@ -27,6 +25,8 @@ public class Favorite extends BaseEntity {
 	@JoinColumn(name = "court_id", nullable = false)
 	private Court court;
 
+
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -39,5 +39,6 @@ public class Favorite extends BaseEntity {
 	public static Favorite of(Court court, User user) {
 		return new Favorite(court, user);
 	}
+
 
 }

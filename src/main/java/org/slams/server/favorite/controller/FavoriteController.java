@@ -8,6 +8,7 @@ import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.favorite.dto.request.FavoriteInsertRequestDto;
+import org.slams.server.favorite.dto.response.FavoriteDeleteResponseDto;
 import org.slams.server.favorite.dto.response.FavoriteInsertResponseDto;
 import org.slams.server.favorite.service.FavoriteService;
 import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
@@ -29,13 +30,13 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
     private final Jwt jwt;
 
-    @PostMapping("{courtId}")
-    public ResponseEntity<FavoriteInsertResponseDto> insert(@PathVariable Long courtId , HttpServletRequest request) {
+    @PostMapping()
+    public ResponseEntity<FavoriteInsertResponseDto> insert(@RequestBody FavoriteInsertRequestDto favoriteInsertRequestDto , HttpServletRequest request) {
 
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
-        return new ResponseEntity<FavoriteInsertResponseDto>(favoriteService.insert(courtId, userId), HttpStatus.CREATED);
+        return new ResponseEntity<FavoriteInsertResponseDto>(favoriteService.insert(favoriteInsertRequestDto, userId), HttpStatus.CREATED);
     }
 
     @GetMapping()
@@ -54,11 +55,11 @@ public class FavoriteController {
 
 
     @DeleteMapping("{favoriteId}")
-    public ResponseEntity<Long> delete(@PathVariable Long favoriteId, HttpServletRequest request) {
+    public ResponseEntity<FavoriteDeleteResponseDto> delete(@PathVariable Long favoriteId, HttpServletRequest request) {
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
-        return new ResponseEntity<Long>(favoriteService.delete(userId, favoriteId), HttpStatus.ACCEPTED);
+        return new ResponseEntity<FavoriteDeleteResponseDto>(favoriteService.delete(userId, favoriteId), HttpStatus.ACCEPTED);
 
     }
 
