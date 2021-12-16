@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.api.TokenGetId;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
+import org.slams.server.court.dto.request.CourtReservationRequestDto;
 import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
+import org.slams.server.court.dto.response.CourtReservationResponseDto;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.user.exception.InvalidTokenException;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -68,6 +71,28 @@ public class CourtController {
 
         // 여기에 추가로 header 토큰 정보가 들어가야 함.
         return ResponseEntity.ok().body(courtService.findDetail(courtId));
+    }
+
+
+    @GetMapping("/detail/{courtId}/reservations/{date}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Map<String,Object>> getReservationCourts(@PathVariable Long courtId, @PathVariable String date, HttpServletRequest request) {
+
+        TokenGetId token=new TokenGetId(request,jwt);
+        Long userId=token.getUserId();
+
+
+        log.info("userId"+userId);
+
+
+        Map<String,Object>result=new HashMap<>();
+        result.put("courtId",courtId);
+        result.put("date",date);
+        result.put("reservations",courtService.findCourtReservations(courtId,date,userId));
+
+
+        // 여기에 추가로 header 토큰 정보가 들어가야 함.
+        return ResponseEntity.ok().body(result);
     }
 
 

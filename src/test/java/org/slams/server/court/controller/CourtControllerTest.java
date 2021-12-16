@@ -33,6 +33,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -337,6 +338,38 @@ public class CourtControllerTest {
                 fieldWithPath("courtReservation").type(JsonFieldType.NUMBER).description("농구장 준비상태"),
                 fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
                 fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                        )
+                ));
+    }
+
+
+    @Test
+    @Order(2)
+    @DisplayName("[GET] '/api/v1/detail/{courdId}/reservations/{date}")
+    @Transactional
+    void testSelectCall() throws Exception {
+        // GIVEN
+
+//        http://localhost:8080/api/v1/courts/detail/1/reservations/2021-12-18
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts/detail/"+1+"/reservations/"+"2021-12-18")
+                .header("Authorization",jwtToken)
+                .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
+
+        // WHEN // THEN
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("favorites-select",
+                        responseFields(
+                                fieldWithPath("favorites").type(JsonFieldType.ARRAY).description("즐겨찾기"),
+                                fieldWithPath("favorites.[].favoriteId").type(JsonFieldType.NUMBER).description("즐겨찾기 아이디"),
+                                fieldWithPath("favorites.[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 아이디"),
+                                fieldWithPath("favorites.[].courtName").type(JsonFieldType.STRING).description("즐겨찾기 한 코트 이름"),
+                                fieldWithPath("favorites.[].latitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 위도"),
+                                fieldWithPath("favorites.[].longitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 경도"),
+                                fieldWithPath("favorites.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("favorites.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }
