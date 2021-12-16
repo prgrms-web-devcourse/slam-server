@@ -25,4 +25,12 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 	List<Follow> findByFollowingIdAndIdLessThanOrderByIdDesc(
 		@Param("followingId") Long followingId,@Param("lastId") Long lastId, Pageable pageable);
 
+	// 해당 유저의 팔로잉 목록(무한 스크롤 - 최초)
+	@Query("SELECT f FROM Follow f WHERE f.follower.id = :followerId order by f.id desc")
+	List<Follow> findByFollowerIdOrderByIdDesc(@Param("followerId") Long followerId, Pageable pageable);
+	// 해당 유저의 팔로잉 목록(무한 스크롤)
+	@Query("SELECT f FROM Follow f WHERE f.follower.id = :followerId and f.id < :lastId order by f.id desc")
+	List<Follow> findByFollowerIdAndIdLessThanOrderByIdDesc(
+		@Param("followerId") Long followerId,@Param("lastId") Long lastId, Pageable pageable);
+
 }
