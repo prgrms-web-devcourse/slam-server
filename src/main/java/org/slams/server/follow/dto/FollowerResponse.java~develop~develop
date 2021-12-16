@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class FollowResponse {
+public class FollowerResponse {
 
 	private Long followId;
 	private Long creatorId;
@@ -18,8 +18,8 @@ public class FollowResponse {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	private FollowResponse(Long followId, Long creatorId, String nickname, String profileImage,
-						   LocalDateTime createdAt, LocalDateTime updatedAt) {
+	private FollowerResponse(Long followId, Long creatorId, String nickname, String profileImage,
+							 LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.followId = followId;
 		this.creatorId = creatorId;
 		this.nickname = nickname;
@@ -28,8 +28,8 @@ public class FollowResponse {
 		this.updatedAt = updatedAt;
 	}
 
-	public static FollowResponse toResponse(Long followId, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		return new FollowResponse(followId, user.getId(), user.getNickname(), user.getProfileImage(),
+	public static FollowerResponse toResponse(Long followId, User user, LocalDateTime createdAt, LocalDateTime updatedAt) {
+		return new FollowerResponse(followId, user.getId(), user.getNickname(), user.getProfileImage(),
 			createdAt, updatedAt);
 	}
 
