@@ -2,18 +2,19 @@ package org.slams.server.notification.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.slams.server.common.api.ApiResponse;
+import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.api.TokenGetId;
-import org.slams.server.notification.dto.CursorRequest;
-import org.slams.server.notification.dto.NotificationRequest;
-import org.slams.server.notification.dto.NotificationResponse;
+import org.slams.server.notification.dto.request.UpdateIsClickedStatusRequest;
+import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.oauth.jwt.Jwt;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -30,12 +31,24 @@ public class NotificationController {
 
 
     @GetMapping
-    public CursorPageResponse<List<NotificationResponse>> findByUserId(@RequestParam final CursorRequest cursorRequest,
-                                                                       HttpServletRequest request){
-        List<NotificationResponse> notificationResponseList = notificationService.findAllByUserId(new TokenGetId(request,jwt).getUserId(), cursorRequest);
-        return new CursorPageResponse<>(
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CursorPageResponse<List<NotificationResponse>>> findByUserId(
+            CursorPageRequest cursorRequest,
+            HttpServletRequest request){
+
+        Long userId = new TokenGetId(request,jwt).getUserId();
+        List<NotificationResponse> notificationResponseList = notificationService.findAllByUserId(userId, cursorRequest);
+
+        return ResponseEntity.ok(new CursorPageResponse<>(
                 notificationResponseList,
-                notificationResponseList.get(notificationResponseList.size()-1).getNotificationId()
-        );
+                notificationService.findNotificationLastId(userId, cursorRequest)
+        ));
+    }
+
+    @PutMapping("/isClicked")
+    public ResponseEntity<Void> updateIsClicked(HttpServletRequest request){
+        Long userId = new TokenGetId(request,jwt).getUserId();
+        notificationService.updateIsClickedStatus(new UpdateIsClickedStatusRequest(true), userId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
