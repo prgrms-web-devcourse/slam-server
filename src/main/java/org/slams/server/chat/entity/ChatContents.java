@@ -5,12 +5,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.slams.server.user.entity.User;
 
 import javax.persistence.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
@@ -20,8 +18,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "chatDetails")
-public class ChatDetails {
+@Table(name = "chat_contents")
+public class ChatContents {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -30,21 +28,12 @@ public class ChatDetails {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "chat_title_id", referencedColumnName = "id", nullable = false)
-    private ChatTitle chatTitle;
-
-//    @ManyToOne(fetch=FetchType.LAZY)
-//    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-//    private User user;
-
     private long userId;
 
     @Builder
-    public ChatDetails(
+    public ChatContents(
             Long id,
             String content,
-            ChatTitle chatTitle,
             long userId
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
@@ -61,7 +50,7 @@ public class ChatDetails {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ChatDetails that = (ChatDetails) o;
+        ChatContents that = (ChatContents) o;
         return userId == that.userId && Objects.equal(id, that.id) && Objects.equal(content, that.content) && Objects.equal(chatTitle, that.chatTitle);
     }
 

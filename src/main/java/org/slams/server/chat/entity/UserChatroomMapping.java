@@ -19,8 +19,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "userCourtMapping")
-public class UserCourtMapping extends BaseEntity {
+@Table(name = "user_chatroom_mapping")
+public class UserChatroomMapping extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -35,7 +35,7 @@ public class UserCourtMapping extends BaseEntity {
     private Court court;
 
     @Builder
-    public UserCourtMapping(
+    public UserChatroomMapping(
             Long id,
             User user,
             Court court
