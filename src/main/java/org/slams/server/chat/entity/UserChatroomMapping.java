@@ -30,9 +30,17 @@ public class UserChatroomMapping extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "court_id", referencedColumnName = "id", nullable = false)
     private Court court;
+
+
+    private UserChatroomMapping(User user, Court court){
+        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
+        checkArgument(user==null, "user는 null을 허용하지 않습니다.");
+        this.user = user;
+        this.court = court;
+    }
 
     @Builder
     public UserChatroomMapping(
@@ -47,5 +55,9 @@ public class UserChatroomMapping extends BaseEntity {
         this.id = id;
         this.user = user;
         this.court = court;
+    }
+
+    public static UserChatroomMapping of(User user, Court court){
+        return new UserChatroomMapping(user, court);
     }
 }

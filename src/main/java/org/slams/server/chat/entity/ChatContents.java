@@ -30,43 +30,38 @@ public class ChatContents {
 
     private long userId;
 
+    private long courtId;
+
     @Builder
     public ChatContents(
             Long id,
             String content,
-            long userId
+            long userId,
+            long courtId
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
         checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(chatTitle==null, "chatTitle은 null을 허용하지 않습니다.");
+        checkArgument(courtId < 0, "courtId 0미만은 허용하지 않습니다.");
         checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
+
         this.id = id;
         this.content = content;
-        this.chatTitle = chatTitle;
         this.userId = userId;
+        this.courtId = courtId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatContents that = (ChatContents) o;
-        return userId == that.userId && Objects.equal(id, that.id) && Objects.equal(content, that.content) && Objects.equal(chatTitle, that.chatTitle);
+    private ChatContents(String content, long userId, long courtId){
+        checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
+        checkArgument(courtId < 0, "courtId 0미만은 허용하지 않습니다.");
+        checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
+
+        this.content = content;
+        this.userId = userId;
+        this.courtId = courtId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id, content, chatTitle, userId);
+    public static ChatContents of(String content, long userId, long courtId){
+        return new ChatContents(content, userId, courtId);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("ChatDetails{");
-        sb.append("id=").append(id);
-        sb.append(", content='").append(content).append('\'');
-        sb.append(", chatTitle=").append(chatTitle);
-        sb.append(", userId=").append(userId);
-        sb.append('}');
-        return sb.toString();
-    }
 }
