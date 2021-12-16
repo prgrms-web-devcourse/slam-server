@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by yunyun on 2021/12/15.
@@ -18,6 +19,11 @@ public interface LoudSpeakerNotificationRepository extends JpaRepository<LoudSpe
     @Query("select l FROM LoudSpeakerNotification l WHERE l.id IN :messageIds")
     List<LoudSpeakerNotification> findAllByNotificationIds(
             @Param("messageIds") List messageIds
+    );
+
+    @Query("select l FROM LoudSpeakerNotification l WHERE l.id=:messageId")
+    Optional<LoudSpeakerNotification> findOneById(
+            @Param("messageId") String messageId
     );
 
     @Transactional
