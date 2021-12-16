@@ -6,10 +6,8 @@ import org.slams.server.notification.dto.response.LoudspeakerInfo;
 import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.entity.FollowNotification;
 import org.slams.server.notification.entity.LoudSpeakerNotification;
-import org.slams.server.notification.entity.Notification;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,6 @@ public class NotificationConvertor {
         return followNotificationList.stream()
                 .map(v -> toDtoForFollowNotification(v))
                 .collect(Collectors.toList());
-
     }
 
     public List<NotificationResponse> toDtoListForLoudspeakerNotification(List<LoudSpeakerNotification> loudSpeakerNotificationList){
@@ -37,7 +34,6 @@ public class NotificationConvertor {
         return loudSpeakerNotificationList.stream()
                 .map(v -> toDtoForLoudNotification(v))
                 .collect(Collectors.toList());
-
     }
 
     public NotificationResponse toDtoForFollowNotification(FollowNotification followNotification){
@@ -46,23 +42,23 @@ public class NotificationConvertor {
         //followNotification.getFollower();
 
         return NotificationResponse.createForFollowNotification(
-                followNotification.getNotification().getNotificationType(),
+                followNotification.getNotificationType(),
                 FollowerInfo.builder()
-                        .userId(followNotification.getFollower().getId())
-                        .userImage(followNotification.getFollower().getProfileImage())
-                        .userNickname(followNotification.getFollower().getNickname())
+                        .userId(followNotification.getReceiver().getId())
+                        .userImage(followNotification.getReceiver().getProfileImage())
+                        .userNickname(followNotification.getReceiver().getNickname())
                         .build(),
-                followNotification.getNotification().isRead(),
-                followNotification.getNotification().isClicked(),
-                followNotification.getNotification().getCreatedAt(),
-                followNotification.getNotification().getUpdateAt()
+                followNotification.isRead(),
+                followNotification.isClicked(),
+                followNotification.getCreatedAt(),
+                followNotification.getUpdateAt()
         );
     }
 
     public NotificationResponse toDtoForLoudNotification(LoudSpeakerNotification loudSpeakerNotification){
 
         return NotificationResponse.createForLoudspeakerNotification(
-                loudSpeakerNotification.getNotification().getNotificationType(),
+                loudSpeakerNotification.getNotificationType(),
                 LoudspeakerInfo.builder()
                         .courtInfo(CourtInfo.builder()
                                 .id(loudSpeakerNotification.getCourt().getId())
@@ -76,10 +72,10 @@ public class NotificationConvertor {
                         )
                         .startTime(loudSpeakerNotification.getStartTime())
                         .build(),
-                loudSpeakerNotification.getNotification().isRead(),
-                loudSpeakerNotification.getNotification().isClicked(),
-                loudSpeakerNotification.getNotification().getCreatedAt(),
-                loudSpeakerNotification.getNotification().getUpdateAt()
+                loudSpeakerNotification.isRead(),
+                loudSpeakerNotification.isClicked(),
+                loudSpeakerNotification.getCreatedAt(),
+                loudSpeakerNotification.getUpdateAt()
         );
     }
 
@@ -88,7 +84,8 @@ public class NotificationConvertor {
             List<NotificationResponse> followNotificationList,
             List<NotificationResponse> loudSpeakerNotificationList
     ){
-        if(followNotificationList.addAll(loudSpeakerNotificationList)){
+        followNotificationList.addAll(loudSpeakerNotificationList);
+        if(followNotificationList.size() > 0){
             Collections.sort(followNotificationList);
             return followNotificationList;
         }

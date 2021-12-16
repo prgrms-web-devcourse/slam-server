@@ -1,5 +1,9 @@
 package org.slams.server.notification.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import org.slams.server.notification.entity.NotificationType;
@@ -14,12 +18,18 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 
 @Getter
+@JsonNaming(value = PropertyNamingStrategies.KebabCaseStrategy.class)
 public class NotificationResponse implements Comparable<NotificationResponse>{
     private final NotificationType type;
     private final FollowerInfo followerInfo;
     private final LoudspeakerInfo loudspeakerInfo;
+
+    @JsonProperty("isRead")
     private final boolean isRead;
+
+    @JsonProperty("isClicked")
     private final boolean isClicked;
+
     private final LocalDateTime created;
     private final LocalDateTime updated;
 
