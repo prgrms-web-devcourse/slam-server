@@ -78,7 +78,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
 	private String getToken(HttpServletRequest request) {
 		String authorization = request.getHeader(org.apache.http.HttpHeaders.AUTHORIZATION);
-		if (Objects.isNull(authorization)) return null;
+		if (Objects.isNull(authorization)) {
+			return null;
+		}
 		String[] tokenString = authorization.split(" ");
 		String token = tokenString[1];
 
@@ -104,8 +106,5 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			emptyList() :
 			Arrays.stream(roles).map(SimpleGrantedAuthority::new).collect(toList());
 	}
-
-
-
 
 }
