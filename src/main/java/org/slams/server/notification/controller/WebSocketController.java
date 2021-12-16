@@ -70,7 +70,7 @@ public class WebSocketController {
         );
     }
 
-    @MessageMapping("follow")
+    @MessageMapping("/follow")
     public void saveFollowNotification(
             FollowNotificationRequest message,
             SimpMessageHeaderAccessor headerAccessor
@@ -87,7 +87,7 @@ public class WebSocketController {
                 );
     }
 
-    @MessageMapping("followcancel")
+    @MessageMapping("/followcancel")
     public void deleteFollowNotification(
             FollowNotificationRequest message,
             SimpMessageHeaderAccessor headerAccessor
