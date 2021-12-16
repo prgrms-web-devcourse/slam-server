@@ -6,9 +6,7 @@ import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.favorite.entity.Favorite;
 
-@EqualsAndHashCode
 @Getter
-@Builder
 public class FavoriteInsertResponseDto extends BaseResponse {
 
     private Long favoriteId;
@@ -20,8 +18,8 @@ public class FavoriteInsertResponseDto extends BaseResponse {
     public FavoriteInsertResponseDto(Favorite favorite) {
         super(favorite.getCreatedAt(),favorite.getUpdateAt());
         favoriteId=favorite.getId();
-        userId=favorite.getUser().getId();
         courtId=favorite.getCourt().getId();
+        userId=favorite.getUser().getId();
     }
 
 
