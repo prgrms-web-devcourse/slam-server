@@ -6,6 +6,8 @@ import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.follow.dto.FollowerResponse;
 import org.slams.server.follow.dto.FollowingResponse;
 import org.slams.server.follow.entity.Follow;
+import org.slams.server.follow.exception.FollowAlreadyExistException;
+import org.slams.server.follow.exception.FollowNotFoundException;
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
@@ -70,6 +72,38 @@ public class FollowService {
 		Long lastId = followings.size() < cursorPageRequest.getSize() ? null : followings.get(followings.size() - 1).getId();
 
 		return new CursorPageResponse<>(followingList, lastId);
+	}
+
+	@Transactional
+	public void follow(Long myId, Long followingId){
+		User follower = userRepository.findById(myId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", myId)));
+		User following = userRepository.findById(followingId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", followingId)));
+
+		if (followRepository.existsByFollowerAndFollowing(follower, following))
+			throw new FollowAlreadyExistException(
+				MessageFormat.format("이미 팔로우하고 있는 사용자입니다. id : {0}", followingId));
+
+		followRepository.save(Follow.of(follower, following));
+	}
+
+	@Transactional
+	public void unfollow(Long myId, Long followingId){
+		User follower = userRepository.findById(myId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", myId)));
+		User following = userRepository.findById(followingId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", followingId)));
+
+		if (!followRepository.existsByFollowerAndFollowing(follower, following))
+			throw new FollowNotFoundException(
+				MessageFormat.format("원래 팔로우관계를 맺고 있지 않은 사용자입니다. id : {0}", followingId));
+
+		followRepository.deleteByFollowerAndFollowing(follower, following);
 	}
 
 }
