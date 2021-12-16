@@ -3,7 +3,8 @@ package org.slams.server.follow.service;
 import lombok.RequiredArgsConstructor;
 import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.common.api.CursorPageResponse;
-import org.slams.server.follow.dto.FollowResponse;
+import org.slams.server.follow.dto.FollowerResponse;
+import org.slams.server.follow.dto.FollowingResponse;
 import org.slams.server.follow.entity.Follow;
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.user.entity.User;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class FollowService {
 	private final FollowRepository followRepository;
 	private final UserRepository userRepository;
 
-	public CursorPageResponse<List<FollowResponse>> followerPage(Long userId, CursorPageRequest cursorPageRequest) {
+	public CursorPageResponse<List<FollowerResponse>> followerPage(Long userId, CursorPageRequest cursorPageRequest) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
@@ -36,10 +36,10 @@ public class FollowService {
 			followRepository.findByFollowingIdOrderByIdDesc(userId, pageable) :
 			followRepository.findByFollowingIdAndIdLessThanOrderByIdDesc(userId, cursorPageRequest.getLastId(), pageable);
 
-		List<FollowResponse> followerList = new ArrayList<>();
+		List<FollowerResponse> followerList = new ArrayList<>();
 		for (Follow follow : followers) {
 			followerList.add(
-				FollowResponse.toResponse(
+				FollowerResponse.toResponse(
 					follow.getId(), follow.getFollower(), follow.getCreatedAt(), follow.getUpdateAt())
 			);
 		}
@@ -47,6 +47,29 @@ public class FollowService {
 		Long lastId = followers.size() < cursorPageRequest.getSize() ? null : followers.get(followers.size() - 1).getId();
 
 		return new CursorPageResponse<>(followerList, lastId);
+	}
+
+	public CursorPageResponse<List<FollowingResponse>> followingPage(Long userId, CursorPageRequest cursorPageRequest) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserNotFoundException(
+				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		PageRequest pageable = PageRequest.of(0, cursorPageRequest.getSize());
+		List<Follow> followings = cursorPageRequest.getIsFirst() ?
+			followRepository.findByFollowerIdOrderByIdDesc(userId, pageable) :
+			followRepository.findByFollowerIdAndIdLessThanOrderByIdDesc(userId, cursorPageRequest.getLastId(), pageable);
+
+		List<FollowingResponse> followingList = new ArrayList<>();
+		for (Follow follow : followings) {
+			followingList.add(
+				FollowingResponse.toResponse(
+					follow.getId(), follow.getFollowing(), follow.getCreatedAt(), follow.getUpdateAt())
+			);
+		}
+
+		Long lastId = followings.size() < cursorPageRequest.getSize() ? null : followings.get(followings.size() - 1).getId();
+
+		return new CursorPageResponse<>(followingList, lastId);
 	}
 
 }
