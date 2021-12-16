@@ -2,7 +2,12 @@ package org.slams.server.follow.repository;
 
 import org.slams.server.follow.entity.Follow;
 import org.slams.server.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
@@ -11,5 +16,13 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
 	// 해당 유저의 팔로잉 숫자
 	Long countByFollowing(User user);
+
+	// 해당 유저의 팔로워 목록(무한 스크롤 - 최초)
+	@Query("SELECT f FROM Follow f WHERE f.following.id = :followingId order by f.id desc")
+	List<Follow> findByFollowingIdOrderByIdDesc(@Param("followingId") Long followingId, Pageable pageable);
+	// 해당 유저의 팔로워 목록(무한 스크롤)
+	@Query("SELECT f FROM Follow f WHERE f.following.id = :followingId and f.id < :lastId order by f.id desc")
+	List<Follow> findByFollowingIdAndIdLessThanOrderByIdDesc(
+		@Param("followingId") Long followingId,@Param("lastId") Long lastId, Pageable pageable);
 
 }
