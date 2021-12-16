@@ -3,7 +3,7 @@ package org.slams.server.user.dto.response;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.slams.server.notification.dto.NotificationResponse;
+import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
