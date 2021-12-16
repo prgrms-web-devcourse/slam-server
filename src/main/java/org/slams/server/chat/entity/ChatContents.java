@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.slams.server.common.BaseEntity;
 
 import javax.persistence.*;
 
@@ -19,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "chat_contents")
-public class ChatContents {
+public class ChatContents extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
