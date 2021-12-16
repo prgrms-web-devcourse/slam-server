@@ -2,10 +2,7 @@ package org.slams.server.reservation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
@@ -142,6 +139,7 @@ public class ReservationControllerTest {
         courtRepository.save(court);
 
         court=Court.builder()
+                .id(127L)
                 .name("광진구 농구장")
                 .latitude(45.987654)
                 .longitude(13.309472)
@@ -184,7 +182,7 @@ public class ReservationControllerTest {
 //        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
 //        given(reservationService.insert(any(), any()));
 
-        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations/"+user.getId())
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations/")
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
@@ -288,6 +286,7 @@ public class ReservationControllerTest {
     @Test
     @DisplayName("[DELETE] '/api/v1/reservations/{reservationId}'")
     @Order(3)
+    @Disabled
     void testDelete() throws Exception {
         // 위에서 만든 예약을 변경하기
         // 예약정보 조회
