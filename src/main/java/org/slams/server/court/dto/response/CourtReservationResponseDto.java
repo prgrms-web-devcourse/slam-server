@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @EqualsAndHashCode
-public class CourtReservationResponseDto {
+public class CourtReservationResponseDto extends BaseResponse {
 
     Long reservationId;
     Long userId;
@@ -24,6 +24,7 @@ public class CourtReservationResponseDto {
 
 
     public CourtReservationResponseDto(Reservation reservation) {
+        super(reservation.getCreatedAt(),reservation.getUpdateAt());
         reservationId=reservation.getId();
         userId=reservation.getUser().getId();
         avatarImgSrc=reservation.getUser().getProfileImage();
@@ -32,5 +33,6 @@ public class CourtReservationResponseDto {
         endTime=reservation.getEndTime();
         hasBall=reservation.isHasBall();
     }
+
 
 }
