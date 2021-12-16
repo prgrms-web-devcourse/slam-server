@@ -26,9 +26,10 @@ public enum ErrorCode {
 
 	// Reservation
 	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다."),
+	NOT_FORBIDDEN_RESERVATION(403,"권한이 없습니다"),
 
-	NOT_FORBIDDEN_RESERVATION(403,"권한이 없습니다")
-
+	// Favorite
+	NOT_EXIST_FAVORITE(404,"존재하지 않는 즐겨찾기입니다.")
 
 	;
 

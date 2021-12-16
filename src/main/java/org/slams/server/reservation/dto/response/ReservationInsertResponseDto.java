@@ -22,7 +22,7 @@ public class ReservationInsertResponseDto extends BaseResponse {
     private LocalDateTime endTime;
     private Boolean hasBall;
 
-    // requestDto -> Entity
+    // Entity -> Response
     public ReservationInsertResponseDto(Reservation reservation) {
         super(reservation.getCreatedAt(), reservation.getUpdateAt());
         reservationId=reservation.getId();
