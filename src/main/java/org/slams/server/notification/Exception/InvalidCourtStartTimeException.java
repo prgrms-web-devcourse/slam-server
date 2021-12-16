@@ -7,8 +7,8 @@ import static org.slams.server.common.error.exception.ErrorCode.INVALID_INPUT_VA
 /**
  * Created by yunyun on 2021/12/16.
  */
-public class InvalidCourtStartTime extends InvalidValueException {
-    public InvalidCourtStartTime(String value) {
+public class InvalidCourtStartTimeException extends InvalidValueException {
+    public InvalidCourtStartTimeException(String value) {
         super(value, INVALID_INPUT_VALUE);
     }
 }

@@ -43,21 +43,8 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             Pageable pageable
     );
 
-//    @Query("select a from Notification a where a.userId=:userId order by a.createdAt")
-//    List<Notification> findAllByUserId(
-//            @Param("userId") Long userId
-//    );
-//
-//    @Query("select a FROM Notification a where a.userId =:userId and a.id >= :lastId order by a.createdAt ASC")
-//    List<Notification> findAllByUserMoreThenAlarmIdByCreated(
-//            @Param("userId") Long userId,
-//            @Param("lastId") Long lastId,
-//            Pageable pageable
-//    );
-//
-//    @Query("select a FROM Notification a where a.userId =:userId order by a.createdAt ASC")
-//    List<Notification> findAllByUserByCreated(
-//            @Param("userId") Long userId,
-//            Pageable pageable
-//    );
+    @Query("DELETE FROM NotificationIndex a WHERE a.messageId=:messageId")
+    void deleteByMessageId(
+      @Param("messageId") String messageId
+    );
 }

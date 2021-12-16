@@ -10,15 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.Native;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by yunyun on 2021/12/15.
  */
 public interface FollowNotificationRepository extends JpaRepository<FollowNotification, String> {
 
-    @Query("select f FROM FollowNotification f WHERE f.id IN :messageIds")
+    @Query("SELECT f FROM FollowNotification f WHERE f.id IN :messageIds")
     List<FollowNotification> findAllByNotificationIds(
             @Param("messageIds") List messageIds
+    );
+
+    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId")
+    Optional<FollowNotification> findOneById(
+            @Param("messageId") String messageId
     );
 
     @Transactional
@@ -36,5 +42,18 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("userId") Long userId,
             @Param("status") boolean status
     );
+
+    @Query("SELECT f.id FROM FollowNotification f WHERE f.receiver.id=:receiverId AND f.userId=:userId")
+    List<String> findByReceiverIdAndUserId(
+            @Param("receiverId") Long receiverId,
+            @Param("userId") Long userId
+    );
+
+    @Query("DELETE FROM FollowNotification WHERE f.receiver.id=:receiverId AND f.userId=:userId")
+    void deleteByReceiverIdAndUserId(
+            @Param("receiverId") Long receiverId,
+            @Param("userId") Long userId
+    );
+
 
 }

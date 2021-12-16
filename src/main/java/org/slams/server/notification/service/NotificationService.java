@@ -5,7 +5,8 @@ import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
-import org.slams.server.notification.Exception.InvalidCourtStartTime;
+import org.slams.server.notification.Exception.InvalidCourtStartTimeException;
+import org.slams.server.notification.Exception.NotificationNotFoundException;
 import org.slams.server.notification.convertor.NotificationConvertor;
 import org.slams.server.notification.dto.request.FollowNotificationRequest;
 import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
@@ -47,12 +48,12 @@ public class NotificationService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public void saveForLoudSpeakerNotification(LoudspeakerNotificationRequest request, Long userId){
+    public String saveForLoudSpeakerNotification(LoudspeakerNotificationRequest request, Long userId){
         var reservation = reservationRepository.findById(request.getReservationId())
                 .orElseThrow(() -> new ReservationNotFoundException("존재하지 않은 예약입니다."));
 
         if(LocalDateTime.now().getHour() - request.getStartTime() < 0 && LocalDateTime.now().getHour() - request.getStartTime() <= 1) {
-            throw new InvalidCourtStartTime("경기 시작 1시간 이전에만 확성기 기능을 사용하실 수 있습니다.");
+            throw new InvalidCourtStartTimeException("경기 시작 1시간 이전에만 확성기 기능을 사용하실 수 있습니다.");
         }
         Court court = courtRepository
                 .findById(request.getCourtId())
@@ -73,10 +74,11 @@ public class NotificationService {
                 loudSpeakerNotification
         );
 
+        return loudSpeakerNotification.getId();
     }
 
     @Transactional
-    public void saveForFollowNotification(FollowNotificationRequest request, Long userId){
+    public String saveForFollowNotification(FollowNotificationRequest request, Long userId){
         User receiver = userRepository
                 .findById(request.getReceiverId())
                 .orElseThrow(() -> new UserNotFoundException("팔로우한 해당 사용자는 존재하지 않는 사용자 입니다."));
@@ -93,7 +95,7 @@ public class NotificationService {
         followNotificationRepository.save(
                 followNotification
         );
-
+        return followNotification.getId();
     }
 
     public List<NotificationResponse> findAllByUserId(Long userId, CursorPageRequest cursorRequest){
@@ -104,6 +106,20 @@ public class NotificationService {
         return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
                 notificationConvertor.toDtoListForFollowNotification(followNotificationList),
                 notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    }
+
+    public NotificationResponse findOneByIdInFollowNotification(String messageId){
+        return notificationConvertor.toDtoForFollowNotification(
+                followNotificationRepository.findOneById(messageId)
+                        .orElseThrow(() -> new NotificationNotFoundException("존재하지 않은 공지 내용입니다."))
+        );
+    }
+
+    public NotificationResponse findOneByIdLoudspeakerNotification(String messageId){
+        return notificationConvertor.toDtoForLoudNotification(
+                loudSpeakerNotificationRepository.findOneById(messageId)
+                        .orElseThrow(() -> new NotificationNotFoundException("존재하지 않은 공지 내용입니다."))
+        );
     }
 
     public List<String> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
@@ -146,17 +162,13 @@ public class NotificationService {
         loudSpeakerNotificationRepository.updateIsRead(userId, request.isStatus());
     }
 
-    @Transactional(readOnly = true)
-    public List<NotificationResponse> getTop10Notification(Long userId){
-        PageRequest pageable = PageRequest.of(0, 10);
-        List<String> messageIdList = notificationRepository.findMessageIdByUserByCreated(userId, pageable);
-
-        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIdList);
-        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIdList);
-
-        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
-            notificationConvertor.toDtoListForFollowNotification(followNotificationList),
-            notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    public void deleteFollowNotification(FollowNotificationRequest request, Long userId){
+        List<String> messageIds = followNotificationRepository.findByReceiverIdAndUserId(request.getReceiverId(), userId);
+        if (messageIds.isEmpty()){
+            throw new NotificationNotFoundException("삭제할 정보가 존재하지 않습니다.");
+        }else{
+            notificationRepository.deleteByMessageId(messageIds.get(0));
+            followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
+        }
     }
-
 }

@@ -1,6 +1,12 @@
 package org.slams.server.notification.controller;
 
+import org.slams.server.court.service.CourtService;
+import org.slams.server.notification.Exception.TokenNotFountException;
 import org.slams.server.notification.dto.WebSocketTestDto;
+import org.slams.server.notification.dto.request.FollowNotificationRequest;
+import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
+import org.slams.server.notification.service.NotificationService;
+import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +15,9 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by yunyun on 2021/12/15.
@@ -19,24 +27,26 @@ import java.util.Map;
 public class WebSocketController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final NotificationService notificationService;
+    private final CourtService courtService;
     private final SimpMessagingTemplate websoket;
 
     private final Jwt jwt;
 
-    public WebSocketController(SimpMessagingTemplate websoket,Jwt jwt){
+    public WebSocketController(
+            SimpMessagingTemplate websoket,
+            Jwt jwt,
+            NotificationService notificationService,
+            CourtService courtService){
         this.websoket = websoket;
         this.jwt = jwt;
+        this.notificationService = notificationService;
+        this.courtService = courtService;
     }
 
     @MessageMapping("/teston")
     public void testNone() throws Exception {
         logger.info("들어옴");
-        //logger.info(message.toString());
-        /** token parsing **/
-        // userId 추출
-        Long testUserId = 1L;
-        // token 유효성 검사
-
         websoket.convertAndSend("/topic/teston", "success");
     }
 
@@ -44,23 +54,12 @@ public class WebSocketController {
     public void convertAndSendTest(WebSocketTestDto message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         logger.info("들어옴");
         logger.info(message.toString());
-
-        String token = (String) headerAccessor.getHeader("token");
-        /** token parsing **/
-
-        // userId 추출
-        String testUserId = token;
-        // token 유효성 검사
-
         websoket.convertAndSend("/topic/teston", message.getUserId());
     }
 
     @MessageMapping("/object")
     public void objectTest(WebSocketTestDto message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-
-        var nativeHeaders =  (Map) headerAccessor.getMessageHeaders().get("nativeHeaders");
-        String token = nativeHeaders.get("token").toString().replace("[", "").replace("]","");
-        Long testUserId = jwt.verify(token).getUserId();
+        Long testUserId = findTokenFromHeader(headerAccessor);
 
         // token 유효성 검사
         WebSocketTestDto userRequest = new WebSocketTestDto();
@@ -69,5 +68,73 @@ public class WebSocketController {
                 "/topic/"+message.getUserId(),
                 userRequest
         );
+    }
+
+    @MessageMapping("follow")
+    public void saveFollowNotification(
+            FollowNotificationRequest message,
+            SimpMessageHeaderAccessor headerAccessor
+            ){
+        Long userId = findTokenFromHeader(headerAccessor);
+
+        /** follow 데이터 저장 추가해야함**/
+
+        String messageId = notificationService.saveForFollowNotification(message, userId);
+
+        websoket.convertAndSend(
+                String.format("/user/%d/notification", message.getReceiverId()),
+                notificationService.findOneByIdInFollowNotification(messageId)
+                );
+    }
+
+    @MessageMapping("followcancel")
+    public void deleteFollowNotification(
+            FollowNotificationRequest message,
+            SimpMessageHeaderAccessor headerAccessor
+    ){
+        Long userId = findTokenFromHeader(headerAccessor);
+
+        /** follow 데이터 삭제 추가해야함**/
+
+        notificationService.deleteFollowNotification(message, userId);
+    }
+
+    @MessageMapping("/loudspeaker")
+    public void saveLoudSpeakerAndThenSending(
+            LoudspeakerNotificationRequest request,
+            SimpMessageHeaderAccessor headerAccessor
+    ){
+        Long userId = findTokenFromHeader(headerAccessor);
+        List<Long> bookerIds = courtService
+                .getCourt(request.getCourtId())
+                .getReservations()
+                .stream()
+                .map(v-> v.getUser().getId())
+                .collect(Collectors.toList());
+
+        for (Long bookId : bookerIds){
+            String messageId = notificationService.saveForLoudSpeakerNotification(request, bookId);
+            websoket.convertAndSend(
+                    String.format("/user/%d/notification", bookId),
+                    notificationService.findOneByIdLoudspeakerNotification(messageId)
+            );
+        }
+    }
+
+    private Long findTokenFromHeader(SimpMessageHeaderAccessor headerAccessor){
+        var nativeHeaders =  (Map) headerAccessor.getMessageHeaders().get("nativeHeaders");
+        assert nativeHeaders != null;
+        if (nativeHeaders.containsKey("token")) {
+            String token = nativeHeaders.get("token").toString().replace("[", "").replace("]","");
+            if(token.length()>64){
+                return jwt.verify(token).getUserId();
+            }else{
+                throw new InvalidTokenException("유효한 토큰 형식이 아닙니다.");
+            }
+        }else{
+            throw new TokenNotFountException("헤더에 토큰이 존재하지 않습니다.");
+        }
+
+
     }
 }
