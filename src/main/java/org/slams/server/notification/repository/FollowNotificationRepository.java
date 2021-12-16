@@ -49,7 +49,7 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("userId") Long userId
     );
 
-    @Query("DELETE FROM FollowNotification WHERE f.receiver.id=:receiverId AND f.userId=:userId")
+    @Query("DELETE FROM FollowNotification f WHERE f.receiver.id=:receiverId AND f.userId=:userId")
     void deleteByReceiverIdAndUserId(
             @Param("receiverId") Long receiverId,
             @Param("userId") Long userId
