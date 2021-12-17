@@ -22,6 +22,9 @@ public enum ErrorCode {
 	//Court
 	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다."),
 
+	// New Court
+	NEWCOURT_NOT_FOUND(400, "New Court Not Found"),
+
 	// Reservation
 	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다."),
 	NOT_FORBIDDEN_RESERVATION(403,"권한이 없습니다"),
