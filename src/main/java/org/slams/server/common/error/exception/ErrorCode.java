@@ -24,6 +24,7 @@ public enum ErrorCode {
 
 	// New Court
 	NEWCOURT_NOT_FOUND(400, "New Court Not Found"),
+	INVALID_STATUS_VALUE(400, "Invalid Status Value"),
 
 	// Reservation
 	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다."),
