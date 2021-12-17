@@ -32,6 +32,12 @@ public class CourtInsertRequestDto {
     private int basketCount;
     private Status status;
 
+//    private String mediaUrl;
+
+    public void setImage(String image){
+        this.image = image;
+    }
+
 
 
     // requestDto -> Entity

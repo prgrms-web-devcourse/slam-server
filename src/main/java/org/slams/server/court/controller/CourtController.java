@@ -42,14 +42,6 @@ public class CourtController {
         Long userId=token.getUserId();
 
 
-//        Long userId=claims.getUserId();
-        log.info("userID: "+userId);
-//        String exp=claims.getExp().toString();
-//        log.info("tokenExp:"+exp);
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-        // id로 추가하게 해야 함.
-
-//        return ResponseEntity.ok(courtService.insert(request, id));
         return new ResponseEntity<CourtInsertResponseDto>(courtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
     }
 
@@ -75,6 +67,9 @@ public class CourtController {
         // 여기에 추가로 header 토큰 정보가 들어가야 함.
         return ResponseEntity.ok().body(courtService.findDetail(courtId));
     }
+
+
+
 
 
 
