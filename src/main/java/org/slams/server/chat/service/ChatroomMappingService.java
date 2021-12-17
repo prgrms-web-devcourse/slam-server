@@ -33,9 +33,6 @@ public class ChatroomMappingService {
     private final CourtChatroomMappingRepository courtChatroomMappingRepository;
     private final CourtRepository courtRepository;
     private final UserRepository userRepository;
-    // chat 룸 목록 조회
-    // 챗룸 추가
-    // 챗룸 삭제
 
     /** 채팅방 생성 -> 농구장 생성시 함께 생성됨 **/
     public void saveChatRoom(Long courtId){
@@ -63,7 +60,7 @@ public class ChatroomMappingService {
     }
 
     public void deleteEnteredChatRoomByChatRoomId(Long userId, ChatRoomRequest request){
-
+            userChatRoomMappingRepository.deleteByCourtId(request.getCourtId(), userId);
     }
 
     public List<UserChatroomMapping> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){

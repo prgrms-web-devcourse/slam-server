@@ -26,5 +26,9 @@ public interface UserChatroomMappingRepository extends JpaRepository<UserChatroo
             Pageable pageable
     );
 
-    @Query("DELETE ")
+    @Query("DELETE FROM UserChatroomMapping u WHERE u.courtChatroomMapping.court.id=:courtId AND u.user.id=:userId")
+    void deleteByCourtId(
+            @Param("courtId") Long courtId,
+            @Param("userId") Long userId
+    );
 }

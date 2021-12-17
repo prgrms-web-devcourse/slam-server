@@ -67,6 +67,7 @@ public class ChatContentsService {
                         request.getStartTime()
                 )
         );
+
         chatContentsRepository.save(chatContents);
         courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
         return chatContents;

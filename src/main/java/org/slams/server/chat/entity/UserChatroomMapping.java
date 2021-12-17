@@ -1,9 +1,6 @@
 package org.slams.server.chat.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
 import org.slams.server.user.entity.User;
