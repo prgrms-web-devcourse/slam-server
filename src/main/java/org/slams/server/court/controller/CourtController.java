@@ -3,9 +3,11 @@ package org.slams.server.court.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.slams.server.common.api.TokenGetId;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.request.CourtReservationRequestDto;
+import org.slams.server.court.dto.request.RequestParamVo;
 import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.dto.response.CourtReservationResponseDto;
@@ -93,8 +95,17 @@ public class CourtController {
     }
 
 
+    // 사용자가 날짜, 시간, 바운더리로 농구장 검색하기
+    //    /api/v1/courts/date=&{date}&time=${time}&start=${latitude}%${longtitude}&end=${latitude}%${longtitude}
+    @GetMapping()
+    public ResponseEntity<Map<String,Object>> getAllByDateByBoundary(
+            @NotNull RequestParamVo requestParamVo, HttpServletRequest request) {
 
+        Map<String,Object>result=new HashMap<>();
+        result.put("courts",courtService.findByDateByBoundary(requestParamVo));
 
+        return ResponseEntity.ok(result);
+    }
 
 
 

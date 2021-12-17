@@ -1,5 +1,6 @@
 package org.slams.server.reservation.dto.response;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
