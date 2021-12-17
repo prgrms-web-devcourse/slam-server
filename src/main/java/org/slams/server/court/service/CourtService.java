@@ -45,30 +45,6 @@ public class CourtService {
     private final ReservationRepository reservationRepository;
 
 
-
-    @Transactional
-    public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long id) {
-        // user검색후 없으면 반환
-        User user = getUser(id);
-
-
-        request.setImage(awsS3Uploader.upload(request.getImage(),"court"));
-
-        NewCourt newCourt = request.insertRequestDtoToEntity(request);
-
-        newCourtRepository.save(newCourt);
-        return new CourtInsertResponseDto(newCourt);
-    }
-
-
-    @Transactional
-    public User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
-    }
-
-
     @Transactional
     public List<AllCourtResponseDto> findAll() {
         return courtRepository.findAll().stream()
