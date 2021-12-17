@@ -62,7 +62,7 @@ public class ChatroomMappingService {
         );
     }
 
-    public void deleteEnteredChatRoomByChatRoomId(){
+    public void deleteEnteredChatRoomByChatRoomId(Long userId, ChatRoomRequest request){
 
     }
 

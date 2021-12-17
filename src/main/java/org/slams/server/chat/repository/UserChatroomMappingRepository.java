@@ -25,4 +25,6 @@ public interface UserChatroomMappingRepository extends JpaRepository<UserChatroo
             @Param("userId") Long userId,
             Pageable pageable
     );
+
+    @Query("DELETE ")
 }
