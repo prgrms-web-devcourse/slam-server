@@ -15,8 +15,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/api/v1/ws")
-                .setAllowedOriginPatterns("*")
+        registry.addEndpoint("/ws/v1/")
+                .setAllowedOrigins("http://localhost:3000")
                 .withSockJS()
                 .setStreamBytesLimit(512 * 1024)
                 .setHttpMessageCacheSize(1000)
