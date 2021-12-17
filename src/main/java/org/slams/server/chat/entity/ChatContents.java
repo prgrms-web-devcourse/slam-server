@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
+import org.slams.server.court.entity.Court;
 
 import javax.persistence.*;
 
@@ -26,43 +27,80 @@ public class ChatContents extends BaseEntity {
     @Column(name="id")
     private Long id;
 
-    @Column(nullable = false)
-    private String content;
+    @Column
+    private ChatType chatType;
 
-    private long userId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
+    private Court court;
 
-    private long courtId;
+    @OneToOne
+    @JoinColumn(name = "conversation_id")
+    private ChatConversationContents chatConversationContents;
+
+    @OneToOne
+    @JoinColumn(name = "loudspeaker_id")
+    private ChatLoudSpeakerContents chatLoudSpeakerContents;
 
     @Builder
     public ChatContents(
             Long id,
-            String content,
-            long userId,
-            long courtId
+            ChatType chatType,
+            Court court,
+            ChatConversationContents conversationContents,
+            ChatLoudSpeakerContents chatLoudSpeakerContents
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(courtId < 0, "courtId 0미만은 허용하지 않습니다.");
-        checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
+        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
 
         this.id = id;
-        this.content = content;
-        this.userId = userId;
-        this.courtId = courtId;
+        this.chatType = chatType;
+        this.court = court;
+        this.chatConversationContents = conversationContents;
+        this.chatLoudSpeakerContents = chatLoudSpeakerContents;
     }
 
-    private ChatContents(String content, long userId, long courtId){
-        checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(courtId < 0, "courtId 0미만은 허용하지 않습니다.");
-        checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
+    private ChatContents(
+            ChatType chatType,
+            Court court,
+            ChatConversationContents conversationContents
+    ){
+        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
 
-        this.content = content;
-        this.userId = userId;
-        this.courtId = courtId;
+        this.chatType = chatType;
+        this.court = court;
+        this.chatConversationContents = conversationContents;
     }
 
-    public static ChatContents of(String content, long userId, long courtId){
-        return new ChatContents(content, userId, courtId);
+    private ChatContents(
+            ChatType chatType,
+            Court court,
+            ChatLoudSpeakerContents chatLoudSpeakerContents
+    ){
+        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
+
+        this.chatType = chatType;
+        this.court = court;
+        this.chatLoudSpeakerContents = chatLoudSpeakerContents;
+    }
+
+    public static ChatContents createConversationContents(
+            ChatType chatType,
+            Court court,
+            ChatConversationContents conversationContents
+    ){
+        return new ChatContents(chatType, court, conversationContents);
+    }
+
+    public static ChatContents createLoudspeakerContents(
+            ChatType chatType,
+            Court court,
+            ChatLoudSpeakerContents chatLoudSpeakerContents
+    ){
+        return new ChatContents(chatType, court, chatLoudSpeakerContents);
     }
 
 }

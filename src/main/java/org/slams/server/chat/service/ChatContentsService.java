@@ -1,6 +1,7 @@
 package org.slams.server.chat.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slams.server.chat.convertor.ChatContentConvertor;
 import org.slams.server.chat.dto.ChatContentsRequest;
 import org.slams.server.chat.dto.ChatContentsResponse;
 import org.slams.server.chat.entity.ChatContents;
@@ -20,7 +21,7 @@ import java.util.List;
 public class ChatContentsService {
 
     private final ChatContentsRepository chatContentsRepository;
-
+    private final ChatContentConvertor chatContentConvertor;
 
     // 최신순으로 chat 대화내용 조회
     // 대화내용 저장
@@ -29,7 +30,9 @@ public class ChatContentsService {
 
 
     public List<ChatContentsResponse> findChatContentsListByCourtOrderByCreatedAt(Long courtId, CursorPageRequest cursorRequest){
-        return null;
+        return chatContentConvertor.toDtoList(
+                cursorPageForFindAllByUserId(courtId, cursorRequest)
+        );
     }
 
     public void saveChatContents(ChatContentsRequest request){
