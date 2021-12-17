@@ -50,7 +50,7 @@ public class UserService {
 		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
 			.userId(1L)
 			.userNickname("젤리")
-			.userImage("젤리 이미지")
+			.userImage("https://team14-slam.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%82%E1%85%A1.png")
 			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
 		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
 			.courtInfo(
@@ -59,7 +59,7 @@ public class UserService {
 					.name("용산구 농구장")
 					.latitude(123)
 					.longitude(456)
-					.image("농구장 이미지")
+					.image("https://team14-slam.s3.ap-northeast-2.amazonaws.com/court_dummy/court1.jpg")
 					.basketCount(4)
 					.texture(Texture.ASPHALT)
 					.build()

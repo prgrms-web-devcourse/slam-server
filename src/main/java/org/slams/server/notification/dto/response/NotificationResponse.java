@@ -56,10 +56,10 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
             FollowerInfo followerInfo,
             boolean isRead,
             boolean isClicked,
-            LocalDateTime created,
-            LocalDateTime updated
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ){
-        return new NotificationResponse(type, followerInfo, null, isRead, isClicked, created, updated);
+        return new NotificationResponse(type, followerInfo, null, isRead, isClicked, createdAt, updatedAt);
     }
 
     public static NotificationResponse createForLoudspeakerNotification(
@@ -67,10 +67,10 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
             LoudspeakerInfo loudspeakerInfo,
             boolean isRead,
             boolean isClicked,
-            LocalDateTime created,
-            LocalDateTime updated
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ){
-        return new NotificationResponse(type, null, loudspeakerInfo, isRead, isClicked, created, updated);
+        return new NotificationResponse(type, null, loudspeakerInfo, isRead, isClicked, createdAt, updatedAt);
     }
 
 
