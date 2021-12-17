@@ -1,5 +1,6 @@
 package org.slams.server.chat.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,8 +15,12 @@ public class ChatContentsResponse {
     private final Long courtId;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+
+    @JsonProperty("conversationInfo")
     private final ConversationInfo conversationInfo;
-    private final LoudSpeakerInfo loudSeapkerInfo;
+
+    @JsonProperty("loudSpeakerInfo")
+    private final LoudSpeakerInfo loudSpeakerInfo;
 
     @Builder
     public ChatContentsResponse(
@@ -23,12 +28,12 @@ public class ChatContentsResponse {
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
             ConversationInfo conversationInfo,
-            LoudSpeakerInfo loudSeapkerInfo
+            LoudSpeakerInfo loudSpeakerInfo
     ){
         this.courtId = courtId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.conversationInfo = conversationInfo;
-        this.loudSeapkerInfo = loudSeapkerInfo;
+        this.loudSpeakerInfo = loudSpeakerInfo;
     }
 }
