@@ -273,8 +273,6 @@ public class CourtControllerTest {
         // GIVEN
         LocalDateTime now = LocalDateTime.now();
 
-        court=courtService.getCourt(1L);
-        Court tempCourt=courtService.getCourt(2L);
 
         reservation = Reservation.builder()
                 .user(user)
@@ -291,7 +289,7 @@ public class CourtControllerTest {
 
         reservation = Reservation.builder()
                 .user(user)
-                .court(tempCourt)
+                .court(court)
                 .startTime(now)
                 .endTime(now)
                 .hasBall(false)
@@ -329,15 +327,15 @@ public class CourtControllerTest {
                 .andDo(document("AllCourt-select",
                         responseFields(
 
-                fieldWithPath("courtName").type(JsonFieldType.STRING).description("코트 이름"),
-                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("위도"),
-                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("경도"),
-                fieldWithPath("image").type(JsonFieldType.STRING).description("코트 이미지"),
-                fieldWithPath("texture").type(JsonFieldType.STRING).description("코트 재질"),
-                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
-                fieldWithPath("courtReservation").type(JsonFieldType.NUMBER).description("농구장 준비상태"),
-                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
-                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                                fieldWithPath("courtName").type(JsonFieldType.STRING).description("코트 이름"),
+                                fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("위도"),
+                                fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("경도"),
+                                fieldWithPath("image").type(JsonFieldType.STRING).description("코트 이미지"),
+                                fieldWithPath("texture").type(JsonFieldType.STRING).description("코트 재질"),
+                                fieldWithPath("basketCount").type(JsonFieldType.NUMBER).description("골대 갯수"),
+                                fieldWithPath("courtReservation").type(JsonFieldType.NUMBER).description("농구장 준비상태"),
+                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }

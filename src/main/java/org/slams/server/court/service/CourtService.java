@@ -47,25 +47,22 @@ public class CourtService {
 
 
     @Transactional
-    public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long id) {
+    public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long userId) {
         // user검색후 없으면 반환
-        User user = getUser(id);
-
-
         request.setImage(awsS3Uploader.upload(request.getImage(),"court"));
-
         NewCourt newCourt = request.insertRequestDtoToEntity(request);
+
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new org.slams.server.user.exception.UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
 
         newCourtRepository.save(newCourt);
         return new CourtInsertResponseDto(newCourt);
-    }
 
 
-    @Transactional
-    public User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
     }
 
 
@@ -86,21 +83,18 @@ public class CourtService {
     }
 
 
-    @Transactional
-    public Court getCourt(Long CourtId) {
-        return courtRepository.findById(CourtId)
-                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
-
-    }
-
 
     @Transactional
     public List<CourtReservationResponseDto> findCourtReservations(Long courtId, String date, Long userId) {
 
-        // User 검색
-        User user = getUser(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new org.slams.server.user.exception.UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+
         // court 검색
-        Court court=getCourt(courtId);
+        Court court=courtRepository.findById(courtId)
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
 
         LocalDate dateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
         LocalDateTime startLocalDateTime=dateTime.atStartOfDay();
@@ -193,15 +187,5 @@ public class CourtService {
 
         return doubleValue;
     }
-
-
-
-
-
-
-
-
-
-
 
 }
