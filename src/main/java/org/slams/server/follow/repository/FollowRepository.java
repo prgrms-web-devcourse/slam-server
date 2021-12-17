@@ -33,4 +33,10 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 	List<Follow> findByFollowerIdAndIdLessThanOrderByIdDesc(
 		@Param("followerId") Long followerId,@Param("lastId") Long lastId, Pageable pageable);
 
+	// 팔로우 관계를 맺고있는지 확인
+	Boolean existsByFollowerAndFollowing(User follower, User following);
+
+	// 팔로우 관계 삭제
+	void deleteByFollowerAndFollowing(User follower, User following);
+
 }
