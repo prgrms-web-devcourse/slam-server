@@ -25,7 +25,6 @@ public class ReservationUpdateResponseDto extends BaseResponse {
         startTime=reservation.getStartTime();
         endTime=reservation.getEndTime();
         hasBall=reservation.isHasBall();
-
     }
 
 
