@@ -12,6 +12,7 @@ import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.dto.response.CourtReservationResponseDto;
 import org.slams.server.court.service.CourtService;
+import org.slams.server.court.service.NewCourtService;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
