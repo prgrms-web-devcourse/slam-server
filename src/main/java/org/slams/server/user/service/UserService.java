@@ -50,28 +50,6 @@ public class UserService {
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-//		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
-//			.userId(1L)
-//			.userNickname("젤리")
-//			.userImage("https://team14-slam.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%82%E1%85%A1.png")
-//			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
-//		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
-//			.courtInfo(
-//				CourtInfo.builder()
-//					.id(3L)
-//					.name("용산구 농구장")
-//					.latitude(123)
-//					.longitude(456)
-//					.image("https://team14-slam.s3.ap-northeast-2.amazonaws.com/court_dummy/court1.jpg")
-//					.basketCount(4)
-//					.texture(Texture.ASPHALT)
-//					.build()
-//			)
-//			.startTime(13)
-//			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
-//
-//		List<NotificationResponse> notifications = List.of(followNotification, loudspeakerNotification);
-
 		List<NotificationResponse> top10Notifications = notificationService.getTop10Notification(user.getId());
 
 		return DefaultUserInfoResponse.toResponse(user, top10Notifications);
