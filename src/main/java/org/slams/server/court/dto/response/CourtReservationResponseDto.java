@@ -33,4 +33,5 @@ public class CourtReservationResponseDto {
         hasBall=reservation.isHasBall();
     }
 
+
 }
