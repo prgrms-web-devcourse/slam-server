@@ -23,9 +23,9 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
     @JsonProperty("loudspeakerInfo")
     private final LoudspeakerInfo loudspeakerInfo;
 
-    private final boolean isRead;
+    private final Boolean isRead;
 
-    private final boolean isClicked;
+    private final Boolean isClicked;
 
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
