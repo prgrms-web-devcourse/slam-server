@@ -46,7 +46,6 @@ public class CourtService {
 
 
 
-
     @Transactional
     public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long id) {
         // user검색후 없으면 반환
@@ -126,11 +125,6 @@ public class CourtService {
 //                .collect(Collectors.toList());
 
     }
-
-
-
-
-
 
 
 
