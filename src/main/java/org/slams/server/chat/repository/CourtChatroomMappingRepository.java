@@ -14,4 +14,9 @@ public interface CourtChatroomMappingRepository extends JpaRepository<CourtChatr
     void updateUpdatedAtByCourtId(
       @Param("courtId") Long courtId
     );
+
+    @Query("SELECT c FROM CourtChatroomMapping c WHERE c.court.id=:courtId")
+    CourtChatroomMapping findByCourtId(
+            @Param("courtId") Long courtId
+    );
 }

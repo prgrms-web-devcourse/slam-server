@@ -1,4 +1,4 @@
-package org.slams.server.chat.dto;
+package org.slams.server.chat.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

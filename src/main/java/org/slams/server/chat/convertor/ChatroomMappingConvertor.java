@@ -1,6 +1,6 @@
 package org.slams.server.chat.convertor;
 
-import org.slams.server.chat.dto.ChatroomResponse;
+import org.slams.server.chat.dto.response.ChatroomResponse;
 import org.slams.server.chat.entity.UserChatroomMapping;
 import org.springframework.stereotype.Component;
 

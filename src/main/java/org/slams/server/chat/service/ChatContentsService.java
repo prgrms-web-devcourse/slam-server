@@ -2,8 +2,8 @@ package org.slams.server.chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.slams.server.chat.convertor.ChatContentConvertor;
-import org.slams.server.chat.dto.ChatContentsRequest;
-import org.slams.server.chat.dto.ChatContentsResponse;
+import org.slams.server.chat.dto.request.ChatContentsRequest;
+import org.slams.server.chat.dto.response.ChatContentsResponse;
 import org.slams.server.chat.entity.*;
 import org.slams.server.chat.repository.ChatContentsRepository;
 import org.slams.server.chat.repository.CourtChatroomMappingRepository;
@@ -12,7 +12,6 @@ import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
-import org.slams.server.notification.entity.LoudSpeakerNotification;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

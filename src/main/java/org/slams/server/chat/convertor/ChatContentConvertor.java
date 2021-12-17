@@ -1,15 +1,13 @@
 package org.slams.server.chat.convertor;
 
-import org.slams.server.chat.dto.ChatContentsRequest;
-import org.slams.server.chat.dto.ChatContentsResponse;
-import org.slams.server.chat.dto.ConversationInfo;
-import org.slams.server.chat.dto.LoudSpeakerInfo;
+import org.slams.server.chat.dto.response.ChatContentsResponse;
+import org.slams.server.chat.dto.response.ConversationInfo;
+import org.slams.server.chat.dto.response.LoudSpeakerInfo;
 import org.slams.server.chat.entity.ChatContents;
 import org.slams.server.chat.entity.ChatType;
 import org.slams.server.chat.exception.InvalidChatTypeException;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,6 +1,7 @@
 package org.slams.server.chat.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
@@ -26,4 +27,17 @@ public class CourtChatroomMapping extends BaseEntity {
     @JoinColumn(name = "court_id", referencedColumnName = "id", nullable = false)
     private Court court;
 
+    @Builder
+    public CourtChatroomMapping(Long id, Court court){
+        this.id = id;
+        this.court = court;
+    }
+
+    private CourtChatroomMapping(Court court){
+        this.court = court;
+    }
+
+    public static CourtChatroomMapping of(Court court){
+        return new CourtChatroomMapping(court);
+    }
 }
