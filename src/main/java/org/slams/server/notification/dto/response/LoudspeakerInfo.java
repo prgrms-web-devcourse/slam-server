@@ -1,5 +1,6 @@
 package org.slams.server.notification.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,6 +12,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 public class LoudspeakerInfo {
+
+    @JsonProperty("courtInfo")
     private final CourtInfo courtInfo;
     private final int startTime;
 
