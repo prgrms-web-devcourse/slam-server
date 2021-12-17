@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "chat_conversation_contents")
-public class ChatConversationContents extends BaseEntity {
+public class ChatConversationContent extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -31,7 +31,7 @@ public class ChatConversationContents extends BaseEntity {
     private long userId;
 
     @Builder
-    public ChatConversationContents(
+    public ChatConversationContent(
             Long id,
             String content,
             long userId
@@ -45,7 +45,7 @@ public class ChatConversationContents extends BaseEntity {
         this.userId = userId;
     }
 
-    private ChatConversationContents(String content, long userId){
+    private ChatConversationContent(String content, long userId){
         checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
         checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
 
@@ -53,8 +53,8 @@ public class ChatConversationContents extends BaseEntity {
         this.userId = userId;
     }
 
-    public static ChatConversationContents of(String content, long userId){
-        return new ChatConversationContents(content, userId);
+    public static ChatConversationContent of(String content, long userId){
+        return new ChatConversationContent(content, userId);
     }
 
 }

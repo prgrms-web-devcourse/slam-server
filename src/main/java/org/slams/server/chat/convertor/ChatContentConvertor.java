@@ -1,5 +1,6 @@
 package org.slams.server.chat.convertor;
 
+import org.slams.server.chat.dto.ChatContentsRequest;
 import org.slams.server.chat.dto.ChatContentsResponse;
 import org.slams.server.chat.dto.ConversationInfo;
 import org.slams.server.chat.dto.LoudSpeakerInfo;
@@ -35,8 +36,8 @@ public class ChatContentConvertor {
                     .createdAt(chatContents.getCreatedAt())
                     .updatedAt(chatContents.getCreatedAt())
                     .conversationInfo(ConversationInfo.builder()
-                            .content(chatContents.getChatConversationContents().getContent())
-                            .userId(chatContents.getChatConversationContents().getUserId())
+                            .content(chatContents.getChatConversationContent().getContent())
+                            .userId(chatContents.getChatConversationContent().getUserId())
                             .build()
                     )
                     .build();
@@ -47,7 +48,7 @@ public class ChatContentConvertor {
                     .createdAt(chatContents.getCreatedAt())
                     .updatedAt(chatContents.getUpdateAt())
                     .loudSeapkerInfo(LoudSpeakerInfo.builder()
-                            .startTime(chatContents.getChatLoudSpeakerContents().getStartTime())
+                            .startTime(chatContents.getChatLoudSpeakerContent().getStartTime())
                             .build()
                     )
                     .build();
@@ -55,6 +56,7 @@ public class ChatContentConvertor {
 
         throw new InvalidChatTypeException("유효한 chat type이 아닙니다.");
     }
+
 
 
 }
