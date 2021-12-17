@@ -73,5 +73,11 @@ public class Court extends BaseEntity {
     }
 
 
+    // Court - Favorte 양방향 매핑
+
+
+
+
+
 
 }

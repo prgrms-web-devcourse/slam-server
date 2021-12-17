@@ -235,7 +235,7 @@ public class CourtControllerTest {
         courtRepository.save(court);
 
 
-        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts//all")
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts/all")
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
 

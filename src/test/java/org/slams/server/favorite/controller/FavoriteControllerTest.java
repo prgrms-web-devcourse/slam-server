@@ -1,4 +1,4 @@
-package org.slams.server.reservation.controller;
+package org.slams.server.favorite.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +7,10 @@ import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.service.CourtService;
+import org.slams.server.favorite.dto.request.FavoriteInsertRequestDto;
+import org.slams.server.favorite.entity.Favorite;
+import org.slams.server.favorite.repository.FavoriteRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
-import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.reservation.service.ReservationService;
@@ -30,11 +32,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -44,14 +46,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Slf4j
-public class ReservationControllerTest {
-
+public class FavoriteControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -62,7 +63,7 @@ public class ReservationControllerTest {
 
     private User user;
     private Court court;
-    private Reservation reservation;
+    private Favorite favorite;
 
     @Autowired
     private UserRepository userRepository;
@@ -74,13 +75,19 @@ public class ReservationControllerTest {
     private CourtRepository courtRepository;
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private FavoriteRepository favoriteRepository;
+
+
 
 
     LocalDateTime now = LocalDateTime.now();
 
     // JWT 추가 코드
     private String jwtToken;
+
+
+    private Long COURT_ID=1L;
+    private Long FAVORITE_ID;
 
     @BeforeEach
     void setUp() throws Exception{
@@ -153,12 +160,18 @@ public class ReservationControllerTest {
         courtRepository.save(court);
 
 
+        favorite=Favorite.of(court,user);
+        FAVORITE_ID=favoriteRepository.save(favorite).getId();
+
+
+
     }
 
 
+    // 즐겨찾기 추가
     // 생성한 코트에 예약 해보기
     @Test
-    @DisplayName("[POST] '/api/v1/reservations'")
+    @DisplayName("[POST] '/api/v1/favorite'")
     @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
@@ -166,12 +179,10 @@ public class ReservationControllerTest {
         LocalDateTime start=now.plusDays(1);
         LocalDateTime end=now.plusDays(1);
 
-        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
-                .courtId(1L)
-                .startTime(start)
-                .endTime(end)
-                .hasBall(false)
-                .build();
+//        FavoriteInsertRequestDto givenRequest = FavoriteInsertRequestDto.builder()
+//                .courtId(1L)
+//                .build();
+        FavoriteInsertRequestDto givenRequest=new FavoriteInsertRequestDto(COURT_ID);
 
 
         log.info(givenRequest.toString());
@@ -182,7 +193,7 @@ public class ReservationControllerTest {
 //        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
 //        given(reservationService.insert(any(), any()));
 
-        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations/")
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/favorites")
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
@@ -193,18 +204,12 @@ public class ReservationControllerTest {
                 .andDo(print())
                 .andDo(document("reservation-save",
                         requestFields(
-                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
-                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
-                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
-                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부")
+                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디")
                         ),
                         responseFields(
-                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+                                fieldWithPath("favoriteId").type(JsonFieldType.NUMBER).description("예약 아이디"),
                                 fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
                                 fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
-                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
-                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
-                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부"),
                                 fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
                                 fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
@@ -212,104 +217,50 @@ public class ReservationControllerTest {
     }
 
 
-    //  변경하기
+
+
+    // 즐겨찾기 조회
     @Test
-    @DisplayName("[PATCH] '/api/v1/reservations/{reservationId}'")
     @Order(2)
-    void testUpdateCall() throws Exception {
-        // 위에서 만든 예약을 변경하기
-        // 예약정보 조회
+    @DisplayName("[GET] '/api/v1/favorites")
+    @Transactional
+    void testAllCourt() throws Exception {
         // GIVEN
-        LocalDateTime start=now.plusDays(5);
-        LocalDateTime end=now.plusDays(5);
-        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
-                .courtId(1L)
-                .startTime(start)
-                .endTime(end)
-                .hasBall(false)
-                .build();
 
 
-        Reservation reservation=new Reservation(givenRequest);
-        reservation.addReservation(court,user);
-
-        Reservation save = reservationRepository.save(reservation);
-        Long reservationId=save.getId();
-
-//        log.info(reservationRepository.findById(reservationId).toString());
-
-
-//        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
-//        given(reservationService.insert(any(), any()));
-
-
-        LocalDateTime changeStart=now.plusDays(10);
-        LocalDateTime changeEnd=now.plusDays(10);
-
-        ReservationUpdateRequestDto updateRequest=ReservationUpdateRequestDto.builder()
-                .reservationId(reservationId)
-                .endTime(changeStart)
-                .startTime(changeEnd)
-                .hasBall(true)
-                .build();
-
-
-        RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+reservationId)
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/favorites")
                 .header("Authorization",jwtToken)
-                .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/formdata
-                .content(objectMapper.writeValueAsString(updateRequest));
+                .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
 
         // WHEN // THEN
         mockMvc.perform(request)
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("reservation-update",
-                        requestFields(
-                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
-                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
-                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
-                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부")
-                        ),
+                .andDo(document("favorites-select",
                         responseFields(
-                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
-                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
-                                fieldWithPath("startTime").type(JsonFieldType.STRING).description("코트 시작시간"),
-                                fieldWithPath("endTime").type(JsonFieldType.STRING).description("농구 종료시간"),
-                                fieldWithPath("hasBall").type(JsonFieldType.BOOLEAN).description("농구공 여부"),
-                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
-                                fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                                fieldWithPath("favorites").type(JsonFieldType.ARRAY).description("즐겨찾기"),
+                                fieldWithPath("favorites.[].favoriteId").type(JsonFieldType.NUMBER).description("즐겨찾기 아이디"),
+                                fieldWithPath("favorites.[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 아이디"),
+                                fieldWithPath("favorites.[].courtName").type(JsonFieldType.STRING).description("즐겨찾기 한 코트 이름"),
+                                fieldWithPath("favorites.[].latitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 위도"),
+                                fieldWithPath("favorites.[].longitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 경도"),
+                                fieldWithPath("favorites.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
+                                fieldWithPath("favorites.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
                         )
                 ));
     }
 
-    // 삭제하기
+
+
+    // 즐겨찾기 삭제
     @Test
-    @DisplayName("[DELETE] '/api/v1/reservations/{reservationId}'")
+    @DisplayName("[DELETE] '/api/v1/favorites/{favoriteId}'")
     @Order(3)
-    @Disabled
     void testDelete() throws Exception {
-        // 위에서 만든 예약을 변경하기
-        // 예약정보 조회
-        // GIVEN
-        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
-                .courtId(1L)
-                .startTime(now)
-                .endTime(now)
-                .hasBall(false)
-                .build();
-
-
-        Reservation reservation=new Reservation(givenRequest);
-        reservation.addReservation(court,user);
-
-        Reservation save = reservationRepository.save(reservation);
-        Long reservationId=save.getId();
-
-//        log.info(reservationRepository.findById(reservationId).toString());
 
 
 
-        mockMvc.perform(delete("/api/v1/reservations/{reservationId}", reservation.getId())
+        mockMvc.perform(delete("/api/v1/favorites/{favoriteId}", FAVORITE_ID)
                         .header("Authorization",jwtToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
@@ -318,16 +269,14 @@ public class ReservationControllerTest {
                 .andDo(
                         document("reservation/delete", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
                                 pathParameters(
-                                        parameterWithName("reservationId").description("삭제 요청 reservation 아이디")
+                                        parameterWithName("favoriteId").description("삭제 요청 즐겨찾기 아이디")
                                 ),
                                 responseFields(
-                                        fieldWithPath("reservationId").description("사제된 reservation 아이디")
+                                        fieldWithPath("favoriteId").type(JsonFieldType.NUMBER).description("즐겨찾기 아이디")
                                 )
                         )
                 );
     }
-
-
 
 
 

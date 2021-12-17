@@ -8,6 +8,7 @@ import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.CourtDetailResponseDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.service.CourtService;
+import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slams.server.user.service.UserService;
@@ -55,6 +56,7 @@ public class CourtController {
 
         Map<String,Object>result=new HashMap<>();
         result.put("courts",courtService.findAll());
+
 
         return ResponseEntity.ok().body(result);
     }
