@@ -174,4 +174,17 @@ public class NotificationService {
             followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<NotificationResponse> getTop10Notification(Long userId){
+        PageRequest pageable = PageRequest.of(0, 10);
+        List<String> messageIdList = notificationRepository.findMessageIdByUserByCreated(userId, pageable);
+
+        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIdList);
+        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIdList);
+
+        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
+                notificationConvertor.toDtoListForFollowNotification(followNotificationList),
+                notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    }
 }
