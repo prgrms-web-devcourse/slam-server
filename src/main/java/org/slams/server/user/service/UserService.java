@@ -3,8 +3,15 @@ package org.slams.server.user.service;
 import lombok.RequiredArgsConstructor;
 import org.slams.server.common.utils.AwsS3Uploader;
 
+import org.slams.server.court.entity.Texture;
 import org.slams.server.favorite.repository.FavoriteRepository;
 import org.slams.server.follow.repository.FollowRepository;
+import org.slams.server.notification.dto.response.CourtInfo;
+import org.slams.server.notification.dto.response.FollowerInfo;
+import org.slams.server.notification.dto.response.LoudspeakerInfo;
+import org.slams.server.notification.dto.response.NotificationResponse;
+import org.slams.server.notification.entity.NotificationIndex;
+import org.slams.server.notification.entity.NotificationType;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
@@ -14,10 +21,15 @@ import org.slams.server.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.Notification;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.slams.server.notification.entity.NotificationType.FOLLOWING;
+import static org.slams.server.notification.entity.NotificationType.LOUDSPEAKER;
 
 @Transactional(readOnly = true)
 @Service
@@ -30,12 +42,34 @@ public class UserService {
 
 	private final AwsS3Uploader awsS3Uploader;
 
-	public DefaultUserInfoResponse getDefaultInfo(Long userId){
+	public DefaultUserInfoResponse getDefaultInfo(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		return DefaultUserInfoResponse.toResponse(user, Collections.emptyList());
+		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
+			.userId(1L)
+			.userNickname("젤리")
+			.userImage("젤리 이미지")
+			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
+		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
+			.courtInfo(
+				CourtInfo.builder()
+					.id(3L)
+					.name("용산구 농구장")
+					.latitude(123)
+					.longitude(456)
+					.image("농구장 이미지")
+					.basketCount(4)
+					.texture(Texture.ASPHALT)
+					.build()
+			)
+			.startTime(13)
+			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
+
+		List<NotificationResponse> notifications = List.of(followNotification, loudspeakerNotification);
+
+		return DefaultUserInfoResponse.toResponse(user, notifications);
 	}
 
 	@Transactional
