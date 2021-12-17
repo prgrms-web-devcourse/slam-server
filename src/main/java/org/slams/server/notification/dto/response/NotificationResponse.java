@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @JsonNaming(value = PropertyNamingStrategies.KebabCaseStrategy.class)
 public class NotificationResponse implements Comparable<NotificationResponse>{
     private final NotificationType type;
+
     private final FollowerInfo followerInfo;
     private final LoudspeakerInfo loudspeakerInfo;
 

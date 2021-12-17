@@ -51,7 +51,6 @@ public class WebSocketController {
         // userId 추출
         String testUserId = token;
         // token 유효성 검사
-
         websoket.convertAndSend("/topic/teston", message.getUserId());
     }
 
