@@ -360,16 +360,19 @@ public class CourtControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("favorites-select",
+                .andDo(document("reservationsByDateByCourt-select",
                         responseFields(
-                                fieldWithPath("favorites").type(JsonFieldType.ARRAY).description("즐겨찾기"),
-                                fieldWithPath("favorites.[].favoriteId").type(JsonFieldType.NUMBER).description("즐겨찾기 아이디"),
-                                fieldWithPath("favorites.[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 아이디"),
-                                fieldWithPath("favorites.[].courtName").type(JsonFieldType.STRING).description("즐겨찾기 한 코트 이름"),
-                                fieldWithPath("favorites.[].latitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 위도"),
-                                fieldWithPath("favorites.[].longitude").type(JsonFieldType.NUMBER).description("즐겨찾기 한 코트 경도"),
-                                fieldWithPath("favorites.[].createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
-                                fieldWithPath("favorites.[].updatedAt").type(JsonFieldType.STRING).description("코트 수정일자")
+                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
+                                fieldWithPath("date").type(JsonFieldType.STRING).description("예약 일자"),
+                                fieldWithPath("reservations").type(JsonFieldType.ARRAY).description("data"),
+                                fieldWithPath("reservations.[].reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+                                fieldWithPath("reservations.[].courtId").type(JsonFieldType.NUMBER).description("예약한 코트 아이디"),
+                                fieldWithPath("reservations.[].userId").type(JsonFieldType.NUMBER).description("예약한 유저 아이디"),
+                                fieldWithPath("reservations.[].avatarImgSrc").type(JsonFieldType.STRING).description("예약한 유저의 아바타 이미지"),
+                                fieldWithPath("reservations.[].courtId").type(JsonFieldType.NUMBER).description("예약한 코트 아이디"),
+                                fieldWithPath("reservations.[].startTime").type(JsonFieldType.STRING).description("예약한 코트의 시작시간"),
+                                fieldWithPath("reservations.[].endTime").type(JsonFieldType.STRING).description("예약한 코트의 종료시간"),
+                                fieldWithPath("reservations.[].hasBall").type(JsonFieldType.BOOLEAN).description("예약한 코트의 공 유무")
                         )
                 ));
     }
