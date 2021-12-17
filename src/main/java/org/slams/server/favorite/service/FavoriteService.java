@@ -49,15 +49,10 @@ public class FavoriteService {
         // 코트 검색 후 없으면 반환
         Court court=getCourt(favoriteInsertRequestDto.getCourtId());
 
-//        Favorite favorite = Favorite.of(court,user);
-//        Favorite favorite=favoriteInsertRequestDto.insertRequestDtoToEntity(user,court);
         Favorite favorite1=Favorite.of(court,user);
-
         Favorite save = favoriteRepository.save(favorite1);
 
         return new FavoriteInsertResponseDto(save);
-
-
 
     }
 

@@ -352,6 +352,7 @@ public class CourtControllerTest {
 
 //        http://localhost:8080/api/v1/courts/detail/1/reservations/2021-12-18
 
+
         RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/courts/detail/"+1+"/reservations/"+"2021-12-18")
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data

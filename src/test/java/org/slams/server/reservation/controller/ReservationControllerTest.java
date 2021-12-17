@@ -9,6 +9,7 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
+import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.reservation.service.ReservationService;
@@ -326,6 +327,108 @@ public class ReservationControllerTest {
                         )
                 );
     }
+
+
+    // 코트 1개당 3번 예약하기
+    // 4,5,6번 코트 사용
+    @Test
+    @DisplayName("[POST] '/api/v1/reservations'")
+    @Order(1)
+    void InsertReservation() throws Exception {
+        // GIVEN
+
+        // User 생성
+        user = User.builder()
+                .nickname("test")
+                .email("sds1zzang@naver.com")
+                .id(1L)
+                .socialId("1L")
+                .description("my name is sds")
+                .profileImage("desktop Image")
+                .role(Role.USER)
+                .proficiency(Proficiency.INTERMEDIATE.BEGINNER)
+                .positions(Arrays.asList(Position.PF))
+                .build();
+
+        user.setCreatedAt(now);
+        user.setUpdateAt(now);
+        userRepository.save(user);
+
+        LocalDateTime start=now;
+        LocalDateTime end=now.plusMonths(1);
+
+        Court court1 = courtRepository.getById(3L);
+        Court court2 = courtRepository.getById(4L);
+        Court court3 = courtRepository.getById(5L);
+
+        Reservation reservation1=Reservation.builder()
+                .court(court1)
+                .startTime(start)
+                .endTime(now.plusHours(1))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+        reservationRepository.save(reservation1);
+
+        Reservation reservation2=Reservation.builder()
+                .court(court1)
+                .startTime(start)
+                .endTime(now.plusHours(1))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+
+        reservationRepository.save(reservation2);
+
+        Reservation reservation3=Reservation.builder()
+                .court(court1)
+                .startTime(start)
+                .endTime(now.plusHours(1))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+        reservationRepository.save(reservation3);
+
+
+        Reservation reservation4=Reservation.builder()
+                .court(court2)
+                .startTime(start)
+                .endTime(now.plusHours(2))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+        reservationRepository.save(reservation4);
+
+        Reservation reservation5=Reservation.builder()
+                .court(court2)
+                .startTime(start)
+                .endTime(now.plusHours(2))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+
+        reservationRepository.save(reservation5);
+
+
+        Reservation reservation6=Reservation.builder()
+                .court(court3)
+                .startTime(start)
+                .endTime(now.plusHours(3))
+                .hasBall(false)
+                .user(user)
+                .build();
+
+        reservationRepository.save(reservation6);
+
+
+    }
+
+
 
 
 
