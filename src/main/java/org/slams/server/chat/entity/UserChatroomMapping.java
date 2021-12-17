@@ -31,33 +31,33 @@ public class UserChatroomMapping extends BaseEntity {
     private User user;
 
     @OneToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "court_id", referencedColumnName = "id", nullable = false)
-    private Court court;
+    @JoinColumn(name = "chatroom_id", referencedColumnName = "id", nullable = false)
+    private CourtChatroomMapping courtChatroomMapping;
 
 
-    private UserChatroomMapping(User user, Court court){
-        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
+    private UserChatroomMapping(User user, CourtChatroomMapping courtChatroomMapping){
+        checkArgument(courtChatroomMapping==null, "courtChatroomMapping는 null을 허용하지 않습니다.");
         checkArgument(user==null, "user는 null을 허용하지 않습니다.");
         this.user = user;
-        this.court = court;
+        this.courtChatroomMapping = courtChatroomMapping;
     }
 
     @Builder
     public UserChatroomMapping(
             Long id,
             User user,
-            Court court
+            CourtChatroomMapping courtChatroomMapping
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
+        checkArgument(courtChatroomMapping==null, "courtChatroomMapping 는 null을 허용하지 않습니다.");
         checkArgument(user==null, "user는 null을 허용하지 않습니다.");
 
         this.id = id;
         this.user = user;
-        this.court = court;
+        this.courtChatroomMapping = courtChatroomMapping;
     }
 
-    public static UserChatroomMapping of(User user, Court court){
-        return new UserChatroomMapping(user, court);
+    public static UserChatroomMapping of(User user, CourtChatroomMapping courtChatroomMapping){
+        return new UserChatroomMapping(user, courtChatroomMapping);
     }
 }

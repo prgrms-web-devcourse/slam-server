@@ -11,16 +11,16 @@ import java.util.List;
 /**
  * Created by yunyun on 2021/12/16.
  */
-public interface UserChatRoomMappingRepository extends JpaRepository<UserChatroomMapping, Long> {
+public interface UserChatroomMappingRepository extends JpaRepository<UserChatroomMapping, Long> {
 
-    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId AND u.id >= :lastId ORDER BY u.createdAt ASC")
+    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId AND u.id >= :lastId ORDER BY u.courtChatroomMapping.updateAt ASC")
     List<UserChatroomMapping> findAllByUserIdMoreThenLastIdByCreated(
             @Param("userId") Long userId,
             @Param("lastId") Long lastId,
             Pageable pageable
     );
 
-    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId ORDER BY u.createdAt ASC")
+    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId ORDER BY u.courtChatroomMapping.updateAt ASC")
     List<UserChatroomMapping> findAllByUserIdByCreated(
             @Param("userId") Long userId,
             Pageable pageable

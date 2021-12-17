@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.slams.server.chat.convertor.ChatContentConvertor;
 import org.slams.server.chat.dto.ChatContentsRequest;
 import org.slams.server.chat.dto.ChatContentsResponse;
-import org.slams.server.chat.entity.ChatContents;
-import org.slams.server.chat.entity.ChatConversationContent;
-import org.slams.server.chat.entity.ChatLoudSpeakerContent;
-import org.slams.server.chat.entity.ChatType;
+import org.slams.server.chat.entity.*;
 import org.slams.server.chat.repository.ChatContentsRepository;
+import org.slams.server.chat.repository.CourtChatroomMappingRepository;
 import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
@@ -32,6 +30,7 @@ public class ChatContentsService {
     private final ChatContentsRepository chatContentsRepository;
     private final ChatContentConvertor chatContentConvertor;
     private final CourtRepository courtRepository;
+    private final CourtChatroomMappingRepository courtChatroomMappingRepository;
 
     public List<ChatContentsResponse> findChatContentsListByCourtOrderByCreatedAt(Long courtId, CursorPageRequest cursorRequest){
         return chatContentConvertor.toDtoList(
@@ -53,6 +52,7 @@ public class ChatContentsService {
                 )
         );
         chatContentsRepository.save(chatContents);
+        courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
         return chatContents;
     }
 
@@ -69,7 +69,7 @@ public class ChatContentsService {
                 )
         );
         chatContentsRepository.save(chatContents);
-
+        courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
         return chatContents;
     }
 
