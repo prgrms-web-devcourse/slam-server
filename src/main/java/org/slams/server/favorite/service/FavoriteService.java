@@ -71,6 +71,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+
     public FavoriteDeleteResponseDto delete(Long userId, Long favoriteId) {
         User user =getUser(userId);
 

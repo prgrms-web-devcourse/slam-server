@@ -182,7 +182,7 @@ public class ReservationControllerTest {
 //        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
 //        given(reservationService.insert(any(), any()));
 
-        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations/")
+        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations")
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
                 .content(objectMapper.writeValueAsString(givenRequest));
