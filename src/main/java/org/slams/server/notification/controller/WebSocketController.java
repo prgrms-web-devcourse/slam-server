@@ -6,6 +6,7 @@ import org.slams.server.notification.dto.WebSocketTestDto;
 import org.slams.server.notification.dto.request.FollowNotificationRequest;
 import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
 import org.slams.server.notification.service.NotificationService;
+import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class WebSocketController {
     private final NotificationService notificationService;
     private final CourtService courtService;
     private final SimpMessagingTemplate websoket;
+    private final ReservationRepository reservationRepository;
 
     private final Jwt jwt;
 
@@ -37,11 +39,13 @@ public class WebSocketController {
             SimpMessagingTemplate websoket,
             Jwt jwt,
             NotificationService notificationService,
-            CourtService courtService){
+            CourtService courtService,
+            ReservationRepository reservationRepository){
         this.websoket = websoket;
         this.jwt = jwt;
         this.notificationService = notificationService;
         this.courtService = courtService;
+        this.reservationRepository = reservationRepository;
     }
 
     @MessageMapping("/object")
@@ -92,12 +96,7 @@ public class WebSocketController {
             SimpMessageHeaderAccessor headerAccessor
     ){
         Long userId = findTokenFromHeader(headerAccessor);
-        List<Long> bookerIds = courtService
-                .getCourt(request.getCourtId())
-                .getReservations()
-                .stream()
-                .map(v-> v.getUser().getId())
-                .collect(Collectors.toList());
+        List<Long> bookerIds = reservationRepository.findBeakerIdByCourtId(request.getCourtId());
 
         for (Long bookId : bookerIds){
             String messageId = notificationService.saveForLoudSpeakerNotification(request, bookId);

@@ -35,8 +35,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endLocalDateTime") LocalDateTime endLocalDateTime
            );
 
-
-
+    @Query("SELECT r.user.id FROM Reservation r WHERE r.court.id=:courtId")
+    List<Long> findBeakerIdByCourtId(
+            @Param("courtId") Long courtId
+    );
 
 
 }
