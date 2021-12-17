@@ -1,6 +1,8 @@
 package org.slams.server.notification.controller;
 
 import org.slams.server.court.service.CourtService;
+import org.slams.server.follow.repository.FollowRepository;
+import org.slams.server.follow.service.FollowService;
 import org.slams.server.notification.Exception.TokenNotFountException;
 import org.slams.server.notification.dto.WebSocketTestDto;
 import org.slams.server.notification.dto.request.FollowNotificationRequest;
@@ -32,6 +34,7 @@ public class WebSocketController {
     private final CourtService courtService;
     private final SimpMessagingTemplate websoket;
     private final ReservationRepository reservationRepository;
+    private final FollowService followService;
 
     private final Jwt jwt;
 
@@ -40,12 +43,14 @@ public class WebSocketController {
             Jwt jwt,
             NotificationService notificationService,
             CourtService courtService,
-            ReservationRepository reservationRepository){
+            ReservationRepository reservationRepository,
+            FollowService followService){
         this.websoket = websoket;
         this.jwt = jwt;
         this.notificationService = notificationService;
         this.courtService = courtService;
         this.reservationRepository = reservationRepository;
+        this.followService = followService;
     }
 
     @MessageMapping("/object")
@@ -68,8 +73,7 @@ public class WebSocketController {
             ){
         Long userId = findTokenFromHeader(headerAccessor);
 
-        /** follow 데이터 저장 추가해야함**/
-
+        followService.follow(userId, message.getReceiverId());
         String messageId = notificationService.saveForFollowNotification(message, userId);
 
         websoket.convertAndSend(
@@ -85,8 +89,7 @@ public class WebSocketController {
     ){
         Long userId = findTokenFromHeader(headerAccessor);
 
-        /** follow 데이터 삭제 추가해야함**/
-
+        followService.unfollow(userId, message.getReceiverId());
         notificationService.deleteFollowNotification(message, userId);
     }
 
