@@ -61,21 +61,18 @@ public class CourtService {
     }
 
 
-    @Transactional
-    public Court getCourt(Long CourtId) {
-        return courtRepository.findById(CourtId)
-                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
-
-    }
-
 
     @Transactional
     public List<CourtReservationResponseDto> findCourtReservations(Long courtId, String date, Long userId) {
 
-        // User 검색
-        User user = getUser(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new org.slams.server.user.exception.UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+
         // court 검색
-        Court court=getCourt(courtId);
+        Court court=courtRepository.findById(courtId)
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
 
         LocalDate dateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
         LocalDateTime startLocalDateTime=dateTime.atStartOfDay();
@@ -159,6 +156,7 @@ public class CourtService {
     }
 
 
+
     public List<Double> changeValue(List<String> value) {
         List<Double> doubleValue=new ArrayList<>();
 
@@ -168,15 +166,5 @@ public class CourtService {
 
         return doubleValue;
     }
-
-
-
-
-
-
-
-
-
-
 
 }

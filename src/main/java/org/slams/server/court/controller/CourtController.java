@@ -46,6 +46,7 @@ public class CourtController {
 
 
         return new ResponseEntity<CourtInsertResponseDto>(newCourtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
+
     }
 
 

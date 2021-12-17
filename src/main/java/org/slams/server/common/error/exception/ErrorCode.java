@@ -32,6 +32,7 @@ public enum ErrorCode {
 	// Favorite
 	NOT_EXIST_FAVORITE(404,"존재하지 않는 즐겨찾기입니다.")
 
+
 	// Follow
 	FOLLOW_ALREADY_EXIST(400, "Follow Already Exists"),
 	FOLLOW_NOT_FOUND(400, "Follow Not Found")

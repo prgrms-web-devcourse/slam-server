@@ -43,11 +43,14 @@ public class FavoriteService {
 
 
     @Transactional
-    public FavoriteInsertResponseDto insert(FavoriteInsertRequestDto favoriteInsertRequestDto, Long id) {
+    public FavoriteInsertResponseDto insert(FavoriteInsertRequestDto favoriteInsertRequestDto, Long userId) {
         // User 검색 후 없으면 반환
-        User user = getUser(id);
+        User user =userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
         // 코트 검색 후 없으면 반환
-        Court court=getCourt(favoriteInsertRequestDto.getCourtId());
+        Court court=courtRepository.findById(favoriteInsertRequestDto.getCourtId())
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
 
         Favorite favorite1=Favorite.of(court,user);
         Favorite save = favoriteRepository.save(favorite1);
@@ -58,8 +61,11 @@ public class FavoriteService {
 
 
     // 내가 즐겨찾기 한 코트 검색
+    @Transactional
     public List<FavoriteSelectResponseDto> getAll(Long userId) {
-        User user =getUser(userId);
+        User user =userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
         return favoriteRepository.findAllByUser(user).stream()
                 .map(FavoriteSelectResponseDto::new)
@@ -67,8 +73,11 @@ public class FavoriteService {
     }
 
 
+    @Transactional
     public FavoriteDeleteResponseDto delete(Long userId, Long favoriteId) {
-        User user =getUser(userId);
+        User user =userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
         Favorite reservation= favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_FAVORITE.getMessage()));
@@ -77,23 +86,6 @@ public class FavoriteService {
         return new FavoriteDeleteResponseDto(favoriteId);
 
     }
-
-
-    @Transactional
-    public User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(
-                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
-    }
-
-
-    @Transactional
-    public Court getCourt(Long CourtId) {
-        return courtRepository.findById(CourtId)
-                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
-
-    }
-
 
 
 }

@@ -33,13 +33,17 @@ public class ReservationService {
 
 
     @Transactional
-    public ReservationInsertResponseDto insert(ReservationInsertRequestDto request, Long id) {
+    public ReservationInsertResponseDto insert(ReservationInsertRequestDto request, Long userId) {
         // user검색후 없으면 반환
         // token으로 찾으면 getUser 필요없음
-        User user = getUser(id);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
 
 
-        Court court=getCourt(request.getCourtId());
+        Court court=courtRepository.findById(request.getCourtId())
+                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
+
+
         Reservation reservation = request.insertRequestDtoToEntity(request);
         reservation.addReservation(court,user);
 
@@ -53,7 +57,6 @@ public class ReservationService {
     }
 
 
-
     @Transactional
     public ReservationUpdateResponseDto update(ReservationUpdateRequestDto requestDto, Long reservationId, Long userId) {
 
@@ -65,13 +68,8 @@ public class ReservationService {
             throw new ForbiddenException(ErrorCode.NOT_FORBIDDEN_RESERVATION.getMessage());
         }
 
-
         reservation.update(requestDto);
         return new ReservationUpdateResponseDto(reservation);
-
-
-
-//        return new ReservationUpdateResponseDto(reservation);
 
 
     }
@@ -90,21 +88,6 @@ public class ReservationService {
         return new ReservationDeleteResponseDto(reservation);
 
     }
-
-
-    @Transactional
-    public User getUser(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
-    }
-
-    @Transactional
-    public Court getCourt(Long courtId) {
-        return courtRepository.findById(courtId)
-                .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
-    }
-
-
 
 
 //    @Transactional
