@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.slams.server.chat.dto.response.ChatContentType;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
 
@@ -26,7 +27,8 @@ public class ChatContents extends BaseEntity {
     private Long id;
 
     @Column
-    private ChatType chatType;
+    @Enumerated(EnumType.STRING)
+    private ChatContentType chatContentType;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
@@ -43,62 +45,62 @@ public class ChatContents extends BaseEntity {
     @Builder
     public ChatContents(
             Long id,
-            ChatType chatType,
+            ChatContentType chatContentType,
             Court court,
             ChatConversationContent conversationContent,
             ChatLoudSpeakerContent chatLoudSpeakerContent
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
         checkArgument(court==null, "court는 null을 허용하지 않습니다.");
 
         this.id = id;
-        this.chatType = chatType;
+        this.chatContentType = chatContentType;
         this.court = court;
         this.chatConversationContent = conversationContent;
         this.chatLoudSpeakerContent = chatLoudSpeakerContent;
     }
 
     private ChatContents(
-            ChatType chatType,
+            ChatContentType chatContentType,
             Court court,
             ChatConversationContent chatConversationContent
     ){
-        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
         checkArgument(court==null, "court는 null을 허용하지 않습니다.");
 
-        this.chatType = chatType;
+        this.chatContentType = chatContentType;
         this.court = court;
         this.chatConversationContent = chatConversationContent;
     }
 
     private ChatContents(
-            ChatType chatType,
+            ChatContentType chatContentType,
             Court court,
             ChatLoudSpeakerContent chatLoudSpeakerContent
     ){
-        checkArgument(chatType==null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
         checkArgument(court==null, "court는 null을 허용하지 않습니다.");
 
-        this.chatType = chatType;
+        this.chatContentType = chatContentType;
         this.court = court;
         this.chatLoudSpeakerContent = chatLoudSpeakerContent;
     }
 
     public static ChatContents createConversationContent(
-            ChatType chatType,
+            ChatContentType chatContentType,
             Court court,
             ChatConversationContent conversationContent
     ){
-        return new ChatContents(chatType, court, conversationContent);
+        return new ChatContents(chatContentType, court, conversationContent);
     }
 
     public static ChatContents createLoudspeakerContent(
-            ChatType chatType,
+            ChatContentType chatContentType,
             Court court,
             ChatLoudSpeakerContent chatLoudSpeakerContent
     ){
-        return new ChatContents(chatType, court, chatLoudSpeakerContent);
+        return new ChatContents(chatContentType, court, chatLoudSpeakerContent);
     }
 
 }

@@ -1,10 +1,10 @@
 package org.slams.server.chat.convertor;
 
+import org.slams.server.chat.dto.response.ChatContentType;
 import org.slams.server.chat.dto.response.ChatContentsResponse;
 import org.slams.server.chat.dto.response.ConversationInfo;
 import org.slams.server.chat.dto.response.LoudSpeakerInfo;
 import org.slams.server.chat.entity.ChatContents;
-import org.slams.server.chat.entity.ChatType;
 import org.slams.server.chat.exception.InvalidChatTypeException;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +28,9 @@ public class ChatContentConvertor {
         if (chatContents == null){
             throw new NullPointerException("chatContents는 null을 허용하지 않습니다.");
         }
-        if (chatContents.getChatType().equals(ChatType.CONVERSATION)){
+        if (chatContents.getChatContentType().equals(ChatContentType.CONVERSATION)){
             return ChatContentsResponse.builder()
+                    .chatContentType(chatContents.getChatContentType())
                     .courtId(chatContents.getCourt().getId())
                     .createdAt(chatContents.getCreatedAt())
                     .updatedAt(chatContents.getCreatedAt())
@@ -40,12 +41,13 @@ public class ChatContentConvertor {
                     )
                     .build();
         }
-        if (chatContents.getChatType().equals(ChatType.LOUDSPEAKER)){
+        if (chatContents.getChatContentType().equals(ChatContentType.LOUDSPEAKER)){
             return ChatContentsResponse.builder()
+                    .chatContentType(chatContents.getChatContentType())
                     .courtId(chatContents.getCourt().getId())
                     .createdAt(chatContents.getCreatedAt())
                     .updatedAt(chatContents.getUpdateAt())
-                    .loudSeapkerInfo(LoudSpeakerInfo.builder()
+                    .loudSpeakerInfo(LoudSpeakerInfo.builder()
                             .startTime(chatContents.getChatLoudSpeakerContent().getStartTime())
                             .build()
                     )

@@ -3,6 +3,7 @@ package org.slams.server.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.slams.server.chat.convertor.ChatContentConvertor;
 import org.slams.server.chat.dto.request.ChatContentsRequest;
+import org.slams.server.chat.dto.response.ChatContentType;
 import org.slams.server.chat.dto.response.ChatContentsResponse;
 import org.slams.server.chat.entity.*;
 import org.slams.server.chat.repository.ChatContentsRepository;
@@ -43,7 +44,7 @@ public class ChatContentsService {
                 .orElseThrow(() -> new CourtNotFoundException("해당 농구장이 존재하지 않습니다."));
 
         ChatContents chatContents = ChatContents.createConversationContent(
-                ChatType.CONVERSATION,
+                ChatContentType.CONVERSATION,
                 court,
                 ChatConversationContent.of(
                         request.getContent(),
@@ -61,7 +62,7 @@ public class ChatContentsService {
                 .orElseThrow(() -> new CourtNotFoundException("해당 농구장이 존재하지 않습니다."));
 
         ChatContents chatContents = ChatContents.createLoudspeakerContent(
-                ChatType.LOUDSPEAKER,
+                ChatContentType.LOUDSPEAKER,
                 court,
                 ChatLoudSpeakerContent.of(
                         request.getStartTime()

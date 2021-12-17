@@ -22,18 +22,23 @@ public class ChatContentsResponse {
     @JsonProperty("loudSpeakerInfo")
     private final LoudSpeakerInfo loudSpeakerInfo;
 
+    @JsonProperty("chatContentType")
+    private final ChatContentType chatContentType;
+
     @Builder
     public ChatContentsResponse(
             Long courtId,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
             ConversationInfo conversationInfo,
-            LoudSpeakerInfo loudSpeakerInfo
+            LoudSpeakerInfo loudSpeakerInfo,
+            ChatContentType chatContentType
     ){
         this.courtId = courtId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.conversationInfo = conversationInfo;
         this.loudSpeakerInfo = loudSpeakerInfo;
+        this.chatContentType = chatContentType;
     }
 }
