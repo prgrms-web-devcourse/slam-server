@@ -19,14 +19,10 @@ import org.slams.server.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +34,7 @@ import java.util.Map;
 public class CourtController {
 
     private final CourtService courtService;
+    private final NewCourtService newCourtService;
     private final Jwt jwt;
 
     @PostMapping("/new")
@@ -48,7 +45,8 @@ public class CourtController {
         Long userId=token.getUserId();
 
 
-        return new ResponseEntity<CourtInsertResponseDto>(courtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
+        return new ResponseEntity<CourtInsertResponseDto>(newCourtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
+
     }
 
 

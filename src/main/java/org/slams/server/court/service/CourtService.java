@@ -44,28 +44,6 @@ public class CourtService {
     private final ReservationRepository reservationRepository;
 
 
-
-
-    @Transactional
-    public CourtInsertResponseDto insert(CourtInsertRequestDto request, Long userId) {
-        // user검색후 없으면 반환
-        request.setImage(awsS3Uploader.upload(request.getImage(),"court"));
-        NewCourt newCourt = request.insertRequestDtoToEntity(request);
-
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new org.slams.server.user.exception.UserNotFoundException(
-                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
-
-
-        newCourtRepository.save(newCourt);
-        return new CourtInsertResponseDto(newCourt);
-
-
-
-    }
-
-
     @Transactional
     public List<AllCourtResponseDto> findAll() {
         return courtRepository.findAll().stream()
@@ -176,6 +154,7 @@ public class CourtService {
                 .collect(Collectors.toList());
 
     }
+
 
 
     public List<Double> changeValue(List<String> value) {

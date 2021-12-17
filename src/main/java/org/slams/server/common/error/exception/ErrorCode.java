@@ -19,10 +19,11 @@ public enum ErrorCode {
 	INVALID_INPUT_TOKEN(400, "Invalid Input Token"),
 	NOT_EXIST_MEMBER(404,"존재하지 않는 회원입니다."),
 
-
 	//Court
 	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다."),
 
+	// New Court
+	NEWCOURT_NOT_FOUND(400, "New Court Not Found"),
 
 	// Reservation
 	NOT_EXIST_RESERVATION(404,"존재하지 않는 예약입니다."),
@@ -30,6 +31,11 @@ public enum ErrorCode {
 
 	// Favorite
 	NOT_EXIST_FAVORITE(404,"존재하지 않는 즐겨찾기입니다.")
+
+
+	// Follow
+	FOLLOW_ALREADY_EXIST(400, "Follow Already Exists"),
+	FOLLOW_NOT_FOUND(400, "Follow Not Found")
 
 	;
 
