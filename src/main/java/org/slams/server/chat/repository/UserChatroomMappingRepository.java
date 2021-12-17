@@ -20,7 +20,7 @@ public interface UserChatroomMappingRepository extends JpaRepository<UserChatroo
             Pageable pageable
     );
 
-    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId ORDER BY u.courtChatroomMapping.updateAt ASC")
+    @Query("SELECT u FROM UserChatroomMapping u WHERE u.user.id = :userId ORDER BY u.courtChatroomMapping.updateAt DESC")
     List<UserChatroomMapping> findAllByUserIdByCreated(
             @Param("userId") Long userId,
             Pageable pageable
