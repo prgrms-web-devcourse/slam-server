@@ -44,19 +44,6 @@ public class WebSocketController {
         this.courtService = courtService;
     }
 
-    @MessageMapping("/teston")
-    public void testNone() throws Exception {
-        logger.info("들어옴");
-        websoket.convertAndSend("/topic/teston", "success");
-    }
-
-    @MessageMapping("/chat")
-    public void convertAndSendTest(WebSocketTestDto message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-        logger.info("들어옴");
-        logger.info(message.toString());
-        websoket.convertAndSend("/topic/teston", message.getUserId());
-    }
-
     @MessageMapping("/object")
     public void objectTest(WebSocketTestDto message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         Long testUserId = findTokenFromHeader(headerAccessor);
