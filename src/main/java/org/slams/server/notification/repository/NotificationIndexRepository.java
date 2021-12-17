@@ -3,8 +3,10 @@ package org.slams.server.notification.repository;
 import org.slams.server.notification.entity.NotificationIndex;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,21 +45,10 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             Pageable pageable
     );
 
-//    @Query("select a from Notification a where a.userId=:userId order by a.createdAt")
-//    List<Notification> findAllByUserId(
-//            @Param("userId") Long userId
-//    );
-//
-//    @Query("select a FROM Notification a where a.userId =:userId and a.id >= :lastId order by a.createdAt ASC")
-//    List<Notification> findAllByUserMoreThenAlarmIdByCreated(
-//            @Param("userId") Long userId,
-//            @Param("lastId") Long lastId,
-//            Pageable pageable
-//    );
-//
-//    @Query("select a FROM Notification a where a.userId =:userId order by a.createdAt ASC")
-//    List<Notification> findAllByUserByCreated(
-//            @Param("userId") Long userId,
-//            Pageable pageable
-//    );
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM NotificationIndex a WHERE a.messageId=:messageId")
+    void deleteByMessageId(
+      @Param("messageId") String messageId
+    );
 }
