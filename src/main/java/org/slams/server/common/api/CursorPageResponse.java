@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CursorPageResponse<T> {
 
-	private T content;
+	private T contents;
 	private Long lastId;
 
 }
