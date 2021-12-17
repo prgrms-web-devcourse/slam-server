@@ -3,7 +3,9 @@ package org.slams.server.court.service;
 import lombok.RequiredArgsConstructor;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
+import org.slams.server.court.dto.response.NewCourtResponse;
 import org.slams.server.court.entity.NewCourt;
+import org.slams.server.court.exception.NewCourtNotFoundException;
 import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
@@ -36,6 +38,30 @@ public class NewCourtService {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+	}
+
+	@Transactional
+	public NewCourtResponse acceptNewCourt(Long newCourtId){
+		NewCourt newCourt = newCourtRepository.findById(newCourtId)
+			.orElseThrow(() -> new NewCourtNotFoundException(
+				MessageFormat.format("사용자가 추가한 농구장을 찾을 수 없습니다. id : {0}", newCourtId)
+			));
+
+		newCourt.acceptNewCourt();
+
+		return NewCourtResponse.toResponse(newCourt);
+	}
+
+	@Transactional
+	public NewCourtResponse denyNewCourt(Long newCourtId) {
+		NewCourt newCourt = newCourtRepository.findById(newCourtId)
+			.orElseThrow(() -> new NewCourtNotFoundException(
+				MessageFormat.format("사용자가 추가한 농구장을 찾을 수 없습니다. id : {0}", newCourtId)
+			));
+
+		newCourt.denyNewCourt();
+
+		return NewCourtResponse.toResponse(newCourt);
 	}
 
 }
