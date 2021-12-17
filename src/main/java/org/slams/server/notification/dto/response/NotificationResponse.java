@@ -23,11 +23,9 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
     @JsonProperty("loudspeakerInfo")
     private final LoudspeakerInfo loudspeakerInfo;
 
-    @JsonProperty("isRead")
-    private final boolean isRead;
+    private final Boolean isRead;
 
-    @JsonProperty("isClicked")
-    private final boolean isClicked;
+    private final Boolean isClicked;
 
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
@@ -79,6 +77,6 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
         if(getCreatedAt() == null || target.getCreatedAt()==null){
             return 0;
         }
-        return getCreatedAt().compareTo(target.getCreatedAt());
+        return target.getCreatedAt().compareTo(this.getCreatedAt());
     }
 }

@@ -12,6 +12,7 @@ import org.slams.server.notification.dto.response.LoudspeakerInfo;
 import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.entity.NotificationIndex;
 import org.slams.server.notification.entity.NotificationType;
+import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
@@ -36,6 +37,8 @@ import static org.slams.server.notification.entity.NotificationType.LOUDSPEAKER;
 @RequiredArgsConstructor
 public class UserService {
 
+	private final NotificationService notificationService;
+
 	private final UserRepository userRepository;
 	private final FollowRepository followRepository;
 	private final FavoriteRepository favoriteRepository;
@@ -47,29 +50,9 @@ public class UserService {
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
-			.userId(1L)
-			.userNickname("젤리")
-			.userImage("https://team14-slam.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%82%E1%85%A1.png")
-			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
-		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
-			.courtInfo(
-				CourtInfo.builder()
-					.id(3L)
-					.name("용산구 농구장")
-					.latitude(123)
-					.longitude(456)
-					.image("https://team14-slam.s3.ap-northeast-2.amazonaws.com/court_dummy/court1.jpg")
-					.basketCount(4)
-					.texture(Texture.ASPHALT)
-					.build()
-			)
-			.startTime(13)
-			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
+		List<NotificationResponse> top10Notifications = notificationService.getTop10Notification(user.getId());
 
-		List<NotificationResponse> notifications = List.of(followNotification, loudspeakerNotification);
-
-		return DefaultUserInfoResponse.toResponse(user, notifications);
+		return DefaultUserInfoResponse.toResponse(user, top10Notifications);
 	}
 
 	@Transactional

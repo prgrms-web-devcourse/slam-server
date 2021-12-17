@@ -110,14 +110,14 @@ public class NotificationService {
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
         return cursorRequest.getIsFirst() ?
                 notificationRepository.findMessageIdByUserByCreated(userId, pageable) :
-                notificationRepository.findMessageIdByUserMoreThenAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
+                notificationRepository.findMessageIdByUserLessThanAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
     }
 
     public Long findNotificationLastId(Long userId, CursorPageRequest cursorRequest){
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
         List<Long> ids = cursorRequest.getIsFirst() ?
                 notificationRepository.findIdByUserByCreated(userId, pageable) :
-                notificationRepository.findIdByUserMoreThenAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
+                notificationRepository.findIdByUserLessThanAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
 
         // 빈 배열 일 때
         if (ids.size()-1 < 0) {
@@ -145,4 +145,18 @@ public class NotificationService {
         followNotificationRepository.updateIsRead(userId, request.isStatus());
         loudSpeakerNotificationRepository.updateIsRead(userId, request.isStatus());
     }
+
+    @Transactional(readOnly = true)
+    public List<NotificationResponse> getTop10Notification(Long userId){
+        PageRequest pageable = PageRequest.of(0, 10);
+        List<String> messageIdList = notificationRepository.findMessageIdByUserByCreated(userId, pageable);
+
+        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIdList);
+        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIdList);
+
+        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
+            notificationConvertor.toDtoListForFollowNotification(followNotificationList),
+            notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    }
+
 }
