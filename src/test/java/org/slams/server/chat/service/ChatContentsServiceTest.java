@@ -158,11 +158,7 @@ class ChatContentsServiceTest {
     void findChatContentsListByCourtOrderByCreatedAt(){
         //Given
         Long courtId = court.getId();
-
-        CursorPageRequest cursorRequest = new CursorPageRequest();
-        cursorRequest.setSize(5);
-        cursorRequest.setIsFirst(true);
-        cursorRequest.setLastId(0L);
+        CursorPageRequest cursorRequest = new CursorPageRequest(5, 0L, Boolean.TRUE);
 
         //When
         List<ChatContentsResponse> chatContentsResponseList = chatContentsService.findChatContentsListByCourtOrderByCreatedAt(courtId, cursorRequest);

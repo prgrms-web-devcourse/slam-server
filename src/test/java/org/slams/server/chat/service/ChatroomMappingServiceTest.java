@@ -122,11 +122,7 @@ class ChatroomMappingServiceTest {
     void findChatRoomByCourt(){
         //Given
         Long userId = user.getId();
-
-        CursorPageRequest cursorRequest = new CursorPageRequest();
-        cursorRequest.setSize(5);
-        cursorRequest.setIsFirst(true);
-        cursorRequest.setLastId(0L);
+        CursorPageRequest cursorRequest = new CursorPageRequest(5, 0L, Boolean.TRUE);
 
         //When
         List<ChatroomResponse> chatroomResponseList = chatroomMappingService.findChatRoomByCourt(userId, cursorRequest);
