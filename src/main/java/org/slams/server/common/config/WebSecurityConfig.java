@@ -20,6 +20,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
@@ -29,11 +30,13 @@ import javax.servlet.http.HttpServletResponse;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtConfig jwtConfig;
-	public final OAuthUserService oAuthUserService;
+	private final OAuthUserService oAuthUserService;
+	private final ServletContext servletContext;
 
-	public WebSecurityConfig(JwtConfig jwtConfig, OAuthUserService oAuthUserService) {
+	public WebSecurityConfig(JwtConfig jwtConfig, OAuthUserService oAuthUserService, ServletContext servletContext) {
 		this.jwtConfig = jwtConfig;
 		this.oAuthUserService = oAuthUserService;
+		this.servletContext = servletContext;
 	}
 
 	@Override
@@ -101,13 +104,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		Jwt jwt = getApplicationContext().getBean(Jwt.class);
-		return new JwtAuthenticationFilter(jwtConfig.getHeader(), jwt);
+		return new JwtAuthenticationFilter(jwtConfig.getHeader(), jwt, servletContext);
 	}
 
 	@Bean
 	public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
 		Jwt jwt = getApplicationContext().getBean(Jwt.class);
-		return new OAuth2AuthenticationSuccessHandler(jwt, oAuthUserService);
+		return new OAuth2AuthenticationSuccessHandler(jwt, oAuthUserService, servletContext);
 	}
 
 	@Bean

@@ -2,25 +2,18 @@ package org.slams.server.user.oauth.jwt;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.exception.UserNotAuthenticatedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.security.auth.message.AuthException;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.http.HttpHeaders;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
@@ -33,10 +26,12 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
 	private final String headerKey; // header에서 jwt 토큰을 꺼내올 때 사용
 	private final Jwt jwt;
+	private final ServletContext servletContext;
 
-	public JwtAuthenticationFilter(String headerKey, Jwt jwt) {
+	public JwtAuthenticationFilter(String headerKey, Jwt jwt, ServletContext servletContext) {
 		this.headerKey = headerKey;
 		this.jwt = jwt;
+		this.servletContext = servletContext;
 	}
 
 	@Override
@@ -44,6 +39,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 						 FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
+
+		if (Objects.nonNull(request.getParameter("redirect_uri"))) {
+			servletContext.setAttribute("redirectUri", request.getParameter("redirect_uri"));
+		}
 
 		if (SecurityContextHolder.getContext().getAuthentication() == null) {
 			String token = getToken(request);
