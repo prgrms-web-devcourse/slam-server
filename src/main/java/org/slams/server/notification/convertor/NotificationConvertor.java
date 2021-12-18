@@ -44,9 +44,9 @@ public class NotificationConvertor {
         return NotificationResponse.createForFollowNotification(
                 followNotification.getNotificationType(),
                 FollowerInfo.builder()
-                        .userId(followNotification.getReceiver().getId())
-                        .userImage(followNotification.getReceiver().getProfileImage())
-                        .userNickname(followNotification.getReceiver().getNickname())
+                        .userId(followNotification.getCreator().getId())
+                        .userImage(followNotification.getCreator().getProfileImage())
+                        .userNickname(followNotification.getCreator().getNickname())
                         .build(),
                 followNotification.isRead(),
                 followNotification.isClicked(),
