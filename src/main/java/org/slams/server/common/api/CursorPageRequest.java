@@ -11,16 +11,16 @@ public class CursorPageRequest {
 	private Long lastId;
 	private Boolean isFirst;
 
-	public void setSize(int size) {
-		this.size = size;
-	}
-
-	public void setLastId(Long lastId) {
-		this.lastId = lastId;
-	}
-
-	public void setIsFirst(Boolean first) {
-		this.isFirst = first;
-	}
+//	public void setSize(int size) {
+//		this.size = size;
+//	}
+//
+//	public void setLastId(Long lastId) {
+//		this.lastId = lastId;
+//	}
+//
+//	public void setIsFirst(Boolean first) {
+//		this.isFirst = first;
+//	}
 
 }
