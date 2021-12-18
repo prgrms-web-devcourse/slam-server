@@ -84,10 +84,6 @@ public class NotificationService {
     @Transactional
     public String saveForFollowNotification(FollowNotificationRequest request, Long userId){
         Optional<FollowNotification> followNotificationForChecked = followNotificationRepository.findOneByReceiverIdAndUserId(request.getReceiverId(), userId);
-        if (followNotificationForChecked.isPresent()){
-            followNotificationRepository.updateIsDeleted(request.getReceiverId(), false);
-            return followNotificationForChecked.get().getId();
-        }
 
         User creator = userRepository
                 .findById(userId)
@@ -179,7 +175,7 @@ public class NotificationService {
             throw new NotificationNotFoundException("삭제할 정보가 존재하지 않습니다.");
         }else{
             notificationRepository.deleteByMessageId(messageIds.get(0));
-            followNotificationRepository.updateIsDeleted(request.getReceiverId(), true);
+            followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
         }
     }
 
