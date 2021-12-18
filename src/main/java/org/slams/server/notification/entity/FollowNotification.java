@@ -26,8 +26,8 @@ public class FollowNotification extends BaseEntity {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "receiver_id", nullable = false, referencedColumnName = "id")
-    private User receiver;
+    @JoinColumn(name = "creator_id", nullable = false, referencedColumnName = "id")
+    private User creator;
 
     @Column
     private Long userId;
@@ -41,35 +41,35 @@ public class FollowNotification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
-    private FollowNotification(User receiver, Long userId, NotificationType notificationType){
-        checkArgument(receiver != null, "follower 정보는 null을 허용하지 않습니다.");
+    private FollowNotification(User creator, Long userId, NotificationType notificationType){
+        checkArgument(creator != null, "creator 정보는 null을 허용하지 않습니다.");
         checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
 
         this.id = UUID.randomUUID().toString();
-        this.receiver = receiver;
+        this.creator = creator;
         this.userId = userId;
         this.notificationType = notificationType;
     }
 
     @Builder
-    public FollowNotification(String id, User receiver, Long userId, boolean isRead,
+    public FollowNotification(String id, User creator, Long userId, boolean isRead,
                               boolean isClicked, NotificationType notificationType){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
-        checkArgument(receiver != null, "follower 정보는 null을 허용하지 않습니다.");
+        checkArgument(creator != null, "creator 정보는 null을 허용하지 않습니다.");
         checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
 
         this.id = id;
-        this.receiver = receiver;
+        this.creator = creator;
         this.userId = userId;
         this.isRead = isRead;
         this.isClicked = isClicked;
         this.notificationType = notificationType;
     }
 
-    public static FollowNotification of(User receiver, Long userId, NotificationType notificationType){
-        return new FollowNotification(receiver, userId, notificationType);
+    public static FollowNotification of(User creator, Long userId, NotificationType notificationType){
+        return new FollowNotification(creator, userId, notificationType);
     }
 
     public void updateIsClicked(boolean isClicked){

@@ -43,17 +43,17 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("status") boolean status
     );
 
-    @Query("SELECT f.id FROM FollowNotification f WHERE f.receiver.id=:receiverId AND f.userId=:userId")
+    @Query("SELECT f.id FROM FollowNotification f WHERE f.creator.id=:creatorId AND f.userId=:userId")
     List<String> findByReceiverIdAndUserId(
-            @Param("receiverId") Long receiverId,
+            @Param("creatorId") Long creatorId,
             @Param("userId") Long userId
     );
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM FollowNotification f WHERE f.receiver.id=:receiverId AND f.userId=:userId")
+    @Query("DELETE FROM FollowNotification f WHERE f.creator.id=:creatorId AND f.userId=:userId")
     void deleteByReceiverIdAndUserId(
-            @Param("receiverId") Long receiverId,
+            @Param("creatorId") Long creatorId,
             @Param("userId") Long userId
     );
 
