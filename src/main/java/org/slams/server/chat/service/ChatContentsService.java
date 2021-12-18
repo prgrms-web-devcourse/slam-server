@@ -7,6 +7,8 @@ import org.slams.server.chat.dto.response.subDto.ChatContentType;
 import org.slams.server.chat.dto.response.ChatContentsResponse;
 import org.slams.server.chat.entity.*;
 import org.slams.server.chat.repository.ChatContentsRepository;
+import org.slams.server.chat.repository.ChatConversationContentRepository;
+import org.slams.server.chat.repository.ChatLoudSpeakerContentRepository;
 import org.slams.server.chat.repository.CourtChatroomMappingRepository;
 import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.court.entity.Court;
@@ -35,6 +37,9 @@ public class ChatContentsService {
     private final CourtRepository courtRepository;
     private final CourtChatroomMappingRepository courtChatroomMappingRepository;
     private final UserRepository userRepository;
+    private final ChatConversationContentRepository chatConversationContentRepository;
+    private final ChatLoudSpeakerContentRepository chatLoudSpeakerContentRepository;
+
 
     public List<ChatContentsResponse> findChatContentsListByCourtOrderByCreatedAt(Long courtId, CursorPageRequest cursorRequest){
         return chatContentConvertor.toDtoList(
@@ -50,18 +55,20 @@ public class ChatContentsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 작성자는 존재하지 않는 사용자입니다."));
 
+        ChatConversationContent chatConversationContent = chatConversationContentRepository.save(
+                ChatConversationContent.of(request.getContent()));
+
         ChatContents chatContents = ChatContents.createConversationContent(
                 ChatContentType.CONVERSATION,
                 court,
                 user,
-                ChatConversationContent.of(
-                        request.getContent()
-                )
+                chatConversationContent
         );
         chatContentsRepository.save(chatContents);
         courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
         return chatContents;
     }
+
 
     @Transactional
     public ChatContents saveChatLoudSpeakerContent(LoudspeakerNotificationRequest request, Long userId){
@@ -71,13 +78,14 @@ public class ChatContentsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 작성자는 존재하지 않는 사용자입니다."));
 
+        ChatLoudSpeakerContent chatLoudSpeakerContent = chatLoudSpeakerContentRepository.save(
+                ChatLoudSpeakerContent.of(request.getStartTime())
+        );
         ChatContents chatContents = ChatContents.createLoudspeakerContent(
                 ChatContentType.LOUDSPEAKER,
                 court,
                 user,
-                ChatLoudSpeakerContent.of(
-                        request.getStartTime()
-                )
+                chatLoudSpeakerContent
         );
         chatContentsRepository.save(chatContents);
         courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());

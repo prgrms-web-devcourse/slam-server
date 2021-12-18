@@ -39,13 +39,15 @@ public class ChatContents extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "conversation_id")
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "loudspeaker_id", referencedColumnName = "id")
+    private ChatLoudSpeakerContent chatLoudSpeakerContent;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "conversation_id", referencedColumnName = "id")
     private ChatConversationContent chatConversationContent;
 
-    @OneToOne
-    @JoinColumn(name = "loudspeaker_id")
-    private ChatLoudSpeakerContent chatLoudSpeakerContent;
+
 
     @Builder
     public ChatContents(
