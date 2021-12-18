@@ -16,18 +16,6 @@ import java.util.Optional;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
 
-//    @Query("selelct")
-//    Optional<Long> findByUserIdCourtId(Long userId, Long courtId);
-    // date 가 2012-11-08
-    // r.startTime -> 2012-11-08-09
-    // r.end Time -> 2012-11-08-11시
-//    @Query("SELECT r FROM Reservation r WHERE r.startTime>=:date and r.endTime<=:date and r.court.id=:courtId")
-//    List<Reservation> findAllByCourtAndDate(@Param("date") LocalDateTime date, @Param("courtId")Long courtId);
-
-
-//    @Query("SELECT r FROM Reservation r WHERE r.court.id=:courtId")
-//    List<Reservation> findAllByCourtAndDate(@Param("courtId")Long courtId);
-
     @Query("SELECT r FROM Reservation r WHERE (r.startTime between :startLocalDateTime and :endLocalDateTime) and r.court.id=:courtId")
     List<Reservation> findAllByCourtAndDate(
             @Param("courtId")Long courtId,
@@ -35,10 +23,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endLocalDateTime") LocalDateTime endLocalDateTime
            );
 
+    @Query("SELECT r FROM Reservation r WHERE r.user.id=:userId AND r.startTime>:localDateTime")
+    List<Reservation> findByUserByNow(
+            @Param("userId") Long userId,
+            @Param ("localDateTime") LocalDateTime localDateTime);
     @Query("SELECT r.user.id FROM Reservation r WHERE r.court.id=:courtId")
     List<Long> findBeakerIdByCourtId(
             @Param("courtId") Long courtId
     );
-
 
 }

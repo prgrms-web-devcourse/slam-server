@@ -3,6 +3,7 @@ package org.slams.server.reservation.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.error.exception.ErrorCode;
+import org.slams.server.court.dto.response.CourtReservationResponseDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
@@ -10,6 +11,7 @@ import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
+import org.slams.server.reservation.dto.response.ReservationUpcomingResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.exception.ForbiddenException;
@@ -20,6 +22,10 @@ import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -34,8 +40,7 @@ public class ReservationService {
 
     @Transactional
     public ReservationInsertResponseDto insert(ReservationInsertRequestDto request, Long userId) {
-        // user검색후 없으면 반환
-        // token으로 찾으면 getUser 필요없음
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
 
@@ -83,18 +88,24 @@ public class ReservationService {
             throw new ForbiddenException(ErrorCode.NOT_FORBIDDEN_RESERVATION.getMessage());
         }
 
-
         reservationRepository.delete(reservation);
         return new ReservationDeleteResponseDto(reservation);
+    }
+
+    @Transactional
+    public List<ReservationUpcomingResponseDto> findUpcoming(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
+
+        // user -> reservation -> court 조회
+        LocalDateTime localDateTime=LocalDateTime.now();
+        return reservationRepository.findByUserByNow(userId,localDateTime).stream()
+                .map(ReservationUpcomingResponseDto::new)
+                .collect(Collectors.toList());
 
     }
 
 
-//    @Transactional
-//    public List<AllCourtResponseDto> findAll() {
-//        return courtRepository.findAll().stream()
-//                .map(AllCourtResponseDto::new)
-//                .collect(Collectors.toList());
-//    }
+
 
 }

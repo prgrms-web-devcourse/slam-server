@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -46,7 +48,7 @@ public class ReservationController {
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
-        return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.update(requestDto,reservationId,userId), HttpStatus.CREATED);
+        return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.update(requestDto,reservationId,userId), HttpStatus.ACCEPTED);
 
     }
 
@@ -59,14 +61,21 @@ public class ReservationController {
         Long userId=token.getUserId();
 
         return new ResponseEntity<ReservationDeleteResponseDto>(reservationService.delete(reservationId,userId), HttpStatus.ACCEPTED);
-
     }
 
+    // 다가올 예약 목록 조회
+    // /api/v1/reservations/upcoming
+    @GetMapping("/upcoming")
+    public ResponseEntity<Map<String,Object>>getUpcoming(HttpServletRequest request) {
+        TokenGetId token=new TokenGetId(request,jwt);
+        Long userId=token.getUserId();
 
 
+        Map<String,Object>result=new HashMap<>();
+        result.put("reservations",reservationService.findUpcoming(userId));
+        return ResponseEntity.ok().body(result);
 
-
-
+    }
 
 
 

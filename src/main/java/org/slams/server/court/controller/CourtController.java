@@ -75,7 +75,7 @@ public class CourtController {
     }
 
 
-    @GetMapping("/detail/{courtId}/reservations/{date}")
+    @GetMapping("/{courtId}/reservations/{date}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Map<String,Object>> getReservationCourts(@PathVariable Long courtId, @PathVariable String date, HttpServletRequest request) {
 
