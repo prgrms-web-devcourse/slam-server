@@ -25,7 +25,6 @@ public class FavoriteInsertResponseDto extends BaseResponse {
     }
 
 
-
-
+    
 
 }
