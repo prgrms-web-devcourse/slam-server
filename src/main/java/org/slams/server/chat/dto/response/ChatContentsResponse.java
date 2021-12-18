@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 public class ChatContentsResponse {
     private final Court court;
 
-    @JsonProperty("conversationInfo")
+    @JsonProperty("conversation")
     private final Conversation conversation;
 
-    @JsonProperty("loudSpeakerInfo")
+    @JsonProperty("loudSpeaker")
     private final LoudSpeaker loudSpeaker;
 
     private final Creator creator;

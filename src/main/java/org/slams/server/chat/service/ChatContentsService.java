@@ -48,7 +48,7 @@ public class ChatContentsService {
     }
 
     @Transactional
-    public ChatContents saveChatConversationContent(CreateChatContentsRequest request, Long userId){
+    public ChatContentsResponse saveChatConversationContent(CreateChatContentsRequest request, Long userId){
         Court court = courtRepository.findById(request.getCourtId())
                 .orElseThrow(() -> new CourtNotFoundException("해당 농구장이 존재하지 않습니다."));
 
@@ -66,12 +66,12 @@ public class ChatContentsService {
         );
         chatContentsRepository.save(chatContents);
         courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
-        return chatContents;
+        return chatContentConvertor.toDto(chatContents);
     }
 
 
     @Transactional
-    public ChatContents saveChatLoudSpeakerContent(LoudspeakerNotificationRequest request, Long userId){
+    public ChatContentsResponse saveChatLoudSpeakerContent(LoudspeakerNotificationRequest request, Long userId){
         Court court = courtRepository.findById(request.getCourtId())
                 .orElseThrow(() -> new CourtNotFoundException("해당 농구장이 존재하지 않습니다."));
 
@@ -89,7 +89,7 @@ public class ChatContentsService {
         );
         chatContentsRepository.save(chatContents);
         courtChatroomMappingRepository.updateUpdatedAtByCourtId(request.getCourtId());
-        return chatContents;
+        return chatContentConvertor.toDto(chatContents);
     }
 
     public List<ChatContents> cursorPageForFindAllByUserId(Long courtId, CursorPageRequest cursorRequest){

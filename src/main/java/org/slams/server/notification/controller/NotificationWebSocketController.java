@@ -1,5 +1,8 @@
 package org.slams.server.notification.controller;
 
+import org.slams.server.chat.dto.response.ChatContentsResponse;
+import org.slams.server.chat.service.ChatContentsService;
+import org.slams.server.common.utils.WebsocketUtil;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.follow.service.FollowService;
@@ -27,40 +30,39 @@ import java.util.stream.Collectors;
  */
 
 @Controller
-public class WebSocketController {
+public class NotificationWebSocketController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final NotificationService notificationService;
-    private final CourtService courtService;
-    private final SimpMessagingTemplate websoket;
+    private final SimpMessagingTemplate websocket;
     private final ReservationRepository reservationRepository;
     private final FollowService followService;
+    private final WebsocketUtil websocketUtil;
+    private final ChatContentsService chatContentsService;
 
-    private final Jwt jwt;
-
-    public WebSocketController(
-            SimpMessagingTemplate websoket,
-            Jwt jwt,
+    public NotificationWebSocketController(
+            SimpMessagingTemplate websocket,
             NotificationService notificationService,
-            CourtService courtService,
             ReservationRepository reservationRepository,
-            FollowService followService){
-        this.websoket = websoket;
-        this.jwt = jwt;
+            FollowService followService,
+            WebsocketUtil websocketUtil,
+            ChatContentsService chatContentsService){
+        this.websocket = websocket;
         this.notificationService = notificationService;
-        this.courtService = courtService;
         this.reservationRepository = reservationRepository;
         this.followService = followService;
+        this.websocketUtil = websocketUtil;
+        this.chatContentsService = chatContentsService;
     }
 
     @MessageMapping("/object")
     public void objectTest(WebSocketTestDto message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-        Long testUserId = findTokenFromHeader(headerAccessor);
+        Long testUserId = websocketUtil.findTokenFromHeader(headerAccessor);
 
         // token 유효성 검사
         WebSocketTestDto userRequest = new WebSocketTestDto();
         userRequest.setUserId(message.getUserId());
-        websoket.convertAndSend(
+        websocket.convertAndSend(
                 "/topic/"+message.getUserId(),
                 userRequest
         );
@@ -71,12 +73,12 @@ public class WebSocketController {
             FollowNotificationRequest message,
             SimpMessageHeaderAccessor headerAccessor
             ){
-        Long userId = findTokenFromHeader(headerAccessor);
+        Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
 
         followService.follow(userId, message.getReceiverId());
         String messageId = notificationService.saveForFollowNotification(message, userId);
 
-        websoket.convertAndSend(
+        websocket.convertAndSend(
                 String.format("/user/%d/notification", message.getReceiverId()),
                 notificationService.findOneByIdInFollowNotification(messageId)
                 );
@@ -87,7 +89,7 @@ public class WebSocketController {
             FollowNotificationRequest message,
             SimpMessageHeaderAccessor headerAccessor
     ){
-        Long userId = findTokenFromHeader(headerAccessor);
+        Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
 
         followService.unfollow(userId, message.getReceiverId());
         notificationService.deleteFollowNotification(message, userId);
@@ -98,32 +100,26 @@ public class WebSocketController {
             LoudspeakerNotificationRequest request,
             SimpMessageHeaderAccessor headerAccessor
     ){
-        Long userId = findTokenFromHeader(headerAccessor);
+        Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
         List<Long> bookerIds = reservationRepository.findBeakerIdByCourtId(request.getCourtId());
 
         for (Long bookId : bookerIds){
+            if (bookId.equals(userId)){
+                continue;
+            }
             String messageId = notificationService.saveForLoudSpeakerNotification(request, bookId);
-            websoket.convertAndSend(
+            websocket.convertAndSend(
                     String.format("/user/%d/notification", bookId),
                     notificationService.findOneByIdLoudspeakerNotification(messageId)
             );
         }
+
+        ChatContentsResponse chatContentsResponse = chatContentsService.saveChatLoudSpeakerContent(request, userId);
+        websocket.convertAndSend(
+                String.format("/user/%d/chat", request.getCourtId()),
+                chatContentsResponse
+        );
     }
 
-    private Long findTokenFromHeader(SimpMessageHeaderAccessor headerAccessor){
-        var nativeHeaders =  (Map) headerAccessor.getMessageHeaders().get("nativeHeaders");
-        assert nativeHeaders != null;
-        if (nativeHeaders.containsKey("token")) {
-            String token = nativeHeaders.get("token").toString().replace("[", "").replace("]","");
-            if(token.length()>64){
-                return jwt.verify(token).getUserId();
-            }else{
-                throw new InvalidTokenException("유효한 토큰 형식이 아닙니다.");
-            }
-        }else{
-            throw new TokenNotFountException("헤더에 토큰이 존재하지 않습니다.");
-        }
 
-
-    }
 }
