@@ -24,6 +24,7 @@ public class UserProfileResponse {
 	private List<Position> positions;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private Boolean isFollowing;
 	private Long followerCount;
 	private Long followingCount;
 	private List<FavoriteCourtResponse> favoriteCourts;
@@ -31,7 +32,7 @@ public class UserProfileResponse {
 	private UserProfileResponse(Long userId, String nickname, String profileImage, String description,
 								Proficiency proficiency, List<Position> positions,
 								LocalDateTime createdAt, LocalDateTime updatedAt,
-								Long followerCount, Long followingCount, List<FavoriteCourtResponse> favoriteCourts) {
+								Boolean isFollowing, Long followerCount, Long followingCount, List<FavoriteCourtResponse> favoriteCourts) {
 		this.userId = userId;
 		this.nickname = nickname;
 		this.profileImage = profileImage;
@@ -40,15 +41,16 @@ public class UserProfileResponse {
 		this.positions = positions;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
+		this.isFollowing = isFollowing;
 		this.followerCount = followerCount;
 		this.followingCount = followingCount;
 		this.favoriteCourts = favoriteCourts;
 	}
 
-	public static UserProfileResponse toResponse(User user, Long followerCount, Long followingCount, List<FavoriteCourtResponse> favoriteCourts) {
+	public static UserProfileResponse toResponse(User user, Boolean isFollowing, Long followerCount, Long followingCount, List<FavoriteCourtResponse> favoriteCourts) {
 		return new UserProfileResponse(user.getId(), user.getNickname(), user.getProfileImage(),
 			user.getDescription(), user.getProficiency(), user.getPositions(),
-			user.getCreatedAt(), user.getUpdateAt(), followerCount, followingCount, favoriteCourts
+			user.getCreatedAt(), user.getUpdateAt(), isFollowing, followerCount, followingCount, favoriteCourts
 		);
 	}
 

@@ -17,6 +17,7 @@ import org.slams.server.user.dto.request.ExtraUserInfoRequest;
 import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.User;
+import org.slams.server.user.exception.SameUserException;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -79,10 +80,17 @@ public class UserService {
 		return MyProfileResponse.toResponse(user, followerCount, followingCount);
 	}
 
-	public UserProfileResponse getUserInfo(Long userId) {
+	public UserProfileResponse getUserInfo(Long myId, Long userId) {
+		if (myId.equals(userId)) {
+			throw new SameUserException("같은 사용자의 접근은 불가능합니다");
+		}
+
+		User me = userRepository.findById(myId).get();
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+		Boolean isFollowing = followRepository.existsByFollowerAndFollowing(me, user);
 
 		Long followerCount = followRepository.countByFollower(user);
 		Long followingCount = followRepository.countByFollowing(user);
@@ -91,7 +99,7 @@ public class UserService {
 			.stream().map(favorite -> new FavoriteCourtResponse(favorite.getCourt().getId(), favorite.getCourt().getName()))
 			.collect(Collectors.toList());
 
-		return UserProfileResponse.toResponse(user, followerCount, followingCount, favoriteCourts);
+		return UserProfileResponse.toResponse(user, isFollowing, followerCount, followingCount, favoriteCourts);
 	}
 
 	@Transactional
@@ -118,11 +126,5 @@ public class UserService {
 
 		return new ProfileImageResponse(null);
 	}
-//	public String findUserNickname(Long id){
-//		User user = userRepository.findById(id)
-//			.orElseThrow(()-> new EntityNotFoundException("X"));
-//
-//		return user.getNickname();
-//	}
 
 }

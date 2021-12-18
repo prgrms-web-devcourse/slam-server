@@ -54,8 +54,16 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserProfileResponse> getUserInfo(@PathVariable Long userId){
-		UserProfileResponse userProfileResponse = userService.getUserInfo(userId);
+	public ResponseEntity<UserProfileResponse> getUserInfo(HttpServletRequest request, @PathVariable Long userId){
+		String authorization = request.getHeader("Authorization");
+		String[] tokenString = authorization.split(" ");
+		if (!tokenString[0].equals("Bearer")) {
+			throw new InvalidTokenException("토큰 정보가 올바르지 않습니다.");
+		}
+
+		Jwt.Claims claims = jwt.verify(tokenString[1]);
+
+		UserProfileResponse userProfileResponse = userService.getUserInfo(claims.getUserId(), userId);
 
 		return ResponseEntity.ok(userProfileResponse);
 	}
