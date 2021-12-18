@@ -103,7 +103,7 @@ public class FollowService {
 			throw new FollowNotFoundException(
 				MessageFormat.format("원래 팔로우관계를 맺고 있지 않은 사용자입니다. id : {0}", followingId));
 
-		followRepository.deleteByFollowerAndFollowing(follower, following);
+		followRepository.deleteByFollowerAndFollowing(follower.getId(), following.getId());
 	}
 
 }
