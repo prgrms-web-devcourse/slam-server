@@ -92,7 +92,7 @@ public class NotificationWebSocketController {
         Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
 
         followService.unfollow(userId, message.getReceiverId());
-        notificationService.deleteFollowNotification(message, userId);
+        //notificationService.deleteFollowNotification(message, userId);
     }
 
     @MessageMapping("/loudspeaker")
