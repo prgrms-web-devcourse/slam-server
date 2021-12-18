@@ -2,7 +2,7 @@ package org.slams.server.chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.slams.server.chat.convertor.ChatContentConvertor;
-import org.slams.server.chat.dto.request.ChatContentsRequest;
+import org.slams.server.chat.dto.request.CreateChatContentsRequest;
 import org.slams.server.chat.dto.response.subDto.ChatContentType;
 import org.slams.server.chat.dto.response.ChatContentsResponse;
 import org.slams.server.chat.entity.*;
@@ -43,7 +43,7 @@ public class ChatContentsService {
     }
 
     @Transactional
-    public ChatContents saveChatConversationContent(ChatContentsRequest request, Long userId){
+    public ChatContents saveChatConversationContent(CreateChatContentsRequest request, Long userId){
         Court court = courtRepository.findById(request.getCourtId())
                 .orElseThrow(() -> new CourtNotFoundException("해당 농구장이 존재하지 않습니다."));
 

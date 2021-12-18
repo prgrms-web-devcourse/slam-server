@@ -8,12 +8,12 @@ import lombok.Getter;
  */
 
 @Getter
-public class ChatContentsRequest {
+public class CreateChatContentsRequest {
     private final String content;
     private final Long courtId;
 
     @Builder
-    public ChatContentsRequest(String content, Long courtId){
+    public CreateChatContentsRequest(String content, Long courtId){
         this.content = content;
         this.courtId = courtId;
     }

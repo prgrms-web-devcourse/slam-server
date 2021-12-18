@@ -22,10 +22,11 @@ public class ChatroomMappingConvertor {
 
     public ChatroomResponse toDto(UserChatroomMapping userChatroomMapping){
         return ChatroomResponse.builder()
-                .courtId(userChatroomMapping.getCourtChatroomMapping().getCourt().getId())
+                .chatRoomId(userChatroomMapping.getCourtChatroomMapping().getId())
                 .courtName(userChatroomMapping.getCourtChatroomMapping().getCourt().getName())
+                .userChatRoomId(userChatroomMapping.getId())
                 .createdAt(userChatroomMapping.getCreatedAt())
-                .updatedAt(userChatroomMapping.getUpdateAt())
+                .updatedAt(userChatroomMapping.getCourtChatroomMapping().getUpdateAt())
                 .build();
     }
 }

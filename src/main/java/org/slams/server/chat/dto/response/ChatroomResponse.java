@@ -11,20 +11,23 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ChatroomResponse {
-    private final Long courtId;
     private final String courtName;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final Long userChatRoomId;
+    private final Long chatRoomId;
 
     @Builder
     public ChatroomResponse(
-            Long courtId,
             String courtName,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt){
-        this.courtId = courtId;
+            LocalDateTime updatedAt,
+            Long chatRoomId,
+            Long userChatRoomId){
         this.courtName = courtName;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.chatRoomId = chatRoomId;
+        this.userChatRoomId = userChatRoomId;
     }
 }

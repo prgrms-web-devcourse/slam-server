@@ -2,7 +2,7 @@ package org.slams.server.chat.service;
 
 import lombok.RequiredArgsConstructor;
 import org.slams.server.chat.convertor.ChatroomMappingConvertor;
-import org.slams.server.chat.dto.request.ChatRoomRequest;
+import org.slams.server.chat.dto.request.CreateChatRoomRequest;
 import org.slams.server.chat.dto.response.ChatroomResponse;
 import org.slams.server.chat.entity.CourtChatroomMapping;
 import org.slams.server.chat.entity.UserChatroomMapping;
@@ -45,7 +45,7 @@ public class ChatroomMappingService {
     }
 
     /** 채팅방 최초 입장 **/
-    public void saveChatRoomForEachUser(Long userId, ChatRoomRequest request){
+    public void saveChatRoomForEachUser(Long userId, CreateChatRoomRequest request){
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 사용자는 존재하지 않습니다."));
         CourtChatroomMapping courtChatroomMapping = courtChatroomMappingRepository.findByCourtId(request.getCourtId());
         userChatRoomMappingRepository.save(
@@ -59,8 +59,8 @@ public class ChatroomMappingService {
         );
     }
 
-    public void deleteEnteredChatRoomByChatRoomId(Long userId, ChatRoomRequest request){
-            userChatRoomMappingRepository.deleteByCourtId(request.getCourtId(), userId);
+    public void deleteEnteredChatRoomByChatRoomId(Long userChatRoomId){
+            userChatRoomMappingRepository.deleteById(userChatRoomId);
     }
 
     public List<UserChatroomMapping> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
