@@ -77,7 +77,8 @@ public class NotificationWebSocketController {
 
         followService.follow(userId, message.getReceiverId());
         String messageId = notificationService.saveForFollowNotification(message, userId);
-
+        logger.info("receiverId");
+        logger.info(message.getReceiverId().toString());
         websocket.convertAndSend(
                 String.format("/user/%d/notification", message.getReceiverId()),
                 notificationService.findOneByIdInFollowNotification(messageId)

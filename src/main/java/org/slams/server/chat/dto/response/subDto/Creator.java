@@ -11,15 +11,15 @@ import lombok.Getter;
 public class Creator {
     private final  Long id;
     private final String nickname;
-    private final String profileImage;
+    private final String image;
 
     @Builder
     public Creator(
             Long id,
             String nickname,
-            String profileImage){
+            String image){
         this.id = id;
         this.nickname = nickname;
-        this.profileImage = profileImage;
+        this.image = image;
     }
 }

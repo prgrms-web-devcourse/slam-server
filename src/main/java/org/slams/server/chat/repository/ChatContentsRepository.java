@@ -26,4 +26,17 @@ public interface ChatContentsRepository extends JpaRepository<ChatContents, Long
             @Param("courtId") Long courtId,
             Pageable pageable
     );
+
+    @Query("SELECT c.id FROM ChatContents c WHERE c.court.id = :courtId AND c.id >= :lastId ORDER BY c.createdAt DESC")
+    List<Long> findIdByCourtIdMoreThenLastIdByCreated(
+            @Param("courtId") Long courtId,
+            @Param("lastId") Long lastId,
+            Pageable pageable
+    );
+
+    @Query("SELECT c.id FROM ChatContents c WHERE c.court.id = :courtId ORDER BY c.createdAt DESC")
+    List<Long> findIdByCourtIdByCreated(
+            @Param("courtId") Long courtId,
+            Pageable pageable
+    );
 }

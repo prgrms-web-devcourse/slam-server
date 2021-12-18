@@ -1,7 +1,6 @@
 package org.slams.server.chat.service;
 
 import org.junit.jupiter.api.*;
-import org.slams.server.chat.dto.request.CreateChatRoomRequest;
 import org.slams.server.chat.dto.response.ChatroomResponse;
 import org.slams.server.chat.entity.CourtChatroomMapping;
 import org.slams.server.chat.entity.UserChatroomMapping;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -99,15 +97,13 @@ class ChatroomMappingServiceTest {
 
     @Test
     @Order(2)
-    void saveChatRoomForEachUser(){
+    void saveUserChatRoom(){
         //Given
         Long userId = user.getId();
-        CreateChatRoomRequest chatRoomRequest = CreateChatRoomRequest.builder()
-                .courtId(court.getId())
-                .build();
+        Long courtId = court.getId();
 
         //When
-        chatroomMappingService.saveChatRoomForEachUser(userId, chatRoomRequest);
+        chatroomMappingService.saveUserChatRoom(userId, courtId);
 
         //Then
         assertThat(userChatroomMappingRepository.findAll().size(), is(1));
@@ -119,31 +115,28 @@ class ChatroomMappingServiceTest {
 
     @Test
     @Order(3)
-    void findChatRoomByCourt(){
+    void findUserChatRoomByUserId(){
         //Given
         Long userId = user.getId();
         CursorPageRequest cursorRequest = new CursorPageRequest(5, 0L, Boolean.TRUE);
 
         //When
-        List<ChatroomResponse> chatroomResponseList = chatroomMappingService.findChatRoomByCourt(userId, cursorRequest);
+        List<ChatroomResponse> chatroomResponseList = chatroomMappingService.findUserChatRoomByUserId(userId, cursorRequest);
 
         //Then
         assertThat(chatroomResponseList.get(0).getCourtName(), is("잠실 농구장"));
     }
 
-    @Test
+
     @Order(4)
     void deleteEnteredChatRoomByChatRoomId(){
         //Given
-        Long userChatRoomId = userChatroomMappingRepository.findAll(sort).get(0).getId();
+        Long userId = user.getId();
+        Long courtId = court.getId();
 
         //When
-        chatroomMappingService.deleteEnteredChatRoomByChatRoomId(userChatRoomId);
+        chatroomMappingService.deleteUserChatRoomByCourtId(userId, courtId);
 
         //Then
-        Assertions.assertThrows(EntityNotFoundException.class, () -> {
-            userChatroomMappingRepository.findById(userChatRoomId)
-                    .orElseThrow(() -> new EntityNotFoundException("해당 정보 존재하지 않음"));
-        });
     }
 }

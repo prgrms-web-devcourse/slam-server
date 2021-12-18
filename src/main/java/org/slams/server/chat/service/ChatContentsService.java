@@ -102,4 +102,27 @@ public class ChatContentsService {
     public ChatContentsResponse sendChatContent(ChatContents chatContents){
         return chatContentConvertor.toDto(chatContents);
     }
+
+    public Long findLastId(Long courtId, CursorPageRequest cursorRequest){
+        PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
+        List<Long> ids = cursorRequest.getIsFirst() ?
+                chatContentsRepository.findIdByCourtIdByCreated(courtId, pageable):
+                chatContentsRepository.findIdByCourtIdMoreThenLastIdByCreated(courtId, cursorRequest.getLastId(), pageable);
+
+        // 빈 배열 일 때
+        if (ids.size() -1 < 0) {
+            return null;
+        }else{
+            // 마지막 데이터 인지 확인
+            if (cursorRequest.getSize() > ids.size()){
+                // 마지막 데이터 일 때
+                return null;
+            }else {
+                // 마지막 데이터가 아닐 때
+                return ids.get(ids.size() - 1);
+            }
+
+        }
+
+    }
 }
