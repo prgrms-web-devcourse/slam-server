@@ -143,10 +143,23 @@ public class CourtService {
         double startLongitude=longitudes.get(0);
         double endLongitude=longitudes.get(1);
 
+        // 위도 경도로 코트 찾고
+        List<Court> byBoundary = courtRepository.findByBoundary(startLatitude, endLatitude, startLongitude, endLongitude);
 
-        return courtRepository.findAllByDateByBoundary(startLocalDateTime,endLocalDateTime,startLatitude,endLatitude,startLongitude,endLongitude).stream()
-                .map(CourtByDateByBoundaryResponseDto::new)
-                .collect(Collectors.toList());
+
+        List<CourtByDateByBoundaryResponseDto> courtByDateByBoundaryResponseDtoList=new ArrayList<>();
+        for (Court court:byBoundary) {
+            Long courtId=court.getId();
+            Long reservations = reservationRepository.findByDate(startLocalDateTime, endLocalDateTime, courtId);
+//            Long reservations = reservationRepository.findByDate(courtId);
+
+            log.info("courtId:"+courtId);
+            log.info("reservations:"+reservations);
+
+            courtByDateByBoundaryResponseDtoList.add(new CourtByDateByBoundaryResponseDto(court,reservations));
+        }
+
+        return courtByDateByBoundaryResponseDtoList;
 
     }
 

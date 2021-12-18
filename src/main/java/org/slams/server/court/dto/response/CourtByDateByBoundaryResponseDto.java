@@ -13,16 +13,16 @@ public class CourtByDateByBoundaryResponseDto extends BaseResponse {
     private String courtName;
     private double latitude;
     private double longitude;
-    private int courtReservation;
+    private Long courtReservation;
 
 
-    public CourtByDateByBoundaryResponseDto(Court court) {
+    public CourtByDateByBoundaryResponseDto(Court court, Long courtReservation) {
         super(court.getCreatedAt(), court.getUpdateAt());
         courtId=court.getId();
         courtName=court.getName();
         latitude=court.getLatitude();
         longitude=court.getLongitude();
-        courtReservation=court.getReservations().size();
+        this.courtReservation=courtReservation;
     }
 
 
