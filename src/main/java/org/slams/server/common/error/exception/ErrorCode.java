@@ -18,6 +18,7 @@ public enum ErrorCode {
 	USER_NOT_AUTHORIZED(403, "User is Denied to Access"),
 	INVALID_INPUT_TOKEN(400, "Invalid Input Token"),
 	NOT_EXIST_MEMBER(404,"존재하지 않는 회원입니다."),
+	SAME_USER_VALUE(400, "Same User Entered As Input"),
 
 	//Court
 	NOT_EXIST_COURT(404,"존재하지 않는 코트입니다."),
