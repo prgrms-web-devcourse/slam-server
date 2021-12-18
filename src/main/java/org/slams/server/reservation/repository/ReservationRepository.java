@@ -27,6 +27,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserByNow(
             @Param("userId") Long userId,
             @Param ("localDateTime") LocalDateTime localDateTime);
+
     @Query("SELECT r.user.id FROM Reservation r WHERE r.court.id=:courtId")
     List<Long> findBeakerIdByCourtId(
             @Param("courtId") Long courtId
