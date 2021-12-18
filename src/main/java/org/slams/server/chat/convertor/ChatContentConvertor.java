@@ -1,9 +1,7 @@
 package org.slams.server.chat.convertor;
 
-import org.slams.server.chat.dto.response.ChatContentType;
+import org.slams.server.chat.dto.response.subDto.*;
 import org.slams.server.chat.dto.response.ChatContentsResponse;
-import org.slams.server.chat.dto.response.ConversationInfo;
-import org.slams.server.chat.dto.response.LoudSpeakerInfo;
 import org.slams.server.chat.entity.ChatContents;
 import org.slams.server.chat.exception.InvalidChatTypeException;
 import org.springframework.stereotype.Component;
@@ -30,27 +28,43 @@ public class ChatContentConvertor {
         }
         if (chatContents.getChatContentType().equals(ChatContentType.CONVERSATION)){
             return ChatContentsResponse.builder()
-                    .chatContentType(chatContents.getChatContentType())
-                    .courtId(chatContents.getCourt().getId())
-                    .createdAt(chatContents.getCreatedAt())
-                    .updatedAt(chatContents.getCreatedAt())
-                    .conversationInfo(ConversationInfo.builder()
-                            .content(chatContents.getChatConversationContent().getContent())
-                            .userId(chatContents.getChatConversationContent().getUserId())
+                    .court(Court.builder()
+                            .id(chatContents.getCourt().getId())
+                            .name(chatContents.getCourt().getName())
                             .build()
                     )
+                    .creator(Creator.builder()
+                            .id(chatContents.getUser().getId())
+                            .nickname(chatContents.getUser().getNickname())
+                            .profileImage(chatContents.getUser().getProfileImage())
+                            .build()
+                    )
+                    .conversation(Conversation.builder()
+                            .content(chatContents.getChatConversationContent().getContent())
+                            .build()
+                    )
+                    .createdAt(chatContents.getCreatedAt())
+                    .updatedAt(chatContents.getUpdateAt())
                     .build();
         }
         if (chatContents.getChatContentType().equals(ChatContentType.LOUDSPEAKER)){
             return ChatContentsResponse.builder()
-                    .chatContentType(chatContents.getChatContentType())
-                    .courtId(chatContents.getCourt().getId())
-                    .createdAt(chatContents.getCreatedAt())
-                    .updatedAt(chatContents.getUpdateAt())
-                    .loudSpeakerInfo(LoudSpeakerInfo.builder()
-                            .startTime(chatContents.getChatLoudSpeakerContent().getStartTime())
+                    .court(Court.builder()
+                            .id(chatContents.getCourt().getId())
+                            .name(chatContents.getCourt().getName())
                             .build()
                     )
+                    .creator(Creator.builder()
+                            .id(chatContents.getUser().getId())
+                            .nickname(chatContents.getUser().getNickname())
+                            .profileImage(chatContents.getUser().getProfileImage())
+                            .build()
+                    )
+                    .loudSpeaker(LoudSpeaker.builder()
+                            .startTime(chatContents.getChatLoudSpeakerContent().getStartTime())
+                            .build())
+                    .createdAt(chatContents.getCreatedAt())
+                    .updatedAt(chatContents.getUpdateAt())
                     .build();
         }
 

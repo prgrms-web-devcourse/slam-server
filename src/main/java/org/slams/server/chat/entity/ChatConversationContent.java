@@ -27,34 +27,26 @@ public class ChatConversationContent extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private long userId;
 
     @Builder
     public ChatConversationContent(
             Long id,
-            String content,
-            long userId
+            String content
+
     ){
         checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
-
+        checkArgument(isNotEmpty(content), "대화내용은 빈값이 될 수 없습니다. ");
         this.id = id;
         this.content = content;
-        this.userId = userId;
     }
 
-    private ChatConversationContent(String content, long userId){
-        checkArgument(userId < 0, "userId 0미만은 허용하지 않습니다.");
-        checkArgument(isNotEmpty(content), "content는 빈값을 허용하지 않습니다.");
-
+    private ChatConversationContent(String content){
+        checkArgument(isNotEmpty(content), "대화내용은 빈값이 될 수 없습니다. ");
         this.content = content;
-        this.userId = userId;
     }
 
-    public static ChatConversationContent of(String content, long userId){
-        return new ChatConversationContent(content, userId);
+    public static ChatConversationContent of(String content){
+        return new ChatConversationContent(content);
     }
 
 }

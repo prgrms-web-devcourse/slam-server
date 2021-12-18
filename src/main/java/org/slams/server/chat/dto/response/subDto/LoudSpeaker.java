@@ -1,4 +1,4 @@
-package org.slams.server.chat.dto.response;
+package org.slams.server.chat.dto.response.subDto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,11 +8,11 @@ import lombok.Getter;
  */
 
 @Getter
-public class LoudSpeakerInfo {
+public class LoudSpeaker {
     private final int startTime;
 
     @Builder
-    public LoudSpeakerInfo(int startTime){
+    public LoudSpeaker(int startTime){
         this.startTime = startTime;
     }
 }

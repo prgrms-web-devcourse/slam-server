@@ -3,6 +3,10 @@ package org.slams.server.chat.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
+import org.slams.server.chat.dto.response.subDto.Conversation;
+import org.slams.server.chat.dto.response.subDto.Court;
+import org.slams.server.chat.dto.response.subDto.Creator;
+import org.slams.server.chat.dto.response.subDto.LoudSpeaker;
 
 import java.time.LocalDateTime;
 
@@ -12,33 +16,33 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ChatContentsResponse {
-    private final Long courtId;
+    private final Court court;
+
+    @JsonProperty("conversationInfo")
+    private final Conversation conversation;
+
+    @JsonProperty("loudSpeakerInfo")
+    private final LoudSpeaker loudSpeaker;
+
+    private final Creator creator;
+
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    @JsonProperty("conversationInfo")
-    private final ConversationInfo conversationInfo;
-
-    @JsonProperty("loudSpeakerInfo")
-    private final LoudSpeakerInfo loudSpeakerInfo;
-
-    @JsonProperty("chatContentType")
-    private final ChatContentType chatContentType;
-
     @Builder
     public ChatContentsResponse(
-            Long courtId,
+            Court court,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
-            ConversationInfo conversationInfo,
-            LoudSpeakerInfo loudSpeakerInfo,
-            ChatContentType chatContentType
+            Conversation conversation,
+            LoudSpeaker loudSpeaker,
+            Creator creator
     ){
-        this.courtId = courtId;
+        this.court = court;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.conversationInfo = conversationInfo;
-        this.loudSpeakerInfo = loudSpeakerInfo;
-        this.chatContentType = chatContentType;
+        this.conversation = conversation;
+        this.loudSpeaker = loudSpeaker;
+        this.creator = creator;
     }
 }

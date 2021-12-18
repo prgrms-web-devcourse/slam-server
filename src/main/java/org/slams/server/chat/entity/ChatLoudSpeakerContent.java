@@ -8,6 +8,8 @@ import org.slams.server.common.BaseEntity;
 
 import javax.persistence.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Created by yunyun on 2021/12/17.
  */
@@ -28,11 +30,15 @@ public class ChatLoudSpeakerContent extends BaseEntity {
 
     @Builder
     public ChatLoudSpeakerContent(Long id, int startTime){
+        checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
+
         this.id = id;
         this.startTime = startTime;
     }
 
     private ChatLoudSpeakerContent(int startTime){
+        checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
+
         this.startTime = startTime;
     }
 
