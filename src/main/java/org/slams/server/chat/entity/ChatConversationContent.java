@@ -34,7 +34,7 @@ public class ChatConversationContent extends BaseEntity {
             String content
 
     ){
-        checkArgument(id==null, "id는 null을 허용하지 않습니다.");
+        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(isNotEmpty(content), "대화내용은 빈값이 될 수 없습니다. ");
         this.id = id;
         this.content = content;

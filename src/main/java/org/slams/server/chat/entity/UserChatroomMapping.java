@@ -23,18 +23,18 @@ public class UserChatroomMapping extends BaseEntity {
     @Column(name="id")
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id", nullable = false)
     private CourtChatroomMapping courtChatroomMapping;
 
 
     private UserChatroomMapping(User user, CourtChatroomMapping courtChatroomMapping){
-        checkArgument(courtChatroomMapping==null, "courtChatroomMapping는 null을 허용하지 않습니다.");
-        checkArgument(user==null, "user는 null을 허용하지 않습니다.");
+        checkArgument(courtChatroomMapping != null, "courtChatroomMapping는 null을 허용하지 않습니다.");
+        checkArgument(user != null, "user는 null을 허용하지 않습니다.");
         this.user = user;
         this.courtChatroomMapping = courtChatroomMapping;
     }
@@ -45,9 +45,9 @@ public class UserChatroomMapping extends BaseEntity {
             User user,
             CourtChatroomMapping courtChatroomMapping
     ){
-        checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(courtChatroomMapping==null, "courtChatroomMapping 는 null을 허용하지 않습니다.");
-        checkArgument(user==null, "user는 null을 허용하지 않습니다.");
+        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
+        checkArgument(courtChatroomMapping != null, "courtChatroomMapping 는 null을 허용하지 않습니다.");
+        checkArgument(user != null, "user는 null을 허용하지 않습니다.");
 
         this.id = id;
         this.user = user;

@@ -31,11 +31,11 @@ public class ChatContents extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ChatContentType chatContentType;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
     private Court court;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
@@ -56,10 +56,10 @@ public class ChatContents extends BaseEntity {
             ChatConversationContent conversationContent,
             ChatLoudSpeakerContent chatLoudSpeakerContent
     ){
-        checkArgument(id==null, "id는 null을 허용하지 않습니다.");
-        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
-        checkArgument(court==null, "court 정보는 null을 허용하지 않습니다.");
-        checkArgument(user==null, "user 정보는 null을 허용하지 않습니다.");
+        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType != null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
+        checkArgument(user != null, "user 정보는 null을 허용하지 않습니다.");
 
         this.id = id;
         this.chatContentType = chatContentType;
@@ -75,9 +75,9 @@ public class ChatContents extends BaseEntity {
             User user,
             ChatConversationContent chatConversationContent
     ){
-        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
-        checkArgument(court==null, "court 정보는 null을 허용하지 않습니다.");
-        checkArgument(user==null, "user 정보는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType != null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
+        checkArgument(user != null, "user 정보는 null을 허용하지 않습니다.");
 
         this.chatContentType = chatContentType;
         this.court = court;
@@ -91,9 +91,9 @@ public class ChatContents extends BaseEntity {
             User user,
             ChatLoudSpeakerContent chatLoudSpeakerContent
     ){
-        checkArgument(chatContentType==null, "chatType는 null을 허용하지 않습니다.");
-        checkArgument(court==null, "court는 null을 허용하지 않습니다.");
-        checkArgument(user==null, "user 정보는 null을 허용하지 않습니다.");
+        checkArgument(chatContentType != null, "chatType는 null을 허용하지 않습니다.");
+        checkArgument(court != null, "court는 null을 허용하지 않습니다.");
+        checkArgument(user != null, "user 정보는 null을 허용하지 않습니다.");
         this.chatContentType = chatContentType;
         this.court = court;
         this.user = user;
