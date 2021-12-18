@@ -337,9 +337,9 @@ class UserControllerTest {
 		Long followerCount = 325L;
 		Long followingCount = 129L;
 
-		UserProfileResponse response = UserProfileResponse.toResponse(user, followerCount, followingCount, favoriteCourts);
+		UserProfileResponse response = UserProfileResponse.toResponse(user, true, followerCount, followingCount, favoriteCourts);
 
-		given(userService.getUserInfo(anyLong())).willReturn(response);
+		given(userService.getUserInfo(anyLong(), anyLong())).willReturn(response);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/{userId}", user.getId())
@@ -366,6 +366,7 @@ class UserControllerTest {
 					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
 					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
 					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("isFollowing").type(JsonFieldType.BOOLEAN).description("팔로우 여부"),
 					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
 					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
 					fieldWithPath("favoriteCourts").type(JsonFieldType.ARRAY).description("즐겨찾기한 농구장 목록"),
