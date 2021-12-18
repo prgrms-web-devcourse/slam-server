@@ -4,6 +4,7 @@
 //import org.slams.server.common.api.CursorPageRequest;
 //import org.slams.server.court.entity.Court;
 //import org.slams.server.court.entity.Texture;
+//import org.slams.server.follow.service.FollowService;
 //import org.slams.server.notification.dto.request.FollowNotificationRequest;
 //import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
 //import org.slams.server.notification.dto.request.UpdateIsClickedStatusRequest;
@@ -58,6 +59,9 @@
 //    @Autowired
 //    private LoudSpeakerNotificationRepository loudSpeakerNotificationRepository;
 //
+//    @Autowired
+//    private FollowService followService;
+//
 //    User creator = null;
 //    User user = null;
 //    Court court =null;
@@ -103,16 +107,16 @@
 //        courtRepository.save(courtEntity);
 //        court = courtRepository.findAll().get(0);
 //
-//        /** following 알림 메시지 **/
-//        FollowNotification followNotification = FollowNotification.of(
-//                creator,
-//                user.getId(),
-//                NotificationType.FOLLOWING
-//        );
-//        notificationIndexRepository.save(NotificationIndex.of(followNotification.getId(), user.getId()));
-//        followNotificationRepository.save(
-//                followNotification
-//        );
+////        /** following 알림 메시지 **/
+////        FollowNotification followNotification = FollowNotification.of(
+////                creator,
+////                user.getId(),
+////                NotificationType.FOLLOWING
+////        );
+////        notificationIndexRepository.save(NotificationIndex.of(followNotification.getId(), user.getId()));
+////        followNotificationRepository.save(
+////                followNotification
+////        );
 //    }
 //
 //    @AfterAll
@@ -127,11 +131,15 @@
 //
 //    @Test
 //    void save(){
+//        followService.follow(creator.getId(), user.getId());
+//
 //        CursorPageRequest cursorRequest = new CursorPageRequest(5, 2L, false);
 //
 //        FollowNotificationRequest request = new FollowNotificationRequest();
 //        request.setReceiverId(user.getId());
-//        notificationService.saveForFollowNotification(request, user.getId());
+//        notificationService.saveForFollowNotification(request, creator.getId());
+//
+//        followService.unfollow(creator.getId(), user.getId());
 //
 //        List<NotificationResponse> notificationResponseList = notificationService.findAllByUserId(user.getId(), cursorRequest);
 //        System.out.println(notificationResponseList.size());
@@ -141,7 +149,9 @@
 //                followNotificationRequest,
 //                creator.getId()
 //        );
-//        List<NotificationResponse> notificationResponseList2 = notificationService.findAllByUserId(creator.getId(), cursorRequest);
+//
+//
+//        List<NotificationResponse> notificationResponseList2 = notificationService.findAllByUserId(user.getId(), cursorRequest);
 //        System.out.println(notificationResponseList2.size());
 //    }
 //    @Test

@@ -22,7 +22,7 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("messageIds") List messageIds
     );
 
-    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId AND f.isDeleted=false")
+    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId")
     Optional<FollowNotification> findOneById(
             @Param("messageId") String messageId
     );
@@ -63,11 +63,11 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("userId") Long userId
     );
 
-    @Transactional
-    @Modifying()
-    @Query("UPDATE FollowNotification n SET n.isDeleted=:status WHERE n.userId=:receiverId")
-    void updateIsDeleted(
-            @Param("receiverId") Long receiverId,
-            @Param("status") boolean status
-    );
+//    @Transactional
+//    @Modifying()
+//    @Query("UPDATE FollowNotification n SET n.isDeleted=:status WHERE n.userId=:receiverId")
+//    void updateIsDeleted(
+//            @Param("receiverId") Long receiverId,
+//            @Param("status") boolean status
+//    );
 }

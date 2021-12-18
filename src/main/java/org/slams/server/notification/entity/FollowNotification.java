@@ -25,7 +25,7 @@ public class FollowNotification extends BaseEntity {
     @Id
     private String id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator_id", nullable = false, referencedColumnName = "id")
     private User creator;
 
@@ -37,9 +37,6 @@ public class FollowNotification extends BaseEntity {
 
     @Column(columnDefinition = "boolean default false")
     private boolean isClicked;
-
-    @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
@@ -81,9 +78,5 @@ public class FollowNotification extends BaseEntity {
 
     public void updateIsRead(boolean isRead){
         this.isRead = isRead;
-    }
-
-    public void updateIsDeleted(boolean isDeleted){
-        this.isDeleted = isDeleted;
     }
 }

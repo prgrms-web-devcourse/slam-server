@@ -31,11 +31,11 @@ public class ChatContents extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ChatContentType chatContentType;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
     private Court court;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
