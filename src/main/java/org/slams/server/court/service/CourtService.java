@@ -147,22 +147,19 @@ public class CourtService {
         List<Court> byBoundary = courtRepository.findByBoundary(startLatitude, endLatitude, startLongitude, endLongitude);
 
 
-        List<CourtByDateByBoundaryResponseDto> courtByDateByBoundaryResponseDtos=new ArrayList<>();
-        for (int i=0;i<byBoundary.size();i++) {
-            Long courtId=byBoundary.get(i).getId();
-            reservationRepository.findByDate(startLocalDateTime,endLocalDateTime,courtId);
+        List<CourtByDateByBoundaryResponseDto> courtByDateByBoundaryResponseDtoList=new ArrayList<>();
+        for (Court court:byBoundary) {
+            Long courtId=court.getId();
+            Long reservations = reservationRepository.findByDate(startLocalDateTime, endLocalDateTime, courtId);
+//            Long reservations = reservationRepository.findByDate(courtId);
 
-            CourtByDateByBoundaryResponseDto=new Cou
+            log.info("courtId:"+courtId);
+            log.info("reservations:"+reservations);
 
+            courtByDateByBoundaryResponseDtoList.add(new CourtByDateByBoundaryResponseDto(court,reservations));
         }
 
-
-
-
-
-        return courtRepository.findAllByDateByBoundary(startLatitude,endLatitude,startLongitude,endLongitude).stream()
-                .map(CourtByDateByBoundaryResponseDto::new)
-                .collect(Collectors.toList());
+        return courtByDateByBoundaryResponseDtoList;
 
     }
 
