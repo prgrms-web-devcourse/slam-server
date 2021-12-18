@@ -12,12 +12,14 @@ public class FavoriteInsertResponseDto extends BaseResponse {
     private Long favoriteId;
     private Long userId;
     private Long courtId;
+    private String courtName;
 
 
     //Entity -> ResponseDto
     public FavoriteInsertResponseDto(Favorite favorite) {
         super(favorite.getCreatedAt(),favorite.getUpdateAt());
         favoriteId=favorite.getId();
+        courtName=favorite.getCourt().getName();
         courtId=favorite.getCourt().getId();
         userId=favorite.getUser().getId();
     }
