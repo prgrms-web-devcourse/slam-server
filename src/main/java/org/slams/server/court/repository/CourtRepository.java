@@ -15,22 +15,6 @@ import java.util.List;
 
 public interface CourtRepository extends JpaRepository<Court, Long> {
 
-//    @Query(value="select DISTINCT c from Court c left join fetch ")
-
-    // court & reservation left join
-
-//    @Query("SELECT p FROM Post p WHERE p.user.id IN(:userIdList) and p.id < :lastId order by p.id desc")
-//    List<Court> findByUserIdListAndIdLessThanOrderByIdDesc(
-//            @Param("userIdList") List<Long> userIdList,
-//            @Param("lastId") Long lastId,
-//            Pageable pageable
-//    );
-
-    // courtId에 의한 조회
-//    <Optional>Court findByCourt(Court court);
-
-
-//    List<Favorite> findAllByUser(User user);
 
     @Query("SELECT c FROM Court c " +
             "INNER JOIN Reservation r ON c.id=r.court.id " +
@@ -47,6 +31,26 @@ public interface CourtRepository extends JpaRepository<Court, Long> {
             @Param("startLongitude") double startLongitude,
             @Param("endLongitude") double endLongitude
     );
+
+
+//    @Query("SELECT c FROM Court c " +
+//            "LEFT JOIN Reservation r ON c.id=r.court.id " +
+//            "WHERE (c.latitude BETWEEN :startLatitude AND :endLatitude) " +
+//            "AND (c.longitude BETWEEN :startLongitude AND :endLongitude) " +
+//            // Having
+//            "GROUP BY c.id" +
+//            "HAVING r. BETWEEN :startLocalDateTime AND :endLocalDateTime)  +
+//            "            \"OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime) \" +" +
+//            "" +
+//            "")
+//    List<Court> findAllByDateByBoundary(
+//            @Param("startLocalDateTime") LocalDateTime startLocalDateTime,
+//            @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
+//            @Param("startLatitude") double startLatitude,
+//            @Param("endLatitude") double endLatitude,
+//            @Param("startLongitude") double startLongitude,
+//            @Param("endLongitude") double endLongitude
+//    );
 
 
 }

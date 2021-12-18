@@ -97,11 +97,6 @@ public class CourtService {
         String time=requestParamVo.getTime().toUpperCase();
 
 
-//        // User 검색
-//        User user = getUser(userId);
-//        // court 검색
-//        Court court=getCourt(courtId);
-
         LocalDate dateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
         LocalDateTime startLocalDateTime;
         LocalDateTime endLocalDateTime;

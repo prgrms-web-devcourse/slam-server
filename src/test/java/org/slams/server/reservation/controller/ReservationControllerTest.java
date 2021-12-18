@@ -31,6 +31,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -333,7 +334,6 @@ public class ReservationControllerTest {
     // 4,5,6번 코트 사용
     @Test
     @DisplayName("[POST] '/api/v1/reservations'")
-    @Order(1)
     void InsertReservation() throws Exception {
         // GIVEN
 
@@ -354,7 +354,7 @@ public class ReservationControllerTest {
         user.setUpdateAt(now);
         userRepository.save(user);
 
-        LocalDateTime start=now;
+        LocalDateTime start=now.plusHours(1);
         LocalDateTime end=now.plusMonths(1);
 
         Court court1 = courtRepository.getById(3L);
@@ -425,7 +425,44 @@ public class ReservationControllerTest {
 
         reservationRepository.save(reservation6);
 
+    }
 
+
+    // 다가올 예약 목록 조회
+    // /api/v1/reservations/upcoming
+    @Test
+    @Order(2)
+    @DisplayName("[GET] '/api/v1/reservations/upcoming")
+    @Transactional
+    void testSelectCall() throws Exception {
+        // GIVEN
+
+
+        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/reservations/upcoming")
+                .header("Authorization",jwtToken)
+                .contentType(MediaType.APPLICATION_JSON); // TODO: 사진 들어오면 multipart/form-data
+
+        // WHEN // THEN
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("reservationsByUserByNow-select",
+                        responseFields(
+                                fieldWithPath("reservations").type(JsonFieldType.ARRAY).description("data"),
+                                fieldWithPath("reservations.[].reservationId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+                                fieldWithPath("reservations.[].courtId").type(JsonFieldType.NUMBER).description("예약한 코트 아이디"),
+                                fieldWithPath("reservations.[].courtName").type(JsonFieldType.STRING).description("예약한 코트 이름"),
+                                fieldWithPath("reservations.[].latitude").type(JsonFieldType.NUMBER).description("예약한 코트 위도"),
+                                fieldWithPath("reservations.[].longitude").type(JsonFieldType.NUMBER).description("예약한 코트 경도"),
+                                fieldWithPath("reservations.[].basketCount").type(JsonFieldType.NUMBER).description("예약한 코트 골대개수"),
+                                fieldWithPath("reservations.[].numberOfReservations").type(JsonFieldType.NUMBER).description("예약한 코트 수"),
+                                fieldWithPath("reservations.[].startTime").type(JsonFieldType.STRING).description("예약한 코트의 시작시간"),
+                                fieldWithPath("reservations.[].endTime").type(JsonFieldType.STRING).description("예약한 코트의 종료시간"),
+                                fieldWithPath("reservations.[].createdAt").type(JsonFieldType.STRING).description("예약 생성일자"),
+                                fieldWithPath("reservations.[].updatedAt").type(JsonFieldType.STRING).description("예약 수정일자")
+
+                        )
+                ));
     }
 
 
