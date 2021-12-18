@@ -31,19 +31,23 @@ public class UserChatroomMapping extends BaseEntity {
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id", nullable = false)
     private CourtChatroomMapping courtChatroomMapping;
 
+    @Column
+    private Long courtId;
 
-    private UserChatroomMapping(User user, CourtChatroomMapping courtChatroomMapping){
+    private UserChatroomMapping(User user, CourtChatroomMapping courtChatroomMapping, Long courtId){
         checkArgument(courtChatroomMapping != null, "courtChatroomMapping는 null을 허용하지 않습니다.");
         checkArgument(user != null, "user는 null을 허용하지 않습니다.");
         this.user = user;
         this.courtChatroomMapping = courtChatroomMapping;
+        this.courtId = courtId;
     }
 
     @Builder
     public UserChatroomMapping(
             Long id,
             User user,
-            CourtChatroomMapping courtChatroomMapping
+            CourtChatroomMapping courtChatroomMapping,
+            Long courtId
     ){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(courtChatroomMapping != null, "courtChatroomMapping 는 null을 허용하지 않습니다.");
@@ -52,9 +56,10 @@ public class UserChatroomMapping extends BaseEntity {
         this.id = id;
         this.user = user;
         this.courtChatroomMapping = courtChatroomMapping;
+        this.courtId = courtId;
     }
 
-    public static UserChatroomMapping of(User user, CourtChatroomMapping courtChatroomMapping){
-        return new UserChatroomMapping(user, courtChatroomMapping);
+    public static UserChatroomMapping of(User user, CourtChatroomMapping courtChatroomMapping, Long courtId){
+        return new UserChatroomMapping(user, courtChatroomMapping, courtId);
     }
 }

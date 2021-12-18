@@ -3,8 +3,10 @@ package org.slams.server.chat.repository;
 import org.slams.server.chat.entity.UserChatroomMapping;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,9 +28,24 @@ public interface UserChatroomMappingRepository extends JpaRepository<UserChatroo
             Pageable pageable
     );
 
-    @Query("DELETE FROM UserChatroomMapping u WHERE u.courtChatroomMapping.court.id=:courtId AND u.user.id=:userId")
-    void deleteByCourtId(
+    @Transactional
+    @Modifying()
+    @Query("DELETE FROM UserChatroomMapping u WHERE u.courtId=:courtId AND u.user.id=:userId")
+    void deleteUserChatRoomByCourtId(
             @Param("courtId") Long courtId,
             @Param("userId") Long userId
+    );
+
+    @Query("SELECT u.id FROM UserChatroomMapping u WHERE u.user.id = :userId AND u.id >= :lastId ORDER BY u.courtChatroomMapping.updateAt ASC")
+    List<Long> findIdByUserIdMoreThenLastIdByCreated(
+            @Param("userId") Long userId,
+            @Param("lastId") Long lastId,
+            Pageable pageable
+    );
+
+    @Query("SELECT u.id FROM UserChatroomMapping u WHERE u.user.id = :userId ORDER BY u.courtChatroomMapping.updateAt DESC")
+    List<Long> findIdByUserIdByCreated(
+            @Param("userId") Long userId,
+            Pageable pageable
     );
 }

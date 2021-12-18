@@ -31,7 +31,6 @@ public class NotificationController {
 
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<CursorPageResponse<List<NotificationResponse>>> findByUserId(
             CursorPageRequest cursorRequest,
             HttpServletRequest request){
@@ -49,6 +48,6 @@ public class NotificationController {
     public ResponseEntity<Void> updateIsClicked(HttpServletRequest request){
         Long userId = new TokenGetId(request,jwt).getUserId();
         notificationService.updateIsClickedStatus(new UpdateIsClickedStatusRequest(true), userId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }

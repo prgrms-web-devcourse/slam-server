@@ -45,22 +45,24 @@ public class ChatroomMappingService {
     }
 
     /** 채팅방 최초 입장 **/
-    public void saveChatRoomForEachUser(Long userId, CreateChatRoomRequest request){
+    public ChatroomResponse saveUserChatRoom(Long userId, Long courtId){
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("해당 사용자는 존재하지 않습니다."));
-        CourtChatroomMapping courtChatroomMapping = courtChatroomMappingRepository.findByCourtId(request.getCourtId());
-        userChatRoomMappingRepository.save(
-                UserChatroomMapping.of(user, courtChatroomMapping)
+        CourtChatroomMapping courtChatroomMapping = courtChatroomMappingRepository.findByCourtId(courtId);
+        return chatroomMappingConvertor.toDto(
+                userChatRoomMappingRepository.save(
+                UserChatroomMapping.of(user, courtChatroomMapping, courtId)
+            )
         );
     }
 
-    public List<ChatroomResponse> findChatRoomByCourt(Long userId, CursorPageRequest cursorRequest){
+    public List<ChatroomResponse> findUserChatRoomByUserId(Long userId, CursorPageRequest cursorRequest){
         return chatroomMappingConvertor.toDtoList(
                 cursorPageForFindAllByUserId(userId, cursorRequest)
         );
     }
 
-    public void deleteEnteredChatRoomByChatRoomId(Long userChatRoomId){
-            userChatRoomMappingRepository.deleteById(userChatRoomId);
+    public void deleteUserChatRoomByCourtId(Long courtId, Long userId){
+            userChatRoomMappingRepository.deleteUserChatRoomByCourtId(courtId, userId);
     }
 
     public List<UserChatroomMapping> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
@@ -68,5 +70,28 @@ public class ChatroomMappingService {
         return cursorRequest.getIsFirst() ?
                 userChatRoomMappingRepository.findAllByUserIdByCreated(userId, pageable):
                 userChatRoomMappingRepository.findAllByUserIdMoreThenLastIdByCreated(userId, cursorRequest.getLastId(), pageable);
+    }
+
+    public Long findLastId(Long userId, CursorPageRequest cursorRequest){
+        PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
+        List<Long> ids = cursorRequest.getIsFirst() ?
+                userChatRoomMappingRepository.findIdByUserIdByCreated(userId, pageable):
+                userChatRoomMappingRepository.findIdByUserIdMoreThenLastIdByCreated(userId, cursorRequest.getLastId(), pageable);
+
+        // 빈 배열 일 때
+        if (ids.size() -1 < 0) {
+            return null;
+        }else{
+            // 마지막 데이터 인지 확인
+            if (cursorRequest.getSize() > ids.size()){
+                // 마지막 데이터 일 때
+                return null;
+            }else {
+                // 마지막 데이터가 아닐 때
+                return ids.get(ids.size() - 1);
+            }
+
+        }
+
     }
 }
