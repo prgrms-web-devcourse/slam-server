@@ -55,6 +55,9 @@ class ChatroomMappingServiceTest {
 
     @BeforeAll
     void setUp(){
+        userRepository.deleteAll();
+        courtRepository.deleteAll();
+
        User userEntity = User.of(
                 "socialId-user",
                 "user@test.com",
@@ -65,8 +68,8 @@ class ChatroomMappingServiceTest {
                 Proficiency.INTERMEDIATE,
                 List.of(Position.TBD)
         );
-        userRepository.save(user);
-        user = userRepository.findAll(Sort.by(Sort.Direction.ASC, "createdAt")).get(0);
+        userRepository.save(userEntity);
+        user = userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).get(0);
 
         Court courtEntity = new Court(
                 "잠실 농구장",
@@ -77,10 +80,11 @@ class ChatroomMappingServiceTest {
                 Texture.CONCRETE
         );
         courtRepository.save(courtEntity);
-        court = courtRepository.findAll().get(0);
+        court = courtRepository.findAll(sort).get(0);
     }
 
     @Test
+    @Order(1)
     void saveChatRoom(){
         //Given
         Long courtId = court.getId();
@@ -94,6 +98,7 @@ class ChatroomMappingServiceTest {
     }
 
     @Test
+    @Order(2)
     void saveChatRoomForEachUser(){
         //Given
         Long userId = user.getId();
@@ -105,6 +110,7 @@ class ChatroomMappingServiceTest {
         chatroomMappingService.saveChatRoomForEachUser(userId, chatRoomRequest);
 
         //Then
+        assertThat(userChatroomMappingRepository.findAll().size(), is(1));
         UserChatroomMapping userChatroomMapping = userChatroomMappingRepository.findAll(sort).get(0);
         assertThat(userChatroomMapping.getCourtChatroomMapping().getCourt().getName()
         ,is("잠실 농구장"));
@@ -112,6 +118,7 @@ class ChatroomMappingServiceTest {
     }
 
     @Test
+    @Order(3)
     void findChatRoomByCourt(){
         //Given
         Long userId = user.getId();
@@ -129,6 +136,7 @@ class ChatroomMappingServiceTest {
     }
 
     @Test
+    @Order(4)
     void deleteEnteredChatRoomByChatRoomId(){
         //Given
         Long userChatRoomId = userChatroomMappingRepository.findAll(sort).get(0).getId();

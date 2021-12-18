@@ -13,16 +13,17 @@ import java.util.List;
  * Created by yunyun on 2021/12/16.
  */
 public interface ChatContentsRepository extends JpaRepository<ChatContents, Long> {
+
     @Query("SELECT c FROM ChatContents c WHERE c.court.id = :courtId AND c.id >= :lastId ORDER BY c.createdAt DESC")
-    List<ChatContents> findAllByUserIdMoreThenLastIdByCreated(
-            @Param("userId") Long userId,
+    List<ChatContents> findAllByCourtIdMoreThenLastIdByCreated(
+            @Param("courtId") Long courtId,
             @Param("lastId") Long lastId,
             Pageable pageable
     );
 
     @Query("SELECT c FROM ChatContents c WHERE c.court.id = :courtId ORDER BY c.createdAt DESC")
-    List<ChatContents> findAllByUserIdByCreated(
-            @Param("userId") Long userId,
+    List<ChatContents> findAllByCourtIdByCreated(
+            @Param("courtId") Long courtId,
             Pageable pageable
     );
 }

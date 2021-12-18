@@ -84,11 +84,11 @@ public class ChatContentsService {
         return chatContents;
     }
 
-    public List<ChatContents> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
+    public List<ChatContents> cursorPageForFindAllByUserId(Long courtId, CursorPageRequest cursorRequest){
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
         return cursorRequest.getIsFirst() ?
-                chatContentsRepository.findAllByUserIdByCreated(userId, pageable):
-                chatContentsRepository.findAllByUserIdMoreThenLastIdByCreated(userId, cursorRequest.getLastId(), pageable);
+                chatContentsRepository.findAllByCourtIdByCreated(courtId, pageable):
+                chatContentsRepository.findAllByCourtIdMoreThenLastIdByCreated(courtId, cursorRequest.getLastId(), pageable);
     }
 
     public ChatContentsResponse sendChatContent(ChatContents chatContents){
