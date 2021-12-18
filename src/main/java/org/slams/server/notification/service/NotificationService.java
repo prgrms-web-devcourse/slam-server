@@ -82,17 +82,17 @@ public class NotificationService {
 
     @Transactional
     public String saveForFollowNotification(FollowNotificationRequest request, Long userId){
-        User receiver = userRepository
-                .findById(request.getReceiverId())
+        User creator = userRepository
+                .findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("팔로우한 해당 사용자는 존재하지 않는 사용자 입니다."));
 
         FollowNotification followNotification = FollowNotification.of(
-                receiver,
-                userId,
+                creator,
+                request.getReceiverId(),
                 NotificationType.FOLLOWING
         );
         NotificationIndex notification = notificationRepository.save(
-                NotificationIndex.of(followNotification.getId(), userId)
+                NotificationIndex.of(followNotification.getId(), request.getReceiverId())
         );
 
         followNotificationRepository.save(
