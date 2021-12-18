@@ -22,7 +22,7 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("messageIds") List messageIds
     );
 
-    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId")
+    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId AND f.isDeleted=false")
     Optional<FollowNotification> findOneById(
             @Param("messageId") String messageId
     );
@@ -43,19 +43,31 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("status") boolean status
     );
 
-    @Query("SELECT f.id FROM FollowNotification f WHERE f.creator.id=:creatorId AND f.userId=:userId")
+    @Query("SELECT f.id FROM FollowNotification f WHERE f.creator.id=:userId AND f.userId=:receiverId")
     List<String> findByReceiverIdAndUserId(
-            @Param("creatorId") Long creatorId,
+            @Param("receiverId") Long receiverId,
+            @Param("userId") Long userId
+    );
+
+    @Query("SELECT f FROM FollowNotification f WHERE f.creator.id=:userId AND f.userId=:receiverId")
+    Optional<FollowNotification> findOneByReceiverIdAndUserId(
+            @Param("receiverId") Long receiverId,
             @Param("userId") Long userId
     );
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM FollowNotification f WHERE f.creator.id=:creatorId AND f.userId=:userId")
+    @Query("DELETE FROM FollowNotification f WHERE f.creator.id=:userId AND f.userId=:receiverId")
     void deleteByReceiverIdAndUserId(
-            @Param("creatorId") Long creatorId,
+            @Param("receiverId") Long receiverId,
             @Param("userId") Long userId
     );
 
-
+    @Transactional
+    @Modifying()
+    @Query("UPDATE FollowNotification n SET n.isDeleted=:status WHERE n.userId=:receiverId")
+    void updateIsDeleted(
+            @Param("receiverId") Long receiverId,
+            @Param("status") boolean status
+    );
 }

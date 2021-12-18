@@ -146,6 +146,11 @@ class NotificationControllerTest {
     }
 
     @Test
+    void test(){
+
+    }
+
+    @Test
     @DisplayName("해당 사용자의 공지 정보를 전송할 수 있다.")
     void findByUserId() throws Exception {
         //Given

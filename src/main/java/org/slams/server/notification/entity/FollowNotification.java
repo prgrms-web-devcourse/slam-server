@@ -38,6 +38,9 @@ public class FollowNotification extends BaseEntity {
     @Column(columnDefinition = "boolean default false")
     private boolean isClicked;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
@@ -78,5 +81,9 @@ public class FollowNotification extends BaseEntity {
 
     public void updateIsRead(boolean isRead){
         this.isRead = isRead;
+    }
+
+    public void updateIsDeleted(boolean isDeleted){
+        this.isDeleted = isDeleted;
     }
 }

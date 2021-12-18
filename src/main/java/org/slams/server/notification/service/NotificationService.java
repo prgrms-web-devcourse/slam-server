@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by yunyun on 2021/12/08.
@@ -82,6 +83,12 @@ public class NotificationService {
 
     @Transactional
     public String saveForFollowNotification(FollowNotificationRequest request, Long userId){
+        Optional<FollowNotification> followNotificationForChecked = followNotificationRepository.findOneByReceiverIdAndUserId(request.getReceiverId(), userId);
+        if (followNotificationForChecked.isPresent()){
+            followNotificationRepository.updateIsDeleted(request.getReceiverId(), false);
+            return followNotificationForChecked.get().getId();
+        }
+
         User creator = userRepository
                 .findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("팔로우한 해당 사용자는 존재하지 않는 사용자 입니다."));
@@ -165,13 +172,14 @@ public class NotificationService {
         loudSpeakerNotificationRepository.updateIsRead(userId, request.isStatus());
     }
 
+    @Transactional
     public void deleteFollowNotification(FollowNotificationRequest request, Long userId){
         List<String> messageIds = followNotificationRepository.findByReceiverIdAndUserId(request.getReceiverId(), userId);
         if (messageIds.isEmpty()){
             throw new NotificationNotFoundException("삭제할 정보가 존재하지 않습니다.");
         }else{
             notificationRepository.deleteByMessageId(messageIds.get(0));
-            followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
+            followNotificationRepository.updateIsDeleted(request.getReceiverId(), true);
         }
     }
 
