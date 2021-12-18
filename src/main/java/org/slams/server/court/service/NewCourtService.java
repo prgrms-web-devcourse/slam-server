@@ -6,10 +6,13 @@ import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.court.dto.request.CourtInsertRequestDto;
 import org.slams.server.court.dto.response.CourtInsertResponseDto;
 import org.slams.server.court.dto.response.NewCourtResponse;
+import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
 import org.slams.server.court.entity.Status;
+import org.slams.server.court.entity.Texture;
 import org.slams.server.court.exception.InvalidStatusException;
 import org.slams.server.court.exception.NewCourtNotFoundException;
+import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.repository.NewCourtRepository;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
@@ -18,8 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -28,6 +35,7 @@ import java.util.List;
 public class NewCourtService {
 
 	private final NewCourtRepository newCourtRepository;
+	private final CourtRepository courtRepository;
 	private final UserRepository userRepository;
 
 	public CursorPageResponse<List<NewCourtResponse>> getNewCourtsInStatus(String status, CursorPageRequest cursorPageRequest) {
@@ -86,6 +94,16 @@ public class NewCourtService {
 			));
 
 		newCourt.acceptNewCourt();
+
+		courtRepository.save(Court.builder()
+			.name(newCourt.getName())
+			.latitude(newCourt.getLatitude())
+			.longitude(newCourt.getLongitude())
+			.image(newCourt.getImage())
+			.basketCount(newCourt.getBasketCount())
+			.texture(newCourt.getTexture())
+			.reservations(Collections.emptyList())
+			.build());
 
 		return NewCourtResponse.toResponse(newCourt);
 	}
