@@ -74,8 +74,8 @@ public class UserService {
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		Long followerCount = followRepository.countByFollower(user);
-		Long followingCount = followRepository.countByFollowing(user);
+		Long followerCount = followRepository.countByFollowing(user);
+		Long followingCount = followRepository.countByFollower(user);
 
 		return MyProfileResponse.toResponse(user, followerCount, followingCount);
 	}
