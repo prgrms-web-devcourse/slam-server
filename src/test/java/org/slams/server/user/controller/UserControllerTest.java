@@ -214,7 +214,7 @@ class UserControllerTest {
 			.andDo(print());
 
 		// then
-		resultActions.andExpect(status().isCreated())
+		resultActions.andExpect(status().isAccepted())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
 			.andExpect(jsonPath("userId").value(1L))
 			.andExpect(jsonPath("email").value("jelly@gmail.com"))
@@ -394,7 +394,7 @@ class UserControllerTest {
 			.andDo(print());
 
 		// then
-		resultActions.andExpect(status().isCreated())
+		resultActions.andExpect(status().isAccepted())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
 			.andDo(document("users/user-updateUserProfileImage", preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),

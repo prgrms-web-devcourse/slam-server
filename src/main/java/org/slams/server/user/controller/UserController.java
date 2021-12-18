@@ -72,7 +72,7 @@ public class UserController {
 
 		ExtraUserInfoResponse extraUserInfoResponse = userService.addExtraUserInfo(claims.getUserId(), extraUserInfoRequest);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(extraUserInfoResponse);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(extraUserInfoResponse);
 	}
 
 	@PutMapping("/myprofile/image")
@@ -87,7 +87,7 @@ public class UserController {
 
 		ProfileImageResponse profileImageResponse = userService.updateUserProfileImage(claims.getUserId(), profileImageRequest);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(profileImageResponse);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(profileImageResponse);
 	}
 
 	@DeleteMapping("/myprofile/image")
