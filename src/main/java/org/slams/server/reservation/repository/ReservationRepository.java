@@ -32,4 +32,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("courtId") Long courtId
     );
 
+
+    @Query("SELECT COUNT(r) FROM Reservation r WHERE (r.court.id=:courtId) AND (r.startTime BETWEEN :startLocalDateTime AND :endLocalDateTime) OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime)")
+    Long findByDate(
+            @Param("startLocalDateTime") LocalDateTime startLocalDateTime,
+            @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
+            @Param("courtId") Long courtId
+    );
+
+
 }

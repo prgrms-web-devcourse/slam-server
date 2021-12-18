@@ -16,21 +16,35 @@ import java.util.List;
 public interface CourtRepository extends JpaRepository<Court, Long> {
 
 
+//    @Query("SELECT c FROM Court c " +
+//            "INNER JOIN Reservation r ON c.id=r.court.id " +
+//            "WHERE (c.latitude BETWEEN :startLatitude AND :endLatitude) " +
+//            "AND (c.longitude BETWEEN :startLongitude AND :endLongitude) " +
+//            "AND (r.startTime BETWEEN :startLocalDateTime AND :endLocalDateTime) " +
+//            "OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime) " +
+//            "GROUP BY c.id")
+//    List<Court> findAllByDateByBoundary(
+//            @Param("startLocalDateTime") LocalDateTime startLocalDateTime,
+//            @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
+//            @Param("startLatitude") double startLatitude,
+//            @Param("endLatitude") double endLatitude,
+//            @Param("startLongitude") double startLongitude,
+//            @Param("endLongitude") double endLongitude
+//    );
+
+
     @Query("SELECT c FROM Court c " +
-            "INNER JOIN Reservation r ON c.id=r.court.id " +
             "WHERE (c.latitude BETWEEN :startLatitude AND :endLatitude) " +
-            "AND (c.longitude BETWEEN :startLongitude AND :endLongitude) " +
-            "AND (r.startTime BETWEEN :startLocalDateTime AND :endLocalDateTime) " +
-            "OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime) " +
-            "GROUP BY c.id")
-    List<Court> findAllByDateByBoundary(
-            @Param("startLocalDateTime") LocalDateTime startLocalDateTime,
-            @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
+            "AND (c.longitude BETWEEN :startLongitude AND :endLongitude)")
+    List<Court> findByBoundary(
             @Param("startLatitude") double startLatitude,
             @Param("endLatitude") double endLatitude,
             @Param("startLongitude") double startLongitude,
             @Param("endLongitude") double endLongitude
     );
+
+
+
 
 
 //    @Query("SELECT c FROM Court c " +
