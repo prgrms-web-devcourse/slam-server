@@ -164,7 +164,7 @@ class ManagementControllerTest {
 					fieldWithPath("contents[].status").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 승인여부"),
 					fieldWithPath("contents[].createdAt").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 정보 최초 생성시간"),
 					fieldWithPath("contents[].updatedAt").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 정보 최근 수정시간"),
-					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키")
+					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키").optional()
 				)
 			));
 	}
