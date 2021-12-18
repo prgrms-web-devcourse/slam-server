@@ -92,8 +92,8 @@ public class UserService {
 
 		Boolean isFollowing = followRepository.existsByFollowerAndFollowing(me, user);
 
-		Long followerCount = followRepository.countByFollower(user);
-		Long followingCount = followRepository.countByFollowing(user);
+		Long followerCount = followRepository.countByFollowing(user);
+		Long followingCount = followRepository.countByFollower(user);
 
 		List<FavoriteCourtResponse> favoriteCourts = favoriteRepository.findAllByUser(user)
 			.stream().map(favorite -> new FavoriteCourtResponse(favorite.getCourt().getId(), favorite.getCourt().getName()))
