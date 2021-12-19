@@ -22,6 +22,7 @@ import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,15 +148,22 @@ public class ReservationService {
         log.info("reservationCount:"+byReservation.size());
 
         List<ReservationResponseDto> reservationResponseDtoList=new ArrayList<>();
+        Boolean isFollow=false;
 
         for (Reservation rs:byReservation) {
             User joinUser = rs.getUser();
+
             if (user.getId() != joinUser.getId()) {
-                Boolean isFollow = followRepository.existsByFollowerAndFollowing(user, rs.getUser());
+                isFollow = followRepository.existsByFollowerAndFollowing(user, rs.getUser());
                 if (isFollow) {
                     Optional<Follow> follow=followRepository.findByFollowerAndFollowing(user,rs.getUser());
                     reservationResponseDtoList.add(new ReservationResponseDto(joinUser, isFollow,follow.get()));
                 }
+                else {
+                    Optional<Follow> follow=followRepository.findByFollowerAndFollowing(user,rs.getUser());
+                    reservationResponseDtoList.add(new ReservationResponseDto(joinUser, isFollow));
+                }
+
             }
         }
 
