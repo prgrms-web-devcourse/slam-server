@@ -3,6 +3,7 @@ package org.slams.server.court.repository;
 import org.slams.server.court.dto.response.CourtReservationResponseDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.favorite.entity.Favorite;
+import org.slams.server.follow.entity.Follow;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.user.entity.User;
 import org.springframework.data.domain.Pageable;

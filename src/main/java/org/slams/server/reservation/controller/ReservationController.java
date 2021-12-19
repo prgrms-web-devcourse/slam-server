@@ -3,10 +3,14 @@ package org.slams.server.reservation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slams.server.common.api.CursorPageRequest;
+import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.api.TokenGetId;
+import org.slams.server.follow.dto.FollowerResponse;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
+import org.slams.server.reservation.dto.response.ReservationExpiredResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.service.ReservationService;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -89,6 +94,17 @@ public class ReservationController {
         return ResponseEntity.ok().body(result);
     }
 
+    // 지난 예약 조회
+    @GetMapping("/expired/{reservationId}")
+    public ResponseEntity<CursorPageResponse<List<ReservationExpiredResponseDto>>> getExpired(
+            @PathVariable Long reservationId, CursorPageRequest cursorPageRequest, HttpServletRequest request) {
+
+        TokenGetId token=new TokenGetId(request,jwt);
+        Long userId=token.getUserId();
+        CursorPageResponse<List<ReservationExpiredResponseDto>> followerResponse = reservationService.findExpired(userId, cursorPageRequest,reservationId);
+
+        return ResponseEntity.ok(followerResponse);
+    }
 
 
 }

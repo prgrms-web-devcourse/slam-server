@@ -2,10 +2,13 @@ package org.slams.server.reservation.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slams.server.common.api.CursorPageRequest;
+import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.error.exception.ErrorCode;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.exception.CourtNotFoundException;
 import org.slams.server.court.repository.CourtRepository;
+import org.slams.server.follow.dto.FollowerResponse;
 import org.slams.server.follow.entity.Follow;
 import org.slams.server.follow.repository.FollowRepository;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
@@ -18,9 +21,11 @@ import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -137,6 +142,35 @@ public class ReservationService {
         }
 
         return reservationResponseDtoList;
+    }
+
+
+    //findExpired
+    public CursorPageResponse<List<ReservationExpiredResponseDto>> findExpired(Long userId, CursorPageRequest cursorPageRequest, Long reservationId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(
+                        MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
+
+        LocalDateTime localDateTime=LocalDateTime.now();
+
+//        reservationRepository.findByUserByExpiredOrderByDesc(userId,localDateTime);
+
+        PageRequest pageable = PageRequest.of(0, cursorPageRequest.getSize());
+        List<Reservation> reservations = cursorPageRequest.getIsFirst() ?
+                reservationRepository.findByUserByExpiredOrderByDesc(userId, localDateTime,pageable) :
+                reservationRepository.findByUserByAndIdLessThanExpiredOrderByDesc(cursorPageRequest.getLastId(), pageable);
+
+        List<ReservationExpiredResponseDto> reservationExpiredResponseDtoList = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            reservationExpiredResponseDtoList.add(
+                    ReservationExpiredResponseDto.toResponse(
+                            reservation, reservation.getCourt(), reservation.getCreatedAt(), reservation.getUpdateAt())
+            );
+        }
+
+        Long lastId = reservations.size() < cursorPageRequest.getSize() ? null : reservations.get(reservations.size() - 1).getId();
+
+        return new CursorPageResponse<>(reservationExpiredResponseDtoList, lastId);
     }
 
 
