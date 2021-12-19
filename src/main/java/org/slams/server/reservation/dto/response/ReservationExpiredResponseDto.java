@@ -21,11 +21,11 @@ public class ReservationExpiredResponseDto {
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private int numberOfReservations;
+    private Long numberOfReservations;
 
     private ReservationExpiredResponseDto(Long reservationId, Long courtId, double latitude, double longitude,
                              String courtName, LocalDateTime startTime, LocalDateTime endTime,
-                             LocalDateTime createdAt, LocalDateTime updatedAt, int numOfReservations) {
+                             LocalDateTime createdAt, LocalDateTime updatedAt, Long numOfReservations) {
         this.reservationId = reservationId;
         this.courtId = courtId;
         this.latitude = latitude;
@@ -38,7 +38,7 @@ public class ReservationExpiredResponseDto {
         this.numberOfReservations=numOfReservations;
     }
 
-    public static ReservationExpiredResponseDto toResponse(Reservation reservation, Court court, LocalDateTime createdAt, LocalDateTime updatedAt, int numOfReservations) {
+    public static ReservationExpiredResponseDto toResponse(Reservation reservation, Court court, LocalDateTime createdAt, LocalDateTime updatedAt, Long numOfReservations) {
         return new ReservationExpiredResponseDto(reservation.getId(), court.getId(), court.getLatitude(), court.getLongitude(),
                 court.getName(),reservation.getStartTime(), reservation.getEndTime(),
                 createdAt, updatedAt, numOfReservations);

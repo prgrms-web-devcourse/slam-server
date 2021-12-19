@@ -14,12 +14,12 @@ public class ReservationUpcomingResponseDto extends BaseResponse {
     private double latitude;
     private double longitude;
     private int basketCount;
-    private int numberOfReservations;
+    private Long numberOfReservations;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
 
-    public ReservationUpcomingResponseDto(Reservation reservation,int numberOfReservations) {
+    public ReservationUpcomingResponseDto(Reservation reservation,Long numberOfReservations) {
         super(reservation.getCreatedAt(), reservation.getUpdateAt());
         reservationId=reservation.getId();
         courtId=reservation.getCourt().getId();
