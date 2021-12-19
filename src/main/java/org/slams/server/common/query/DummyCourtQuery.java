@@ -1,25 +1,41 @@
 package org.slams.server.common.query;
 
 import lombok.RequiredArgsConstructor;
-import org.slams.server.chat.entity.CourtChatroomMapping;
-import org.slams.server.chat.repository.CourtChatroomMappingRepository;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slams.server.chat.service.ChatroomMappingService;
+import org.slams.server.court.dto.request.CourtDummyExcelDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.DummyCourtRepository;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+//@ConfigurationProperties(prefix = "excel")
 public class DummyCourtQuery {
 
     private final DummyCourtRepository dummyCourtRepository;
     private final ChatroomMappingService chatroomMappingService;
 
+//    @Value("${excel.file}")
+//    String efile;
+
+
+    // 상대 경로
+
+
+    // 여기에서 엑셀 읽고 더미데이터 넣기
 
     @Transactional
     public void insert() {
@@ -34,10 +50,47 @@ public class DummyCourtQuery {
 
         List<Court> saveDetail=dummyCourtRepository.saveAll(details);
 
-        // todo 플로라의 -> chat Romm Service 넣기
+        // chat Room Service 넣기
         details.stream().map(Court::getId).forEach(chatroomMappingService::saveChatRoom);
 
     }
+
+    @Transactional
+    public void insertExcel() throws IOException, InvalidFormatException {
+        List<Court> dataList = new ArrayList<>();
+        ClassPathResource resource = new ClassPathResource("test2.xlsx");
+
+        if (resource.exists()) {
+            FileInputStream file=new FileInputStream(resource.getFile());
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            Sheet worksheet = workbook.getSheetAt(0);
+
+            System.out.println("workSet"+worksheet.getPhysicalNumberOfRows());
+
+            for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+                Row row = worksheet.getRow(i);
+
+                CourtDummyExcelDto data = new CourtDummyExcelDto();
+
+                data.setName(row.getCell(0).getStringCellValue());
+                data.setLongitude(row.getCell(2).getNumericCellValue());
+                data.setLatitude(row.getCell(3).getNumericCellValue());
+                data.setBasketCount(row.getCell(4).getCellType());
+
+                dataList.add(data.insertRequestDtoToEntity(data));
+
+            }
+            dummyCourtRepository.saveAll(dataList);
+
+            file.close();
+        }
+
+
+
+    }
+
+
 
 
 }

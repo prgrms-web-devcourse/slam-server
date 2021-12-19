@@ -28,7 +28,6 @@ public class NewCourt extends BaseEntity {
     @Column(nullable = false)
     private double longitude;
 
-    @Column(nullable = false,length=255)
     private String image;
 
     @Column(nullable = false, name = "basket_count")
