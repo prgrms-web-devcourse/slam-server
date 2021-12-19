@@ -44,7 +44,7 @@ public class CourtService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public CourtDetailResponseDto findDetail(Long courtId, String time, String date) {
+    public CourtDetailResponseDto findDetail(Long courtId, String date, String time) {
 
         List<LocalDateTime> localDateTimes = changeTimeZone(date, time);
         LocalDateTime startLocalDateTime=localDateTimes.get(0);
