@@ -58,6 +58,7 @@ public class DummyCourtQuery {
     @Transactional
     public void insertExcel() throws IOException, InvalidFormatException {
         List<Court> dataList = new ArrayList<>();
+
         ClassPathResource resource = new ClassPathResource("dummyCourt.xlsx");
 
         if (resource.exists()) {
@@ -74,6 +75,7 @@ public class DummyCourtQuery {
                 CourtDummyExcelDto data = new CourtDummyExcelDto();
 
                 data.setName(row.getCell(0).getStringCellValue());
+
                 data.setLatitude(row.getCell(1).getNumericCellValue());
                 data.setLongitude(row.getCell(2).getNumericCellValue());
                 data.setBasketCount(2);
