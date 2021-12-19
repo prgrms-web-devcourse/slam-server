@@ -42,7 +42,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 
 //    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.court.id=:courtId")
-    @Query("SELECT COUNT(r) FROM Reservation r WHERE r.court.id=:courtId AND ((r.startTime BETWEEN :startLocalDateTime AND :endLocalDateTime) OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime))GROUP BY r.user.id")
+    @Query("SELECT COUNT(DISTINCT r.user.id) FROM Reservation r WHERE r.court.id=:courtId AND ((r.startTime BETWEEN :startLocalDateTime AND :endLocalDateTime) OR (r.endTime BETWEEN :startLocalDateTime AND :endLocalDateTime))")
     Long findByDate(
             @Param("startLocalDateTime") LocalDateTime startLocalDateTime,
             @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
