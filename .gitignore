@@ -36,3 +36,6 @@ build/
 *.yml
 *.yaml
 *.properties
+
+# dummy data 엑셀
+*.xlsx
