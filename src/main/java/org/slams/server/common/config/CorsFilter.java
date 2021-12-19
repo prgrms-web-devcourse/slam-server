@@ -1,7 +1,12 @@
 package org.slams.server.common.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,9 +19,13 @@ import java.io.IOException;
 @Component
 public class CorsFilter extends OncePerRequestFilter {
 
+	@Value("${slam.cors.allow}")
+	private String allowOrigin;
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+		String requestURI = request.getRequestURI();
+		response.setHeader("Access-Control-Allow-Origin", allowOrigin);
 		response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token");
