@@ -27,6 +27,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByUserByNow(
             @Param("userId") Long userId,
             @Param ("localDateTime") LocalDateTime localDateTime);
+
     @Query("SELECT r.user.id FROM Reservation r WHERE r.court.id=:courtId")
     List<Long> findBeakerIdByCourtId(
             @Param("courtId") Long courtId
@@ -40,6 +41,15 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("endLocalDateTime") LocalDateTime endLocalDateTime,
             @Param("courtId") Long courtId
     );
+
+
+
+    @Query("SELECT r FROM Reservation r WHERE r.court.id=:courtId AND (:sTime>=r.startTime AND :sTime<=r.endTime) OR (:eTime >=r.startTime AND :eTime<=r.endTime)")
+    List<Reservation> findByReservation(
+            @Param("courtId")Long courtId,
+            @Param("sTime") LocalDateTime sTime,
+            @Param("eTime") LocalDateTime eTime);
+
 
 
 }

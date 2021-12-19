@@ -48,7 +48,7 @@ public class ReservationController {
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
 
-        return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.update(requestDto,reservationId,userId), HttpStatus.ACCEPTED);
+        return new ResponseEntity<ReservationUpdateResponseDto>(reservationService.update(requestDto,reservationId,userId), HttpStatus.CREATED);
 
     }
 
@@ -75,6 +75,18 @@ public class ReservationController {
         result.put("reservations",reservationService.findUpcoming(userId));
         return ResponseEntity.ok().body(result);
 
+    }
+
+    // 토글 상세 조회 API
+    // /api/v1/reservations/{reservationId} -> 변경 {courtId}/{startTIme}/{endTime}
+    @GetMapping("/{courtId}")
+    public ResponseEntity<Map<String,Object>>getDetail(HttpServletRequest request, @PathVariable Long courtId, @PathVariable String startTime, @PathVariable String endTime) {
+        TokenGetId token=new TokenGetId(request,jwt);
+        Long userId=token.getUserId();
+
+        Map<String,Object>result=new HashMap<>();
+        result.put("participants",reservationService.getDetailByReservationByUser(userId,courtId,startTime,endTime));
+        return ResponseEntity.ok().body(result);
     }
 
 

@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
@@ -42,5 +43,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 	@Modifying
 	@Query("DELETE FROM Follow f WHERE f.follower.id = :followerId and f.following.id = :followingId")
 	void deleteByFollowerAndFollowing(@Param("followerId") Long followerId, @Param("followingId") Long followingId);
+
+	// 팔로우 관계 follower 내가 팔로우 함 / following 누군가 나를 팔로우 함
+	Optional<Follow> findByFollowerAndFollowing(User follower, User following);
 
 }
