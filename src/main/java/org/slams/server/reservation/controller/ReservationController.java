@@ -95,13 +95,24 @@ public class ReservationController {
     }
 
     // 지난 예약 조회
-    @GetMapping("/expired/{reservationId}")
+//    @GetMapping("/expired/{reservationId}")
+//    public ResponseEntity<CursorPageResponse<List<ReservationExpiredResponseDto>>> getExpired(
+//            @PathVariable Long reservationId, CursorPageRequest cursorPageRequest, HttpServletRequest request) {
+//
+//        TokenGetId token=new TokenGetId(request,jwt);
+//        Long userId=token.getUserId();
+//        CursorPageResponse<List<ReservationExpiredResponseDto>> followerResponse = reservationService.findExpired(userId, cursorPageRequest,reservationId);
+//
+//        return ResponseEntity.ok(followerResponse);
+//    }
+
+    @GetMapping("/expired")
     public ResponseEntity<CursorPageResponse<List<ReservationExpiredResponseDto>>> getExpired(
-            @PathVariable Long reservationId, CursorPageRequest cursorPageRequest, HttpServletRequest request) {
+            CursorPageRequest cursorPageRequest, HttpServletRequest request) {
 
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
-        CursorPageResponse<List<ReservationExpiredResponseDto>> followerResponse = reservationService.findExpired(userId, cursorPageRequest,reservationId);
+        CursorPageResponse<List<ReservationExpiredResponseDto>> followerResponse = reservationService.findExpired(userId, cursorPageRequest);
 
         return ResponseEntity.ok(followerResponse);
     }
