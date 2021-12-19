@@ -115,9 +115,12 @@ public class ReservationService {
         // 코드 수정 (count 잘못 세어지는거 코드 수정)
         List<Reservation> reservationList = reservationRepository.findByUserByNow(userId, localDateTime);
         List<ReservationUpcomingResponseDto> reservationUpcomingResponseDtoList=new ArrayList<>();
-        int reservationSize=reservationList.size();
 
         for (Reservation reservation :reservationList) {
+
+            // todo. 여기서 DB 한번 더 뒤지면서 카운트를 센다.
+            Long reservationSize = reservationRepository.findByDate(reservation.getStartTime(), reservation.getEndTime(), reservation.getCourt().getId());
+
             ReservationUpcomingResponseDto reservationUpcomingResponseDto=new ReservationUpcomingResponseDto(reservation,reservationSize);
             reservationUpcomingResponseDtoList.add(reservationUpcomingResponseDto);
         }
@@ -177,8 +180,13 @@ public class ReservationService {
                 reservationRepository.findByUserByAndIdLessThanExpiredOrderByDesc(cursorPageRequest.getLastId(), pageable);
 
         List<ReservationExpiredResponseDto> reservationExpiredResponseDtoList = new ArrayList<>();
-        int reservationSize= reservationExpiredResponseDtoList.size();
+
+//        int reservationSize= reservationExpiredResponseDtoList.size();
+
         for (Reservation reservation : reservations) {
+
+            // todo. 여기서 한번 더 뒤지면서 reservationSize를 센다.
+            Long reservationSize = reservationRepository.findByDate(reservation.getStartTime(), reservation.getEndTime(), reservation.getCourt().getId());
             reservationExpiredResponseDtoList.add(
                     ReservationExpiredResponseDto.toResponse(
                             reservation, reservation.getCourt(), reservation.getCreatedAt(), reservation.getUpdateAt(),reservationSize)
