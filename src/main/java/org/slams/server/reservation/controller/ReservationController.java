@@ -78,8 +78,8 @@ public class ReservationController {
     }
 
     // 토글 상세 조회 API
-    // /api/v1/reservations/{reservationId} -> 변경 {courtId}/{startTIme}/{endTime}
-    @GetMapping("/{courtId}")
+    // /api/v1/reservations/{reservationId} -> 변경 api/v1/reservations/{courtId}/{startTIme}/{endTime}
+    @GetMapping("/{courtId}/{startTime}/{endTime}")
     public ResponseEntity<Map<String,Object>>getDetail(HttpServletRequest request, @PathVariable Long courtId, @PathVariable String startTime, @PathVariable String endTime) {
         TokenGetId token=new TokenGetId(request,jwt);
         Long userId=token.getUserId();
