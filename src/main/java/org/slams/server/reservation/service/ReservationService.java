@@ -107,9 +107,23 @@ public class ReservationService {
         // user -> reservation -> court 조회
         LocalDateTime localDateTime=LocalDateTime.now();
 
-        return reservationRepository.findByUserByNow(userId,localDateTime).stream()
-                .map(ReservationUpcomingResponseDto::new)
-                .collect(Collectors.toList());
+//        return reservationRepository.findByUserByNow(userId,localDateTime).stream()
+//                .map(ReservationUpcomingResponseDto::new)
+//                .collect(Collectors.toList());
+
+
+        // 코드 수정 (count 잘못 세어지는거 코드 수정)
+        List<Reservation> reservationList = reservationRepository.findByUserByNow(userId, localDateTime);
+        List<ReservationUpcomingResponseDto> reservationUpcomingResponseDtoList=new ArrayList<>();
+        int reservationSize=reservationList.size();
+
+        for (Reservation reservation :reservationList) {
+            ReservationUpcomingResponseDto reservationUpcomingResponseDto=new ReservationUpcomingResponseDto(reservation,reservationSize);
+            reservationUpcomingResponseDtoList.add(reservationUpcomingResponseDto);
+        }
+
+        return reservationUpcomingResponseDtoList;
+
     }
 
 
@@ -127,6 +141,7 @@ public class ReservationService {
 
         // reservationId -> User 검색 ->
         List<Reservation> byReservation = reservationRepository.findByReservation(courtId, sTime, eTime);
+        log.info("reservationCount:"+byReservation.size());
 
         List<ReservationResponseDto> reservationResponseDtoList=new ArrayList<>();
 
@@ -162,10 +177,11 @@ public class ReservationService {
                 reservationRepository.findByUserByAndIdLessThanExpiredOrderByDesc(cursorPageRequest.getLastId(), pageable);
 
         List<ReservationExpiredResponseDto> reservationExpiredResponseDtoList = new ArrayList<>();
+        int reservationSize= reservationExpiredResponseDtoList.size();
         for (Reservation reservation : reservations) {
             reservationExpiredResponseDtoList.add(
                     ReservationExpiredResponseDto.toResponse(
-                            reservation, reservation.getCourt(), reservation.getCreatedAt(), reservation.getUpdateAt())
+                            reservation, reservation.getCourt(), reservation.getCreatedAt(), reservation.getUpdateAt(),reservationSize)
             );
         }
 

@@ -19,7 +19,7 @@ public class ReservationUpcomingResponseDto extends BaseResponse {
     private LocalDateTime endTime;
 
 
-    public ReservationUpcomingResponseDto(Reservation reservation) {
+    public ReservationUpcomingResponseDto(Reservation reservation,int numberOfReservations) {
         super(reservation.getCreatedAt(), reservation.getUpdateAt());
         reservationId=reservation.getId();
         courtId=reservation.getCourt().getId();
@@ -27,7 +27,7 @@ public class ReservationUpcomingResponseDto extends BaseResponse {
         latitude=reservation.getCourt().getLatitude();
         longitude=reservation.getCourt().getLongitude();
         basketCount=reservation.getCourt().getBasketCount();
-        numberOfReservations=reservation.getCourt().getReservations().size();
+        this.numberOfReservations=numberOfReservations;
         startTime=reservation.getStartTime();
         endTime=reservation.getEndTime();
     }

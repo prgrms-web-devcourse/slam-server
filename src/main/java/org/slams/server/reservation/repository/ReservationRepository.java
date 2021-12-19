@@ -46,7 +46,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
 
 
-    @Query("SELECT r FROM Reservation r WHERE r.court.id=:courtId AND (:sTime>=r.startTime AND :sTime<=r.endTime) OR (:eTime >=r.startTime AND :eTime<=r.endTime)")
+    @Query("SELECT r FROM Reservation r WHERE r.court.id=:courtId AND (:sTime BETWEEN r.startTime AND r.endTime) OR (:eTime BETWEEN r.startTime AND r.endTime)")
     List<Reservation> findByReservation(
             @Param("courtId")Long courtId,
             @Param("sTime") LocalDateTime sTime,
