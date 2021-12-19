@@ -146,7 +146,7 @@ public class ReservationService {
 
 
     //findExpired
-    public CursorPageResponse<List<ReservationExpiredResponseDto>> findExpired(Long userId, CursorPageRequest cursorPageRequest, Long reservationId) {
+    public CursorPageResponse<List<ReservationExpiredResponseDto>> findExpired(Long userId, CursorPageRequest cursorPageRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
                         MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
