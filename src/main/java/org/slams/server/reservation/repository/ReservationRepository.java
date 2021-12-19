@@ -2,8 +2,10 @@ package org.slams.server.reservation.repository;
 
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.NewCourt;
+import org.slams.server.follow.entity.Follow;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.user.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -49,6 +51,18 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("courtId")Long courtId,
             @Param("sTime") LocalDateTime sTime,
             @Param("eTime") LocalDateTime eTime);
+
+    // 유저의 지난 지난 예약 조회 (무한 스크롤 - 최초)
+    @Query("SELECT r FROM Reservation r WHERE r.user.id=:userId AND r.endTime<:localDateTime ORDER BY r.id desc")
+    List<Reservation> findByUserByExpiredOrderByDesc(
+            @Param("userId") Long userId,
+            @Param ("localDateTime") LocalDateTime localDateTime, Pageable pageable);
+
+
+    // 유저의 지난 예약 목록 (무한 스크롤)
+    @Query("SELECT r FROM Reservation r WHERE r.id < :lastId order by r.id desc")
+    List<Reservation> findByUserByAndIdLessThanExpiredOrderByDesc(
+            @Param("lastId") Long lastId, Pageable pageable);
 
 
 
