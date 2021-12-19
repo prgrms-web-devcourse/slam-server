@@ -44,11 +44,22 @@ public class CourtService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public CourtDetailResponseDto findDetail(Long courtId) {
+    public CourtDetailResponseDto findDetail(Long courtId, String time, String date) {
 
-        return courtRepository.findById(courtId)
-                .map(CourtDetailResponseDto::new)
+        List<LocalDateTime> localDateTimes = changeTimeZone(date, time);
+        LocalDateTime startLocalDateTime=localDateTimes.get(0);
+        LocalDateTime endLocalDateTime=localDateTimes.get(1);
+
+        Court court=courtRepository.findById(courtId)
                 .orElseThrow(() -> new CourtNotFoundException(ErrorCode.NOT_EXIST_COURT.getMessage()));
+
+        // 여기에서 다시 디비 뒤져서 -> reservationCount 세기
+        Long reservations = reservationRepository.findByDate(startLocalDateTime, endLocalDateTime, courtId);
+
+        CourtDetailResponseDto courtDetailResponseDto=new CourtDetailResponseDto(court, reservations);
+
+        return courtDetailResponseDto;
+
     }
 
 
@@ -73,6 +84,8 @@ public class CourtService {
         log.info("localDateTIme"+startLocalDateTime.toString());
         log.info("endDateTime"+endLocalDateTime.toString());
 
+//        List<Reservation> byCourt = reservationRepository.findByCourt(courtId);
+
 
         return reservationRepository.findAllByCourtAndDate(courtId,startLocalDateTime,endLocalDateTime).stream()
                 .map(CourtReservationResponseDto::new)
@@ -87,33 +100,9 @@ public class CourtService {
         String date=requestParamVo.getDate();
         String time=requestParamVo.getTime().toUpperCase();
 
-
-        LocalDate dateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-        LocalDateTime startLocalDateTime;
-        LocalDateTime endLocalDateTime;
-
-        TimeEnum timeEnum = TimeEnum.valueOf(time);
-        switch (timeEnum) {
-            case DAWN:
-                startLocalDateTime=dateTime.atTime(0,0,0);
-                endLocalDateTime=dateTime.atTime(5,59,59);
-                break;
-            case MORNING:
-                startLocalDateTime=dateTime.atTime(6,0,0);
-                endLocalDateTime=dateTime.atTime(11,59,59);
-                break;
-            case AFTERNOON:
-                startLocalDateTime=dateTime.atTime(12,0,0);
-                endLocalDateTime=dateTime.atTime(17,59,59);
-                break;
-            case NIGHT:
-                startLocalDateTime=dateTime.atTime(18,0,0);
-                endLocalDateTime=dateTime.atTime(23,59,59);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + timeEnum);
-        }
-
+        List<LocalDateTime> localDateTimes = changeTimeZone(date, time);
+        LocalDateTime startLocalDateTime=localDateTimes.get(0);
+        LocalDateTime endLocalDateTime=localDateTimes.get(1);
 
         List<String> latitude = requestParamVo.getLatitude();
 
@@ -151,6 +140,42 @@ public class CourtService {
         }
 
         return courtByDateByBoundaryResponseDtoList;
+
+    }
+
+    public List<LocalDateTime> changeTimeZone(String date, String time) {
+
+        LocalDate dateTime = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+        List<LocalDateTime> dateTimeList=new ArrayList<>();
+        LocalDateTime startLocalDateTime;
+        LocalDateTime endLocalDateTime;
+
+        TimeEnum timeEnum = TimeEnum.valueOf(time);
+        switch (timeEnum) {
+            case DAWN:
+                startLocalDateTime=dateTime.atTime(0,0,0);
+                endLocalDateTime=dateTime.atTime(5,59,59);
+                break;
+            case MORNING:
+                startLocalDateTime=dateTime.atTime(6,0,0);
+                endLocalDateTime=dateTime.atTime(11,59,59);
+                break;
+            case AFTERNOON:
+                startLocalDateTime=dateTime.atTime(12,0,0);
+                endLocalDateTime=dateTime.atTime(17,59,59);
+                break;
+            case NIGHT:
+                startLocalDateTime=dateTime.atTime(18,0,0);
+                endLocalDateTime=dateTime.atTime(23,59,59);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + timeEnum);
+        }
+
+        dateTimeList.add(startLocalDateTime);
+        dateTimeList.add(endLocalDateTime);
+
+        return dateTimeList;
 
     }
 

@@ -51,12 +51,12 @@ public class CourtController {
 	}
 
 
-	@GetMapping("/detail/{courtId}")
+	@GetMapping("/detail/{courtId}/{date}/{time}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<CourtDetailResponseDto> getDetail(@PathVariable Long courtId) {
+	public ResponseEntity<CourtDetailResponseDto> getDetail(@PathVariable Long courtId, @PathVariable String date, @PathVariable String time) {
 
 		// 여기에 추가로 header 토큰 정보가 들어가야 함.
-		return ResponseEntity.ok().body(courtService.findDetail(courtId));
+		return ResponseEntity.ok().body(courtService.findDetail(courtId, date, time));
 	}
 
 
