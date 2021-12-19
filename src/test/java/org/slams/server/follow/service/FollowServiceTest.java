@@ -40,11 +40,6 @@ class FollowServiceTest {
 			"한줄 소개", Role.USER, Proficiency.MASTER, List.of(Position.C));
 	}
 
-	@AfterAll
-	void tearDown(){
-		userRepository.deleteAll();
-	}
-
 	@Test
 	void follow(){
 		// given
