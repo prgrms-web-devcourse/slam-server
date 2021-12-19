@@ -49,7 +49,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/ws/v1/**").permitAll()
-			.antMatchers("/api/v1/**").hasAnyAuthority("USER", "ADMIN")
+			.antMatchers("/api/v1/chat/**",
+				"/api/v1/favorites/**",
+				"/api/v1/follow/**",
+				"/api/v1/notification/**",
+				"/api/v1/reservations/**",
+				"/api/v1/users/**").hasAnyAuthority("USER", "ADMIN")
+			.antMatchers(HttpMethod.GET, "/api/v1/courts/{courtId}/reservations/{date}").hasAnyAuthority("USER", "ADMIN")
+			.antMatchers(HttpMethod.POST, "/api/v1/courts/new").hasAnyAuthority("USER", "ADMIN")
+			.antMatchers("/api/v1/management/**").hasAuthority("ADMIN")
 			.anyRequest().permitAll()
 			.and()
 			/**

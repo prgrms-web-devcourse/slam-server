@@ -34,82 +34,65 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/courts")
 public class CourtController {
 
-    private final CourtService courtService;
-    private final NewCourtService newCourtService;
-    private final Jwt jwt;
+	private final CourtService courtService;
+	private final NewCourtService newCourtService;
+	private final Jwt jwt;
 
-    @PostMapping("/new")
-    public ResponseEntity<CourtInsertResponseDto> insert(@Valid @RequestBody CourtInsertRequestDto courtInsertRequestDto, HttpServletRequest request) {
-
-
-        TokenGetId token=new TokenGetId(request,jwt);
-        Long userId=token.getUserId();
+	@PostMapping("/new")
+	public ResponseEntity<CourtInsertResponseDto> insert(@Valid @RequestBody CourtInsertRequestDto courtInsertRequestDto, HttpServletRequest request) {
 
 
-        return new ResponseEntity<CourtInsertResponseDto>(newCourtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
-
-    }
-
-
-    // 전체 코트 조회
-    @GetMapping("/all")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Map<String,Object>> getAll() {
-
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-
-        Map<String,Object>result=new HashMap<>();
-        result.put("courts",courtService.findAll());
+		TokenGetId token = new TokenGetId(request, jwt);
+		Long userId = token.getUserId();
 
 
-        return ResponseEntity.ok().body(result);
-    }
+		return new ResponseEntity<CourtInsertResponseDto>(newCourtService.insert(courtInsertRequestDto, userId), HttpStatus.CREATED);
+
+	}
 
 
-    @GetMapping("/detail/{courtId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CourtDetailResponseDto> getDetail(@PathVariable Long courtId) {
+	@GetMapping("/detail/{courtId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<CourtDetailResponseDto> getDetail(@PathVariable Long courtId) {
 
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-        return ResponseEntity.ok().body(courtService.findDetail(courtId));
-    }
-
-
-    @GetMapping("/{courtId}/reservations/{date}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Map<String,Object>> getReservationCourts(@PathVariable Long courtId, @PathVariable String date, HttpServletRequest request) {
-
-        TokenGetId token=new TokenGetId(request,jwt);
-        Long userId=token.getUserId();
+		// 여기에 추가로 header 토큰 정보가 들어가야 함.
+		return ResponseEntity.ok().body(courtService.findDetail(courtId));
+	}
 
 
-        log.info("userId"+userId);
+	@GetMapping("/{courtId}/reservations/{date}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Map<String, Object>> getReservationCourts(@PathVariable Long courtId, @PathVariable String date, HttpServletRequest request) {
+
+		TokenGetId token = new TokenGetId(request, jwt);
+		Long userId = token.getUserId();
 
 
-        Map<String,Object>result=new HashMap<>();
-        result.put("courtId",courtId);
-        result.put("date",date);
-        result.put("reservations",courtService.findCourtReservations(courtId,date,userId));
+		log.info("userId" + userId);
 
 
-        // 여기에 추가로 header 토큰 정보가 들어가야 함.
-        return ResponseEntity.ok().body(result);
-    }
+		Map<String, Object> result = new HashMap<>();
+		result.put("courtId", courtId);
+		result.put("date", date);
+		result.put("reservations", courtService.findCourtReservations(courtId, date, userId));
 
 
-    // 사용자가 날짜, 시간, 바운더리로 농구장 검색하기
-    //    /api/v1/courts/date=&{date}&time=${time}&start=${latitude}%${longtitude}&end=${latitude}%${longtitude}
-    @GetMapping()
-    public ResponseEntity<Map<String,Object>> getAllByDateByBoundary(
-            @NotNull RequestParamVo requestParamVo, HttpServletRequest request) {
-
-        Map<String,Object>result=new HashMap<>();
-        result.put("courts",courtService.findByDateByBoundary(requestParamVo));
-
-        return ResponseEntity.ok(result);
-    }
+		// 여기에 추가로 header 토큰 정보가 들어가야 함.
+		return ResponseEntity.ok().body(result);
+	}
 
 
+	// 사용자가 날짜, 시간, 바운더리로 농구장 검색하기
+	//    /api/v1/courts/date=&{date}&time=${time}&start=${latitude}%${longtitude}&end=${latitude}%${longtitude}
+	@GetMapping()
+	public ResponseEntity<Map<String, Object>> getAllByDateByBoundary(
+		@NotNull RequestParamVo requestParamVo, HttpServletRequest request) {
+
+		Map<String, Object> result = new HashMap<>();
+		result.put("courts", courtService.findByDateByBoundary(requestParamVo));
+
+		return ResponseEntity.ok(result);
+	}
 
 
 }
