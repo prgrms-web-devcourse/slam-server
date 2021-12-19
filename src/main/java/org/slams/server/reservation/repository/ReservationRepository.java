@@ -59,12 +59,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param ("localDateTime") LocalDateTime localDateTime, Pageable pageable);
 
 
-//    // 해당 유저의 팔로워 목록(무한 스크롤 - 최초)
-//    @Query("SELECT r FROM Reservation r WHERE r.following.id = :reservationId order by f.id desc")
-//    List<Follow> findByCourtIdOrderByIdDesc(@Param("reservationId") Long reservationId, Pageable pageable);
-//    // 해당 유저의 팔로워 목록(무한 스크롤)
-
-    // Todo
+    // 유저의 지난 예약 목록 (무한 스크롤)
     @Query("SELECT r FROM Reservation r WHERE r.id < :lastId order by r.id desc")
     List<Reservation> findByUserByAndIdLessThanExpiredOrderByDesc(
             @Param("lastId") Long lastId, Pageable pageable);
