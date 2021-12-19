@@ -145,7 +145,8 @@ public class ReservationService {
     }
 
 
-    //findExpired
+
+    @Transactional
     public CursorPageResponse<List<ReservationExpiredResponseDto>> findExpired(Long userId, CursorPageRequest cursorPageRequest) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(
