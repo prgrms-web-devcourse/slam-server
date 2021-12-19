@@ -120,7 +120,7 @@ public class ReservationService {
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.NOT_EXIST_MEMBER.getMessage()));
 
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddTHH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
         LocalDateTime sTime = LocalDateTime.parse(startTime, formatter);
         LocalDateTime eTime = LocalDateTime.parse(endTime, formatter);
 
