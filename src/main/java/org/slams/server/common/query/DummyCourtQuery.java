@@ -33,7 +33,7 @@ public class DummyCourtQuery {
 
 
     // 상대 경로
-    ClassPathResource resource = new ClassPathResource("test2.xlsx");
+
 
     // 여기에서 엑셀 읽고 더미데이터 넣기
 
@@ -58,37 +58,34 @@ public class DummyCourtQuery {
     @Transactional
     public void insertExcel() throws IOException, InvalidFormatException {
         List<Court> dataList = new ArrayList<>();
+        ClassPathResource resource = new ClassPathResource("test2.xlsx");
 
+        if (resource.exists()) {
             FileInputStream file=new FileInputStream(resource.getFile());
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            Sheet worksheet = workbook.getSheetAt(0);
 
+            System.out.println("workSet"+worksheet.getPhysicalNumberOfRows());
 
-            if (file!=null) {
+            for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+
+                Row row = worksheet.getRow(i);
+
+                CourtDummyExcelDto data = new CourtDummyExcelDto();
+
+                data.setName(row.getCell(0).getStringCellValue());
+                data.setLongitude(row.getCell(2).getNumericCellValue());
+                data.setLatitude(row.getCell(3).getNumericCellValue());
+                data.setBasketCount(row.getCell(4).getCellType());
+
+                dataList.add(data.insertRequestDtoToEntity(data));
 
             }
-            else {
-                XSSFWorkbook workbook = new XSSFWorkbook(file);
-                Sheet worksheet = workbook.getSheetAt(0);
+            dummyCourtRepository.saveAll(dataList);
 
-                System.out.println("workSet"+worksheet.getPhysicalNumberOfRows());
+            file.close();
+        }
 
-                for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-
-                    Row row = worksheet.getRow(i);
-
-                    CourtDummyExcelDto data = new CourtDummyExcelDto();
-
-                    data.setName(row.getCell(0).getStringCellValue());
-                    data.setLongitude(row.getCell(2).getNumericCellValue());
-                    data.setLatitude(row.getCell(3).getNumericCellValue());
-                    data.setBasketCount(row.getCell(4).getCellType());
-
-                    dataList.add(data.insertRequestDtoToEntity(data));
-
-                }
-                dummyCourtRepository.saveAll(dataList);
-
-                file.close();
-            }
 
 
     }
