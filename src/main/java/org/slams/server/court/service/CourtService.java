@@ -43,15 +43,6 @@ public class CourtService {
     private final AwsS3Uploader awsS3Uploader;
     private final ReservationRepository reservationRepository;
 
-
-    @Transactional
-    public List<AllCourtResponseDto> findAll() {
-        return courtRepository.findAll().stream()
-                .map(AllCourtResponseDto::new)
-                .collect(Collectors.toList());
-    }
-
-
     @Transactional
     public CourtDetailResponseDto findDetail(Long courtId) {
 
