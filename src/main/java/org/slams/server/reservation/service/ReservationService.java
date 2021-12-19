@@ -121,7 +121,6 @@ public class ReservationService {
             // todo. 여기서 DB 한번 더 뒤지면서 카운트를 센다.
             Long reservationSize = reservationRepository.findByDate(reservation.getStartTime(), reservation.getEndTime(), reservation.getCourt().getId());
 
-
             ReservationUpcomingResponseDto reservationUpcomingResponseDto=new ReservationUpcomingResponseDto(reservation,reservationSize);
             reservationUpcomingResponseDtoList.add(reservationUpcomingResponseDto);
         }
@@ -181,7 +180,9 @@ public class ReservationService {
                 reservationRepository.findByUserByAndIdLessThanExpiredOrderByDesc(cursorPageRequest.getLastId(), pageable);
 
         List<ReservationExpiredResponseDto> reservationExpiredResponseDtoList = new ArrayList<>();
+
 //        int reservationSize= reservationExpiredResponseDtoList.size();
+
         for (Reservation reservation : reservations) {
 
             // todo. 여기서 한번 더 뒤지면서 reservationSize를 센다.

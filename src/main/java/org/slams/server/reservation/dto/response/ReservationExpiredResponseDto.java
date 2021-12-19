@@ -38,6 +38,7 @@ public class ReservationExpiredResponseDto {
         this.numberOfReservations=numOfReservations;
     }
 
+
     public static ReservationExpiredResponseDto toResponse(Reservation reservation, Court court, LocalDateTime createdAt, LocalDateTime updatedAt, Long numOfReservations) {
         return new ReservationExpiredResponseDto(reservation.getId(), court.getId(), court.getLatitude(), court.getLongitude(),
                 court.getName(),reservation.getStartTime(), reservation.getEndTime(),
