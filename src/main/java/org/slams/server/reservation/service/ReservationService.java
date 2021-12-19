@@ -127,6 +127,7 @@ public class ReservationService {
 
         // reservationId -> User 검색 ->
         List<Reservation> byReservation = reservationRepository.findByReservation(courtId, sTime, eTime);
+        log.info("reservationCount:"+byReservation.size());
 
         List<ReservationResponseDto> reservationResponseDtoList=new ArrayList<>();
 
