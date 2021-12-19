@@ -7,6 +7,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import java.util.List;
+
 /**
  * Created by yunyun on 2021/12/15.
  */
@@ -15,17 +17,17 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${slam.cors.allow}")
-    private String allowOrigin;
+    @Value("${slam.cors.allowedOrigins}")
+    private List<String> allowedOrigins;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws/v1/")
-                .setAllowedOriginPatterns(allowOrigin)
+                .setAllowedOriginPatterns(allowedOrigins.toArray(new String[0]))
                 .withSockJS()
                 .setStreamBytesLimit(512 * 1024)
                 .setHttpMessageCacheSize(1000)
-                .setDisconnectDelay(30 * 1000);;
+                .setDisconnectDelay(30 * 1000);
     }
 
     @Override

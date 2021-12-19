@@ -47,6 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.cors().and()
 			.authorizeRequests()
 			.antMatchers("/ws/v1/**").permitAll()
 			.antMatchers("/api/v1/chat/**",
@@ -97,7 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * Jwt 필터
 			 */
 			.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class)
-			.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+			//.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
 		;
 	}
 
