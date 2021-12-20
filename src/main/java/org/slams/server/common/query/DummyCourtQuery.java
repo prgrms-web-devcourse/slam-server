@@ -10,9 +10,12 @@ import org.slams.server.court.dto.request.CourtDummyExcelDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.DummyCourtRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ResourceUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,12 +24,22 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 //@ConfigurationProperties(prefix = "excel")
 public class DummyCourtQuery {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final DummyCourtRepository dummyCourtRepository;
     private final ChatroomMappingService chatroomMappingService;
+    private final String resourceLocation = "src/main/resources/";
+    private final String excelFileName = "dummyCourt.xlsx";
+
+    public DummyCourtQuery(
+            DummyCourtRepository dummyCourtRepository,
+            ChatroomMappingService chatroomMappingService
+    ){
+        this.chatroomMappingService = chatroomMappingService;
+        this.dummyCourtRepository = dummyCourtRepository;
+    }
 
 //    @Value("${excel.file}")
 //    String efile;
@@ -59,14 +72,14 @@ public class DummyCourtQuery {
     public void insertExcel() throws IOException, InvalidFormatException {
         List<Court> dataList = new ArrayList<>();
 
-        ClassPathResource resource = new ClassPathResource("dummyCourt.xlsx");
+        String dumpDataLocation = ResourceUtils.getFile(resourceLocation + excelFileName).getAbsolutePath();
 
-        if (resource.exists()) {
-            FileInputStream file=new FileInputStream(resource.getFile());
+        try (FileInputStream file = new FileInputStream(dumpDataLocation)) {
+
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet worksheet = workbook.getSheetAt(0);
 
-            System.out.println("workSet"+worksheet.getPhysicalNumberOfRows());
+            logger.info("workSet" + worksheet.getPhysicalNumberOfRows());
 
             for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
 
@@ -76,8 +89,9 @@ public class DummyCourtQuery {
 
                 data.setName(row.getCell(0).getStringCellValue());
 
-                data.setLatitude(row.getCell(1).getNumericCellValue());
-                data.setLongitude(row.getCell(2).getNumericCellValue());
+                data.setLongitude(row.getCell(1).getNumericCellValue());
+                data.setLatitude(row.getCell(2).getNumericCellValue());
+
                 data.setBasketCount(2);
 
                 dataList.add(data.insertRequestDtoToEntity(data));
@@ -85,14 +99,12 @@ public class DummyCourtQuery {
             }
             dummyCourtRepository.saveAll(dataList);
 
-            file.close();
+        } catch (Exception e) {
+            logger.error("insert dumy data ERROR");
+            insert();
         }
 
 
-
     }
-
-
-
 
 }
