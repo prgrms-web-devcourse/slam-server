@@ -42,6 +42,7 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             Pageable pageable
     );
 
+    @Transactional
     @Modifying()
     @Query("UPDATE NotificationIndex n SET n.isClicked=:status WHERE n.userId=:userId")
     Integer updateIsClicked(
@@ -49,6 +50,7 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             @Param("status") boolean status
     );
 
+    @Transactional
     @Modifying()
     @Query("UPDATE NotificationIndex n SET n.isRead=:status WHERE n.userId=:userId")
     Integer updateIsRead(
@@ -56,6 +58,7 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             @Param("status") boolean status
     );
 
+    @Transactional
     @Modifying
     @Query("DELETE FROM NotificationIndex n WHERE n.checkCreatorId=:userId AND n.userId=:receiverId")
     void deleteByReceiverIdAndUserId(
