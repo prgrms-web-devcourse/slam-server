@@ -94,7 +94,7 @@ public class DummyCourtQuery {
 
                 CourtDummyExcelDto data = new CourtDummyExcelDto();
 
-                data.setName(row.getCell(0).getStringCellValue());
+                data.setName(row.getCell(4).getStringCellValue());
 
                 data.setLongitude(row.getCell(1).getNumericCellValue());
                 data.setLatitude(row.getCell(2).getNumericCellValue());
