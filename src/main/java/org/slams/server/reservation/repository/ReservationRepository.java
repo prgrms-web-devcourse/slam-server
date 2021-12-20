@@ -76,6 +76,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("lastId") Long lastId, Pageable pageable);
 
 
+    // byCourtId
+//    @Query("SELECT r FROM Reservation r WHERE r.court.id=:courtId")
+//    List<Reservation> findByCourt(@Param("courtId") Long courtId);
+
 
 
 

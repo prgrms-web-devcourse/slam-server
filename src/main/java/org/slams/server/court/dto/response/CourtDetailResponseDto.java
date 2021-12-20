@@ -15,9 +15,9 @@ public class CourtDetailResponseDto extends BaseResponse {
     private String image;
     private Texture texture;
     private int basketCount;
-    private int courtReservation;
+    private Long courtReservation;
 
-    public CourtDetailResponseDto(Court court) {
+    public CourtDetailResponseDto(Court court, Long courtReservation) {
         super(court.getCreatedAt(), court.getUpdateAt());
         courtName=court.getName();
         latitude=court.getLatitude();
@@ -25,7 +25,7 @@ public class CourtDetailResponseDto extends BaseResponse {
         image=court.getImage();
         texture=court.getTexture();
         basketCount=court.getBasketCount();
-        courtReservation=court.getReservations().size();
+        this.courtReservation=courtReservation;
     }
 
 

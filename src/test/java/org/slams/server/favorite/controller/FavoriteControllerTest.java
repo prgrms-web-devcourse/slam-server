@@ -4,25 +4,21 @@
 //import lombok.extern.slf4j.Slf4j;
 //import org.junit.jupiter.api.*;
 //import org.slams.server.court.entity.Court;
-//import org.slams.server.court.entity.Texture;
-//import org.slams.server.court.repository.CourtRepository;
 //import org.slams.server.court.service.CourtService;
-//import org.slams.server.favorite.dto.request.FavoriteInsertRequestDto;
+//import org.slams.server.favorite.dto.response.FavoriteInsertResponseDto;
 //import org.slams.server.favorite.entity.Favorite;
-//import org.slams.server.favorite.repository.FavoriteRepository;
-//import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
-//import org.slams.server.reservation.entity.Reservation;
-//import org.slams.server.reservation.repository.ReservationRepository;
+//import org.slams.server.favorite.service.FavoriteService;
+//import org.slams.server.follow.dto.FollowerResponse;
 //import org.slams.server.reservation.service.ReservationService;
 //import org.slams.server.user.entity.Position;
 //import org.slams.server.user.entity.Proficiency;
 //import org.slams.server.user.entity.Role;
 //import org.slams.server.user.entity.User;
-//import org.slams.server.user.repository.UserRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 //import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 //import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 //import org.springframework.context.support.GenericXmlApplicationContext;
 //import org.springframework.core.env.ConfigurableEnvironment;
 //import org.springframework.core.env.MutablePropertySources;
@@ -36,7 +32,11 @@
 //
 //import java.time.LocalDateTime;
 //import java.util.Arrays;
+//import java.util.List;
 //
+//import static org.mockito.ArgumentMatchers.any;
+//import static org.mockito.ArgumentMatchers.anyLong;
+//import static org.mockito.BDDMockito.given;
 //import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 //import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 //import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -51,6 +51,7 @@
 //@SpringBootTest
 //@AutoConfigureMockMvc
 //@AutoConfigureRestDocs
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 //@Slf4j
 //public class FavoriteControllerTest {
 //
@@ -58,25 +59,21 @@
 //    private ObjectMapper objectMapper;
 //    @Autowired
 //    private MockMvc mockMvc;
-//    @Autowired
+//
+//    @MockBean
 //    private ReservationService reservationService;
+//
+//    @MockBean
+//    private CourtService courtService;
 //
 //    private User user;
 //    private Court court;
 //    private Favorite favorite;
 //
-//    @Autowired
-//    private UserRepository userRepository;
 //
-//    @Autowired
-//    private CourtService courtService;
 //
-//    @Autowired
-//    private CourtRepository courtRepository;
-//
-//    @Autowired
-//    private FavoriteRepository favoriteRepository;
-//
+//    @MockBean
+//    private FavoriteService favoriteService;
 //
 //
 //
@@ -111,11 +108,19 @@
 //        jwtToken = "Bearer "+token;
 //
 //
-//        // User 생성
+//    }
+//
+//
+//    // 즐겨찾기 추가
+//    @Test
+//    @DisplayName("[POST] '/api/v1/favorite'")
+//    void testInsertCall() throws Exception {
+//        // GIVEN
+//
 //        user = User.builder()
+//                .id(1L)
 //                .nickname("test")
 //                .email("sds1zzang@naver.com")
-//                .id(1L)
 //                .socialId("1L")
 //                .description("my name is sds")
 //                .profileImage("desktop Image")
@@ -126,88 +131,44 @@
 //
 //        user.setCreatedAt(now);
 //        user.setUpdateAt(now);
-//        userRepository.save(user);
 //
 //
-//
-//
-//        // Court 생성
 //        court=Court.builder()
-//                .name("관악구민운동장 농구장")
-//                .latitude(38.987654)
-//                .longitude(12.309472)
-//                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
-//                .texture(Texture.ASPHALT)
+//                .id(1L)
+//                .name("testCourt")
 //                .basketCount(2)
+//                .latitude(40.0)
+//                .longitude(50.0)
 //                .build();
 //
 //        court.setCreatedAt(now);
 //        court.setUpdateAt(now);
-//        courtRepository.save(court);
-//
-//        court=Court.builder()
-//                .id(127L)
-//                .name("광진구 농구장")
-//                .latitude(45.987654)
-//                .longitude(13.309472)
-//                .image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
-//                .texture(Texture.ASPHALT)
-//                .basketCount(4)
-//                .build();
-//
-//        court.setCreatedAt(now);
-//        court.setUpdateAt(now);
-//        courtRepository.save(court);
 //
 //
-//        favorite=Favorite.of(court,user);
-//        FAVORITE_ID=favoriteRepository.save(favorite).getId();
+//       FavoriteInsertResponseDto favoriteInsertResponseDto=new FavoriteInsertResponseDto(favorite);
+//       favoriteInsertResponseDto.FavoriteInsertResponseDto(1L,1L,1L,"hey");
 //
 //
 //
-//    }
+//        given(favoriteService.insert(any(),any())).willReturn(favoriteInsertResponseDto);
 //
-//
-//    // 즐겨찾기 추가
-//    // 생성한 코트에 예약 해보기
-//    @Test
-//    @DisplayName("[POST] '/api/v1/favorite'")
-//    @Order(1)
-//    void testInsertCall() throws Exception {
-//        // GIVEN
-//
-//        LocalDateTime start=now.plusDays(1);
-//        LocalDateTime end=now.plusDays(1);
-//
-////        FavoriteInsertRequestDto givenRequest = FavoriteInsertRequestDto.builder()
-////                .courtId(1L)
-////                .build();
-//        FavoriteInsertRequestDto givenRequest=new FavoriteInsertRequestDto(COURT_ID);
-//
-//
-//        log.info(givenRequest.toString());
-//
-//        log.info("user_ID:"+user.getId());
-//
-//
-////        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
-////        given(reservationService.insert(any(), any()));
 //
 //        RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/favorites")
 //                .header("Authorization",jwtToken)
 //                .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/form-data
-//                .content(objectMapper.writeValueAsString(givenRequest));
+//                .content(objectMapper.writeValueAsString(favorite));
 //
 //        // WHEN // THEN
 //        mockMvc.perform(request)
 //                .andExpect(status().isCreated())
 //                .andDo(print())
-//                .andDo(document("reservation-save",
+//                .andDo(document("favorite",
 //                        requestFields(
 //                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디")
 //                        ),
 //                        responseFields(
 //                                fieldWithPath("favoriteId").type(JsonFieldType.NUMBER).description("예약 아이디"),
+//                                fieldWithPath("courtName").type(JsonFieldType.NUMBER).description("농구장 이름"),
 //                                fieldWithPath("userId").type(JsonFieldType.NUMBER).description("유저 아이디"),
 //                                fieldWithPath("courtId").type(JsonFieldType.NUMBER).description("코트 아이디"),
 //                                fieldWithPath("createdAt").type(JsonFieldType.STRING).description("코트 생성일자"),
@@ -226,6 +187,44 @@
 //    @Transactional
 //    void testAllCourt() throws Exception {
 //        // GIVEN
+//
+//
+//        user = User.builder()
+//                .nickname("test")
+//                .email("sds1zzang@naver.com")
+//                .socialId("1L")
+//                .description("my name is sds")
+//                .profileImage("desktop Image")
+//                .role(Role.USER)
+//                .proficiency(Proficiency.INTERMEDIATE.BEGINNER)
+//                .positions(Arrays.asList(Position.PF))
+//                .build();
+//
+//        user.setCreatedAt(now);
+//        user.setUpdateAt(now);
+//
+//
+//        court=Court.builder()
+//                .name("testCourt")
+//                .basketCount(2)
+//                .latitude(40.0)
+//                .longitude(50.0)
+//                .build();
+//
+//        court.setCreatedAt(now);
+//        court.setUpdateAt(now);
+//
+//        LocalDateTime start=now.plusDays(1);
+//        LocalDateTime end=now.plusDays(1);
+//
+//
+////        Favorite favorite=new Favorite();
+////
+////        Favorite favorite1= Favorite.of(court,user);
+////        Favorite favorite2 = Favorite.of(court,user);
+//        FavoriteInsertResponseDto favoriteInsertResponseDto=new FavoriteInsertResponseDto(favorite1);
+//        given(favoriteService.insert(any(),any())).willReturn(favoriteInsertResponseDto);
+//
 //
 //
 //        RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/favorites")

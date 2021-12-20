@@ -9,10 +9,14 @@ import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
+import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
+import org.slams.server.reservation.dto.response.ReservationUpcomingResponseDto;
+import org.slams.server.reservation.dto.response.ReservationUpdateResponseDto;
 import org.slams.server.reservation.entity.Reservation;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.reservation.service.ReservationService;
+import org.slams.server.user.dto.response.ProfileImageResponse;
 import org.slams.server.user.entity.Position;
 import org.slams.server.user.entity.Proficiency;
 import org.slams.server.user.entity.Role;
@@ -22,10 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,9 +41,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -59,7 +70,7 @@ public class ReservationControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
+    @MockBean
     private ReservationService reservationService;
 
     private User user;
@@ -121,8 +132,6 @@ public class ReservationControllerTest {
 
         user.setCreatedAt(now);
         user.setUpdateAt(now);
-        userRepository.save(user);
-
 
 
 
@@ -138,7 +147,6 @@ public class ReservationControllerTest {
 
         court.setCreatedAt(now);
         court.setUpdateAt(now);
-        courtRepository.save(court);
 
         court=Court.builder()
                 .id(127L)
@@ -152,8 +160,18 @@ public class ReservationControllerTest {
 
         court.setCreatedAt(now);
         court.setUpdateAt(now);
-        courtRepository.save(court);
 
+        reservation=Reservation.builder()
+                .id(1L)
+                .court(court)
+                .user(user)
+                .hasBall(false)
+                .startTime(now)
+                .endTime(now)
+                .build();
+
+        reservation.setCreatedAt(now);
+        reservation.setUpdateAt(now);
 
     }
 
@@ -161,7 +179,6 @@ public class ReservationControllerTest {
     // 생성한 코트에 예약 해보기
     @Test
     @DisplayName("[POST] '/api/v1/reservations'")
-    @Order(1)
     void testInsertCall() throws Exception {
         // GIVEN
 
@@ -176,13 +193,9 @@ public class ReservationControllerTest {
                 .build();
 
 
-        log.info(givenRequest.toString());
 
-        log.info("user_ID:"+user.getId());
-
-
-//        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
-//        given(reservationService.insert(any(), any()));
+        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto(reservation);
+        given(reservationService.insert(any(), any())).willReturn(stubResponse);
 
         RequestBuilder request = MockMvcRequestBuilders.post("/api/v1/reservations")
                 .header("Authorization",jwtToken)
@@ -217,49 +230,29 @@ public class ReservationControllerTest {
     //  변경하기
     @Test
     @DisplayName("[PATCH] '/api/v1/reservations/{reservationId}'")
-    @Order(2)
     void testUpdateCall() throws Exception {
         // 위에서 만든 예약을 변경하기
         // 예약정보 조회
         // GIVEN
         LocalDateTime start=now.plusDays(5);
         LocalDateTime end=now.plusDays(5);
-        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
-                .courtId(1L)
+        ReservationUpdateRequestDto givenRequest = ReservationUpdateRequestDto.builder()
+                .reservationId(1L)
                 .startTime(start)
                 .endTime(end)
                 .hasBall(false)
                 .build();
 
+        reservation.update(givenRequest);
 
-        Reservation reservation=new Reservation(givenRequest);
-        reservation.addReservation(court,user);
-
-        Reservation save = reservationRepository.save(reservation);
-        Long reservationId=save.getId();
-
-//        log.info(reservationRepository.findById(reservationId).toString());
+        ReservationUpdateResponseDto stubResponse = new ReservationUpdateResponseDto(reservation);
+        given(reservationService.update(any(), any(), any())).willReturn(stubResponse);
 
 
-//        ReservationInsertResponseDto stubResponse = new ReservationInsertResponseDto();
-//        given(reservationService.insert(any(), any()));
-
-
-        LocalDateTime changeStart=now.plusDays(10);
-        LocalDateTime changeEnd=now.plusDays(10);
-
-        ReservationUpdateRequestDto updateRequest=ReservationUpdateRequestDto.builder()
-                .reservationId(reservationId)
-                .endTime(changeStart)
-                .startTime(changeEnd)
-                .hasBall(true)
-                .build();
-
-
-        RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+reservationId)
+        RequestBuilder request = MockMvcRequestBuilders.patch("/api/v1/reservations/"+1L)
                 .header("Authorization",jwtToken)
                 .contentType(MediaType.APPLICATION_JSON) // TODO: 사진 들어오면 multipart/formdata
-                .content(objectMapper.writeValueAsString(updateRequest));
+                .content(objectMapper.writeValueAsString(givenRequest));
 
         // WHEN // THEN
         mockMvc.perform(request)
@@ -287,35 +280,15 @@ public class ReservationControllerTest {
     // 삭제하기
     @Test
     @DisplayName("[DELETE] '/api/v1/reservations/{reservationId}'")
-    @Order(3)
-    @Disabled
     void testDelete() throws Exception {
-        // 위에서 만든 예약을 변경하기
-        // 예약정보 조회
-        // GIVEN
-        ReservationInsertRequestDto givenRequest = ReservationInsertRequestDto.builder()
-                .courtId(1L)
-                .startTime(now)
-                .endTime(now)
-                .hasBall(false)
-                .build();
 
-
-        Reservation reservation=new Reservation(givenRequest);
-        reservation.addReservation(court,user);
-
-        Reservation save = reservationRepository.save(reservation);
-        Long reservationId=save.getId();
-
-//        log.info(reservationRepository.findById(reservationId).toString());
-
-
+        ReservationDeleteResponseDto response = new ReservationDeleteResponseDto(reservation);
+        given(reservationService.delete(any(),anyLong())).willReturn(response);
 
         mockMvc.perform(delete("/api/v1/reservations/{reservationId}", reservation.getId())
                         .header("Authorization",jwtToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
-//                .andExpect(jsonPath("id").value(reservation.getId()))
                 .andDo(print())
                 .andDo(
                         document("reservation/delete", preprocessRequest(prettyPrint()), preprocessResponse(prettyPrint()),
@@ -323,7 +296,7 @@ public class ReservationControllerTest {
                                         parameterWithName("reservationId").description("삭제 요청 reservation 아이디")
                                 ),
                                 responseFields(
-                                        fieldWithPath("reservationId").description("사제된 reservation 아이디")
+                                        fieldWithPath("reservationId").description("삭제된 reservation 아이디")
                                 )
                         )
                 );
@@ -333,7 +306,8 @@ public class ReservationControllerTest {
     // 코트 1개당 3번 예약하기
     // 4,5,6번 코트 사용
     @Test
-    @DisplayName("[POST] '/api/v1/reservations'")
+    @DisplayName("실제 데이터 쿼리 [POST] '/api/v1/reservations'")
+    @Disabled
     void InsertReservation() throws Exception {
         // GIVEN
 
@@ -435,7 +409,21 @@ public class ReservationControllerTest {
     @DisplayName("[GET] '/api/v1/reservations/upcoming")
     @Transactional
     void testSelectCall() throws Exception {
+        LocalDateTime start=now.plusHours(1);
+        LocalDateTime end=now.plusMonths(1);
         // GIVEN
+        List<ReservationUpcomingResponseDto> stubResponses = new ArrayList<>();
+        ReservationUpcomingResponseDto reservationUpcomingResponseDto=new ReservationUpcomingResponseDto(
+                reservation,3L);
+
+        ReservationUpcomingResponseDto reservationUpcomingResponseDto2=new ReservationUpcomingResponseDto(
+                reservation,3L);
+
+        stubResponses.add(reservationUpcomingResponseDto);
+
+
+        given(reservationService.findUpcoming(any())).willReturn(stubResponses);
+
 
 
         RequestBuilder request = MockMvcRequestBuilders.get("/api/v1/reservations/upcoming")
