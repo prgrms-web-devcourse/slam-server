@@ -12,18 +12,22 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class ServerApplication implements CommandLineRunner {
 
+    private final DummyCourtQuery dummyCourtQuery;
+
+    public ServerApplication(DummyCourtQuery dummyCourtQuery){
+        this.dummyCourtQuery = dummyCourtQuery;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(ServerApplication.class, args);
     }
 
 
     // court 데이터 미리 저장
-    @Autowired
-    private DummyCourtQuery dummyCourtQuery;
     @Override
     public void run(String... args) throws Exception {
-        dummyCourtQuery.insert();
-//        dummyCourtQuery.insertExcel();
+//        dummyCourtQuery.insert();
+        dummyCourtQuery.insertExcel();
 
     }
 }
