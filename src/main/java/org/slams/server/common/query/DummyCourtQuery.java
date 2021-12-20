@@ -19,6 +19,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,6 +71,9 @@ public class DummyCourtQuery {
 
     @Transactional
     public void insertExcel() throws IOException, InvalidFormatException {
+        URL res = getClass().getClassLoader().getResource("dummyCourt.xlsx");
+
+        logger.info(String.valueOf(res));
         List<Court> dataList = new ArrayList<>();
 
         String dumpDataLocation = ResourceUtils.getFile(resourceLocation + excelFileName).getAbsolutePath();
