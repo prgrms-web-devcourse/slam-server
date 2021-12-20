@@ -58,7 +58,7 @@ public class NotificationConvertor {
         if (notification.getNotificationType().equals(NotificationType.FOLLOWING)){
             return NotificationResponse.createForFollowNotification(
                     notification.getId(),
-                    NotificationType.LOUDSPEAKER,
+                    NotificationType.FOLLOWING,
                     FollowerInfo.builder()
                             .userId(notification.getFollowNotification().getCreator().getId())
                             .userImage(notification.getFollowNotification().getCreator().getProfileImage())
