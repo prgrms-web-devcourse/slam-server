@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,7 +126,7 @@ public class DummyCourtQuery {
     }
 
     public void insertNotificationDummy(Long userId, int dataSize){
-        LoudspeakerNotificationRequest request = new LoudspeakerNotificationRequest(1L, 10, 1L);
+        LoudspeakerNotificationRequest request = new LoudspeakerNotificationRequest(1L, LocalDateTime.now().getHour(), 1L);
 
         int index = 0;
         while (index < dataSize){
