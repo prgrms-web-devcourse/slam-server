@@ -51,14 +51,15 @@ public class NotificationService {
     @Transactional
     public String saveForLoudSpeakerNotification(LoudspeakerNotificationRequest request, Long userId){
 
-        /** 예약 도메인 관련
+        /** 예약 도메인 관련 **/
+        /** 테스트를 위해 주석처리
         var reservation = reservationRepository.findById(request.getReservationId())
                 .orElseThrow(() -> new ReservationNotFoundException("존재하지 않은 예약입니다."));
-
+        **/
         if(LocalDateTime.now().getHour() - request.getStartTime() < 0 && LocalDateTime.now().getHour() - request.getStartTime() <= 1) {
             throw new InvalidCourtStartTimeException("경기 시작 1시간 이전에만 확성기 기능을 사용하실 수 있습니다.");
         }
-         **/
+
         Court court = courtRepository
                 .findById(request.getCourtId())
                 .orElseThrow(() -> new CourtNotFoundException("해당 코트가 존재하지 않습니다."));

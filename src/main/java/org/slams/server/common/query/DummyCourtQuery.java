@@ -9,6 +9,10 @@ import org.slams.server.court.dto.request.CourtDummyExcelDto;
 import org.slams.server.court.entity.Court;
 import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.DummyCourtRepository;
+import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
+import org.slams.server.notification.service.NotificationService;
+import org.slams.server.reservation.entity.Reservation;
+import org.slams.server.reservation.repository.ReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -31,15 +35,21 @@ public class DummyCourtQuery {
 
     private final DummyCourtRepository dummyCourtRepository;
     private final ChatroomMappingService chatroomMappingService;
-    private final String resourceLocation = "src/main/resources/";
+    private final NotificationService notificationService;
+    private final ReservationRepository reservationRepository;
+
     private final String excelFileName = "dummyCourt.xlsx";
 
     public DummyCourtQuery(
             DummyCourtRepository dummyCourtRepository,
-            ChatroomMappingService chatroomMappingService
+            ChatroomMappingService chatroomMappingService,
+            NotificationService notificationService,
+            ReservationRepository reservationRepository
     ){
         this.chatroomMappingService = chatroomMappingService;
         this.dummyCourtRepository = dummyCourtRepository;
+        this.notificationService = notificationService;
+        this.reservationRepository = reservationRepository;
     }
 
 //    @Value("${excel.file}")
@@ -105,14 +115,23 @@ public class DummyCourtQuery {
 
             }
             dummyCourtRepository.saveAll(dataList);
-
+            dataList.stream().map(Court::getId).forEach(chatroomMappingService::saveChatRoom);
         } catch (Exception e) {
 
             logger.info(e.getMessage());
             logger.error("insert dumy data ERROR");
             insert();
         }
+    }
 
+    public void insertNotificationDummy(Long userId, int dataSize){
+        LoudspeakerNotificationRequest request = new LoudspeakerNotificationRequest(1L, 10, 1L);
+
+        int index = 0;
+        while (index < dataSize){
+            notificationService.saveForLoudSpeakerNotification(request, userId);
+            index = index + 1;
+        }
 
     }
 

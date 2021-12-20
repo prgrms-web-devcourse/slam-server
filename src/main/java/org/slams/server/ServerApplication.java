@@ -28,6 +28,7 @@ public class ServerApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 //        dummyCourtQuery.insert();
         dummyCourtQuery.insertExcel();
+        dummyCourtQuery.insertNotificationDummy(1L, 20);
 
     }
 }

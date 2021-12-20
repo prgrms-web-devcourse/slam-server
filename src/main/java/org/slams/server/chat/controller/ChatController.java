@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping(value = "/api/v1/chat", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
