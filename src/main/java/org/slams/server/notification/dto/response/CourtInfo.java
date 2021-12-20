@@ -33,7 +33,6 @@ public class CourtInfo {
     ){
         checkArgument(id != null, "userId는 null을 허용하지 않습니다.");
         checkArgument(isNotEmpty(name), "농구장는 빈값을 허용하지 않습니다.");
-        checkArgument(texture != null, "texture는 null을 허용하지 않습니다.");
         checkArgument(basketCount >= 0, "골대 개수는 0이상만 가능합니다.");
 
         this.id = id;
