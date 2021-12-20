@@ -16,7 +16,6 @@ import org.slams.server.notification.entity.NotificationIndex;
 import org.slams.server.notification.entity.NotificationType;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
-import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.SameUserException;
