@@ -14,9 +14,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +71,7 @@ public class DummyCourtQuery {
 
     @Transactional
     public void insertExcel() throws IOException, InvalidFormatException {
+
 //        URL res = getClass().getClassLoader().getResource(excelFileName);
 
         List<Court> dataList = new ArrayList<>();
@@ -78,6 +81,7 @@ public class DummyCourtQuery {
                 InputStream file = new ClassPathResource(excelFileName).getInputStream();
 
         ) {
+
 
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet worksheet = workbook.getSheetAt(0);
@@ -103,6 +107,7 @@ public class DummyCourtQuery {
             dummyCourtRepository.saveAll(dataList);
 
         } catch (Exception e) {
+
             logger.info(e.getMessage());
             logger.error("insert dumy data ERROR");
             insert();
