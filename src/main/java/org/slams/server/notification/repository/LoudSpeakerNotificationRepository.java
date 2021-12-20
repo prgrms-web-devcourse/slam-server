@@ -14,32 +14,6 @@ import java.util.Optional;
 /**
  * Created by yunyun on 2021/12/15.
  */
-public interface LoudSpeakerNotificationRepository extends JpaRepository<LoudSpeakerNotification, String> {
-
-    @Query("select l FROM LoudSpeakerNotification l WHERE l.id IN :messageIds")
-    List<LoudSpeakerNotification> findAllByNotificationIds(
-            @Param("messageIds") List messageIds
-    );
-
-    @Query("select l FROM LoudSpeakerNotification l WHERE l.id=:messageId")
-    Optional<LoudSpeakerNotification> findOneById(
-            @Param("messageId") String messageId
-    );
-
-    @Transactional
-    @Modifying()
-    @Query("UPDATE LoudSpeakerNotification n SET n.isClicked=:status WHERE n.userId=:userId")
-    Integer updateIsClicked(
-            @Param("userId") Long userId,
-            @Param("status") boolean status
-    );
-
-    @Transactional
-    @Modifying()
-    @Query("UPDATE LoudSpeakerNotification n SET n.isRead=:status WHERE n.userId=:userId")
-    Integer updateIsRead(
-            @Param("userId") Long userId,
-            @Param("status") boolean status
-    );
+public interface LoudSpeakerNotificationRepository extends JpaRepository<LoudSpeakerNotification, Long> {
 
 }

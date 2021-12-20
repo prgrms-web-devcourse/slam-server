@@ -48,8 +48,7 @@ public class NotificationService {
     private final CourtRepository courtRepository;
     private final ReservationRepository reservationRepository;
 
-    @Transactional
-    public String saveForLoudSpeakerNotification(LoudspeakerNotificationRequest request, Long userId){
+    public NotificationResponse saveForLoudSpeakerNotification(LoudspeakerNotificationRequest request, Long userId){
 
         /** 예약 도메인 관련 **/
         /** 테스트를 위해 주석처리
@@ -67,23 +66,15 @@ public class NotificationService {
         LoudSpeakerNotification loudSpeakerNotification = LoudSpeakerNotification.of(
                 court,
                 request.getStartTime(),
-                userId,
-                NotificationType.LOUDSPEAKER
+                userId
         );
 
-        notificationRepository.save(
-                NotificationIndex.of(loudSpeakerNotification.getId(), userId)
-        );
-
-        loudSpeakerNotificationRepository.save(
-                loudSpeakerNotification
-        );
-
-        return loudSpeakerNotification.getId();
+        return notificationConvertor.toDto(notificationRepository.save(
+                NotificationIndex.createLoudSpeakerNoti(userId, loudSpeakerNotificationRepository.save(loudSpeakerNotification))
+        ));
     }
 
-    @Transactional
-    public String saveForFollowNotification(FollowNotificationRequest request, Long userId){
+    public NotificationResponse saveForFollowNotification(FollowNotificationRequest request, Long userId){
         Optional<FollowNotification> followNotificationForChecked = followNotificationRepository.findOneByReceiverIdAndUserId(request.getReceiverId(), userId);
 
         User creator = userRepository
@@ -92,48 +83,24 @@ public class NotificationService {
 
         FollowNotification followNotification = FollowNotification.of(
                 creator,
-                request.getReceiverId(),
-                NotificationType.FOLLOWING
-        );
-        NotificationIndex notification = notificationRepository.save(
-                NotificationIndex.of(followNotification.getId(), request.getReceiverId())
+                request.getReceiverId()
         );
 
-        followNotificationRepository.save(
-                followNotification
-        );
-        return followNotification.getId();
+        return notificationConvertor.toDto(notificationRepository.save(
+                NotificationIndex.createFollowNoti(userId, followNotificationRepository.save(followNotification))
+        ));
     }
 
     public List<NotificationResponse> findAllByUserId(Long userId, CursorPageRequest cursorRequest){
-        List<String> messageIds = cursorPageForFindAllByUserId(userId, cursorRequest);
-        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIds);
-        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIds);
 
-        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
-                notificationConvertor.toDtoListForFollowNotification(followNotificationList),
-                notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+        return notificationConvertor.toDtoList(cursorPageForFindAllByUserId(userId, cursorRequest));
     }
 
-    public NotificationResponse findOneByIdInFollowNotification(String messageId){
-        return notificationConvertor.toDtoForFollowNotification(
-                followNotificationRepository.findOneById(messageId)
-                        .orElseThrow(() -> new NotificationNotFoundException("존재하지 않은 공지 내용입니다."))
-        );
-    }
-
-    public NotificationResponse findOneByIdLoudspeakerNotification(String messageId){
-        return notificationConvertor.toDtoForLoudNotification(
-                loudSpeakerNotificationRepository.findOneById(messageId)
-                        .orElseThrow(() -> new NotificationNotFoundException("존재하지 않은 공지 내용입니다."))
-        );
-    }
-
-    public List<String> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
+    public List<NotificationIndex> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
         return cursorRequest.getIsFirst() ?
-                notificationRepository.findMessageIdByUserByCreated(userId, pageable) :
-                notificationRepository.findMessageIdByUserLessThanAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
+                notificationRepository.findAllByUserByCreated(userId, pageable) :
+                notificationRepository.findAllByUserLessThanAlarmIdByCreated(userId, cursorRequest.getLastId(), pageable);
     }
 
     public Long findNotificationLastId(Long userId, CursorPageRequest cursorRequest){
@@ -154,42 +121,23 @@ public class NotificationService {
                 // 마지막 데이터가 아닐 때
                 return ids.get(ids.size()-1);
             }
-
         }
-
     }
 
     @Transactional
     public void updateIsClickedStatus(UpdateIsClickedStatusRequest request, Long userId){
-        followNotificationRepository.updateIsClicked(userId, request.isStatus());
-        loudSpeakerNotificationRepository.updateIsClicked(userId, request.isStatus());
-
         /** version2에서는 isClicked와 isRead의 의미가 다르다. 그러나 version1에서는 같은 기능으로 진행. 둘 다 isClicked로 의미됨. **/
-        followNotificationRepository.updateIsRead(userId, request.isStatus());
-        loudSpeakerNotificationRepository.updateIsRead(userId, request.isStatus());
+        notificationRepository.updateIsClicked(userId, request.isStatus());
+        notificationRepository.updateIsRead(userId, request.isStatus());
     }
 
     @Transactional
     public void deleteFollowNotification(FollowNotificationRequest request, Long userId){
-        List<String> messageIds = followNotificationRepository.findByReceiverIdAndUserId(request.getReceiverId(), userId);
-        if (messageIds.isEmpty()){
-            throw new NotificationNotFoundException("삭제할 정보가 존재하지 않습니다.");
-        }else{
-            notificationRepository.deleteByMessageId(messageIds.get(0));
-            followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
-        }
+        notificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
     }
 
-    @Transactional(readOnly = true)
-    public List<NotificationResponse> getTop10Notification(Long userId){
-        PageRequest pageable = PageRequest.of(0, 10);
-        List<String> messageIdList = notificationRepository.findMessageIdByUserByCreated(userId, pageable);
-
-        List<FollowNotification> followNotificationList = followNotificationRepository.findAllByNotificationIds(messageIdList);
-        List<LoudSpeakerNotification> loudSpeakerNotificationList = loudSpeakerNotificationRepository.findAllByNotificationIds(messageIdList);
-
-        return notificationConvertor.mergeListForFollowNotificationAndLoudspeakerNotification(
-                notificationConvertor.toDtoListForFollowNotification(followNotificationList),
-                notificationConvertor.toDtoListForLoudspeakerNotification(loudSpeakerNotificationList));
+    public NotificationIndex findByReceiverIdCreatorId(Long receiverId, Long creatorId){
+        return notificationRepository.findByReceiverIdAndCreatorId(receiverId, creatorId);
     }
+
 }

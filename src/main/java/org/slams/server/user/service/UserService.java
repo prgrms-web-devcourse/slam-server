@@ -1,6 +1,8 @@
 package org.slams.server.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slams.server.common.api.CursorPageRequest;
+import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.utils.AwsS3Uploader;
 
 import org.slams.server.court.entity.Texture;
@@ -20,6 +22,7 @@ import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.SameUserException;
 import org.slams.server.user.exception.UserNotFoundException;
 import org.slams.server.user.repository.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +54,7 @@ public class UserService {
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		List<NotificationResponse> top10Notifications = notificationService.getTop10Notification(user.getId());
+		List<NotificationResponse> top10Notifications = notificationService.findAllByUserId(userId, new CursorPageRequest(10, 0L, true));
 
 		return DefaultUserInfoResponse.toResponse(user, top10Notifications);
 	}

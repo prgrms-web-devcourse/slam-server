@@ -13,7 +13,9 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 
 @Getter
-public class NotificationResponse implements Comparable<NotificationResponse>{
+public class NotificationResponse {
+
+    private final Long id;
 
     private final NotificationType type;
 
@@ -32,6 +34,7 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
 
 
     private NotificationResponse(
+            Long id,
             NotificationType type,
             FollowerInfo followerInfo,
             LoudspeakerInfo loudspeakerInfo,
@@ -40,6 +43,7 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){
+        this.id = id;
         this.type = type;
         this.followerInfo = followerInfo;
         this.loudspeakerInfo = loudspeakerInfo;
@@ -50,6 +54,7 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
     }
 
     public static NotificationResponse createForFollowNotification(
+            Long id,
             NotificationType type,
             FollowerInfo followerInfo,
             boolean isRead,
@@ -57,10 +62,11 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){
-        return new NotificationResponse(type, followerInfo, null, isRead, isClicked, createdAt, updatedAt);
+        return new NotificationResponse(id, type, followerInfo, null, isRead, isClicked, createdAt, updatedAt);
     }
 
     public static NotificationResponse createForLoudspeakerNotification(
+            Long id,
             NotificationType type,
             LoudspeakerInfo loudspeakerInfo,
             boolean isRead,
@@ -68,15 +74,7 @@ public class NotificationResponse implements Comparable<NotificationResponse>{
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){
-        return new NotificationResponse(type, null, loudspeakerInfo, isRead, isClicked, createdAt, updatedAt);
+        return new NotificationResponse(id, type, null, loudspeakerInfo, isRead, isClicked, createdAt, updatedAt);
     }
 
-
-    @Override
-    public int compareTo(NotificationResponse target) {
-        if(getCreatedAt() == null || target.getCreatedAt()==null){
-            return 0;
-        }
-        return target.getCreatedAt().compareTo(this.getCreatedAt());
-    }
 }

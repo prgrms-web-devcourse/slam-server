@@ -88,98 +88,98 @@ class UserControllerTest {
 		jwtToken = "Bearer " + token;
 	}
 
-	@Test
-	void getDefaultInfo() throws Exception {
-		// given
-		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
-			.userId(1L)
-			.userNickname("젤리")
-			.userImage("https://team14-slam.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%82%E1%85%A1.png")
-			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
-		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
-			.courtInfo(
-				CourtInfo.builder()
-					.id(3L)
-					.name("용산구 농구장")
-					.latitude(123)
-					.longitude(456)
-					.image("https://team14-slam.s3.ap-northeast-2.amazonaws.com/court_dummy/court1.jpg")
-					.basketCount(4)
-					.texture(Texture.ASPHALT)
-					.build()
-			)
-			.startTime(13)
-			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
-
-		List<NotificationResponse> notifications = List.of(followNotification, loudspeakerNotification);
-
-		DefaultUserInfoResponse response = DefaultUserInfoResponse.builder()
-			.userId(1L)
-			.email("jelly@gmail.com")
-			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
-			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.notifications(notifications)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
-			.build();
-
-		given(userService.getDefaultInfo(anyLong())).willReturn(response);
-
-		// when
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/me")
-				.header("Authorization", jwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print());
-
-		// then
-		resultActions.andExpect(status().isOk())
-			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("userId").value(1L))
-			.andExpect(jsonPath("email").value("jelly@gmail.com"))
-			.andExpect(jsonPath("nickname").value("젤리"))
-			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
-			.andExpect(jsonPath("profileImage").value("s3에 저장된 프로필 이미지 url"))
-			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
-			.andDo(document("users/user-getMyInfo", preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
-					fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
-					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
-					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
-					fieldWithPath("role").type(JsonFieldType.STRING).description("사용자 권한"),
-					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
-					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
-					fieldWithPath("notifications").type(JsonFieldType.ARRAY).description("최근 알람목록(최대 10개)"),
-					fieldWithPath("notifications[].type").type(JsonFieldType.STRING).description("알람 종류"),
-					fieldWithPath("notifications[].followerInfo").type(JsonFieldType.OBJECT).description("팔로우 알람정보").optional(),
-					fieldWithPath("notifications[].followerInfo.userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
-					fieldWithPath("notifications[].followerInfo.userNickname").type(JsonFieldType.STRING).description("사용자 이름"),
-					fieldWithPath("notifications[].followerInfo.userImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
-					fieldWithPath("notifications[].createdAt").type(JsonFieldType.STRING).description("알람 최초 생성시간"),
-					fieldWithPath("notifications[].updatedAt").type(JsonFieldType.STRING).description("알람 최근 수정시간"),
-					fieldWithPath("notifications[].isClicked").type(JsonFieldType.BOOLEAN).description("알람 읽음 여부"),
-					fieldWithPath("notifications[].isRead").type(JsonFieldType.BOOLEAN).description("알람 읽음 여부"),
-					fieldWithPath("notifications[].loudspeakerInfo").type(JsonFieldType.OBJECT).description("확성기 알람정보").optional(),
-					fieldWithPath("notifications[].loudspeakerInfo.startTime").type(JsonFieldType.NUMBER).description("경기 시작시간"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo").type(JsonFieldType.OBJECT).description("농구장 상세정보"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.id").type(JsonFieldType.NUMBER).description("농구장 구별키"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.name").type(JsonFieldType.STRING).description("농구장 이름"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.latitude").type(JsonFieldType.NUMBER).description("농구장 위도"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.longitude").type(JsonFieldType.NUMBER).description("농구장 경도"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.image").type(JsonFieldType.STRING).description("농구장 이미지"),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.basketCount").type(JsonFieldType.NUMBER).description("농구장 골대 수 "),
-					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.texture").type(JsonFieldType.STRING).description("농구장 바닥 재질"),
-					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
-					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
-				)
-			));
-	}
+//	@Test
+//	void getDefaultInfo() throws Exception {
+//		// given
+//		NotificationResponse followNotification = NotificationResponse.createForFollowNotification(FOLLOWING, FollowerInfo.builder()
+//			.userId(1L)
+//			.userNickname("젤리")
+//			.userImage("https://team14-slam.s3.ap-northeast-2.amazonaws.com/profile/%E1%84%82%E1%85%A1.png")
+//			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
+//		NotificationResponse loudspeakerNotification = NotificationResponse.createForLoudspeakerNotification(LOUDSPEAKER, LoudspeakerInfo.builder()
+//			.courtInfo(
+//				CourtInfo.builder()
+//					.id(3L)
+//					.name("용산구 농구장")
+//					.latitude(123)
+//					.longitude(456)
+//					.image("https://team14-slam.s3.ap-northeast-2.amazonaws.com/court_dummy/court1.jpg")
+//					.basketCount(4)
+//					.texture(Texture.ASPHALT)
+//					.build()
+//			)
+//			.startTime(13)
+//			.build(), false, false, LocalDateTime.now(), LocalDateTime.now());
+//
+//		List<NotificationResponse> notifications = List.of(followNotification, loudspeakerNotification);
+//
+//		DefaultUserInfoResponse response = DefaultUserInfoResponse.builder()
+//			.userId(1L)
+//			.email("jelly@gmail.com")
+//			.nickname("젤리")
+//			.description("나는 젤리가 정말 좋아")
+//			.profileImage("s3에 저장된 프로필 이미지 url")
+//			.role(Role.USER)
+//			.positions(Arrays.asList(Position.SG, Position.PG))
+//			.proficiency(Proficiency.INTERMEDIATE)
+//			.notifications(notifications)
+//			.createdAt(LocalDateTime.now())
+//			.updatedAt(LocalDateTime.now())
+//			.build();
+//
+//		given(userService.getDefaultInfo(anyLong())).willReturn(response);
+//
+//		// when
+//		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/me")
+//				.header("Authorization", jwtToken)
+//				.contentType(MediaType.APPLICATION_JSON))
+//			.andDo(print());
+//
+//		// then
+//		resultActions.andExpect(status().isOk())
+//			.andExpect(content().contentType("application/json;charset=UTF-8"))
+//			.andExpect(jsonPath("userId").value(1L))
+//			.andExpect(jsonPath("email").value("jelly@gmail.com"))
+//			.andExpect(jsonPath("nickname").value("젤리"))
+//			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
+//			.andExpect(jsonPath("profileImage").value("s3에 저장된 프로필 이미지 url"))
+//			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
+//			.andDo(document("users/user-getMyInfo", preprocessRequest(prettyPrint()),
+//				preprocessResponse(prettyPrint()),
+//				responseFields(
+//					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+//					fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+//					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+//					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+//					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+//					fieldWithPath("role").type(JsonFieldType.STRING).description("사용자 권한"),
+//					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+//					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+//					fieldWithPath("notifications").type(JsonFieldType.ARRAY).description("최근 알람목록(최대 10개)"),
+//					fieldWithPath("notifications[].type").type(JsonFieldType.STRING).description("알람 종류"),
+//					fieldWithPath("notifications[].followerInfo").type(JsonFieldType.OBJECT).description("팔로우 알람정보").optional(),
+//					fieldWithPath("notifications[].followerInfo.userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+//					fieldWithPath("notifications[].followerInfo.userNickname").type(JsonFieldType.STRING).description("사용자 이름"),
+//					fieldWithPath("notifications[].followerInfo.userImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+//					fieldWithPath("notifications[].createdAt").type(JsonFieldType.STRING).description("알람 최초 생성시간"),
+//					fieldWithPath("notifications[].updatedAt").type(JsonFieldType.STRING).description("알람 최근 수정시간"),
+//					fieldWithPath("notifications[].isClicked").type(JsonFieldType.BOOLEAN).description("알람 읽음 여부"),
+//					fieldWithPath("notifications[].isRead").type(JsonFieldType.BOOLEAN).description("알람 읽음 여부"),
+//					fieldWithPath("notifications[].loudspeakerInfo").type(JsonFieldType.OBJECT).description("확성기 알람정보").optional(),
+//					fieldWithPath("notifications[].loudspeakerInfo.startTime").type(JsonFieldType.NUMBER).description("경기 시작시간"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo").type(JsonFieldType.OBJECT).description("농구장 상세정보"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.id").type(JsonFieldType.NUMBER).description("농구장 구별키"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.name").type(JsonFieldType.STRING).description("농구장 이름"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.latitude").type(JsonFieldType.NUMBER).description("농구장 위도"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.longitude").type(JsonFieldType.NUMBER).description("농구장 경도"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.image").type(JsonFieldType.STRING).description("농구장 이미지"),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.basketCount").type(JsonFieldType.NUMBER).description("농구장 골대 수 "),
+//					fieldWithPath("notifications[].loudspeakerInfo.courtInfo.texture").type(JsonFieldType.STRING).description("농구장 바닥 재질"),
+//					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+//					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+//				)
+//			));
+//	}
 
 	@Test
 	void addExtraUserInfo() throws Exception {

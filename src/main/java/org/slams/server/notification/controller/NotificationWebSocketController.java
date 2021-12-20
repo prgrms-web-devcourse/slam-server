@@ -10,6 +10,7 @@ import org.slams.server.notification.Exception.TokenNotFountException;
 import org.slams.server.notification.dto.WebSocketTestDto;
 import org.slams.server.notification.dto.request.FollowNotificationRequest;
 import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
+import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.reservation.repository.ReservationRepository;
 import org.slams.server.user.exception.InvalidTokenException;
@@ -76,12 +77,11 @@ public class NotificationWebSocketController {
         Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
 
         followService.follow(userId, message.getReceiverId());
-        String messageId = notificationService.saveForFollowNotification(message, userId);
-        logger.info("receiverId");
-        logger.info(message.getReceiverId().toString());
+        NotificationResponse notification = notificationService.saveForFollowNotification(message, userId);
+
         websocket.convertAndSend(
                 String.format("/user/%d/notification", message.getReceiverId()),
-                notificationService.findOneByIdInFollowNotification(messageId)
+                notification
                 );
     }
 
@@ -108,10 +108,10 @@ public class NotificationWebSocketController {
             if (bookId.equals(userId)){
                 continue;
             }
-            String messageId = notificationService.saveForLoudSpeakerNotification(request, bookId);
+            NotificationResponse notification = notificationService.saveForLoudSpeakerNotification(request, bookId);
             websocket.convertAndSend(
                     String.format("/user/%d/notification", bookId),
-                    notificationService.findOneByIdLoudspeakerNotification(messageId)
+                    notification
             );
         }
 

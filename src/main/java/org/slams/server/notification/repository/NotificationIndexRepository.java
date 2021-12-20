@@ -15,22 +15,6 @@ import java.util.List;
  */
 
 public interface NotificationIndexRepository extends JpaRepository<NotificationIndex, Long> {
-    // 읽음 표시 하기
-    // 알림 저장하기 -> loudspeaker, follow
-    // userID에 맞게 아이디 메시지 추출하기 -> 무한 스크롤
-
-    @Query("SELECT a.messageId FROM NotificationIndex a WHERE a.userId =:userId AND a.id < :lastId ORDER BY a.createdAt desc")
-    List<String> findMessageIdByUserLessThanAlarmIdByCreated(
-            @Param("userId") Long userId,
-            @Param("lastId") Long lastId,
-            Pageable pageable
-    );
-
-    @Query("SELECT a.messageId FROM NotificationIndex a WHERE a.userId =:userId ORDER BY a.createdAt desc")
-    List<String> findMessageIdByUserByCreated(
-            @Param("userId") Long userId,
-            Pageable pageable
-    );
 
     @Query("SELECT a.id FROM NotificationIndex a WHERE a.userId =:userId AND a.id < :lastId ORDER BY a.createdAt desc")
     List<Long> findIdByUserLessThanAlarmIdByCreated(
@@ -45,10 +29,47 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             Pageable pageable
     );
 
+    @Query("SELECT a FROM NotificationIndex a WHERE a.userId =:userId AND a.id < :lastId ORDER BY a.createdAt desc")
+    List<NotificationIndex> findAllByUserLessThanAlarmIdByCreated(
+            @Param("userId") Long userId,
+            @Param("lastId") Long lastId,
+            Pageable pageable
+    );
+
+    @Query("SELECT a FROM NotificationIndex a WHERE a.userId =:userId ORDER BY a.createdAt desc")
+    List<NotificationIndex> findAllByUserByCreated(
+            @Param("userId") Long userId,
+            Pageable pageable
+    );
+
+    @Transactional
+    @Modifying()
+    @Query("UPDATE NotificationIndex n SET n.isClicked=:status WHERE n.userId=:userId")
+    Integer updateIsClicked(
+            @Param("userId") Long userId,
+            @Param("status") boolean status
+    );
+
+    @Transactional
+    @Modifying()
+    @Query("UPDATE NotificationIndex n SET n.isRead=:status WHERE n.userId=:userId")
+    Integer updateIsRead(
+            @Param("userId") Long userId,
+            @Param("status") boolean status
+    );
+
     @Transactional
     @Modifying
-    @Query("DELETE FROM NotificationIndex a WHERE a.messageId=:messageId")
-    void deleteByMessageId(
-      @Param("messageId") String messageId
+    @Query("DELETE FROM NotificationIndex n WHERE n.followNotification.creator.id=:userId AND n.userId=:receiverId")
+    void deleteByReceiverIdAndUserId(
+            @Param("receiverId") Long receiverId,
+            @Param("userId") Long userId
     );
+
+    @Query("SELECT n FROM NotificationIndex n WHERE n.followNotification.creator.id=:creatorId AND n.userId=:receiverId")
+    NotificationIndex findByReceiverIdAndCreatorId(
+            @Param("receiverId") Long receiverId,
+            @Param("creatorId") Long creatorId
+    );
+
 }
