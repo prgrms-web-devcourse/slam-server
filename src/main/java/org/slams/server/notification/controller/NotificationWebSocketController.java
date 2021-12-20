@@ -76,11 +76,15 @@ public class NotificationWebSocketController {
             ){
         Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
 
+        if(userId.equals(message.getReceiverId())){
+            throw new RuntimeException("자기 자신을 팔로우 할 수 없습니다.");
+        }
+
         followService.follow(userId, message.getReceiverId());
         NotificationResponse notification = notificationService.saveForFollowNotification(message, userId);
 
         websocket.convertAndSend(
-                String.format("/user/%d/notification", userId),
+                String.format("/user/%d/notification", message.getReceiverId()),
                 notification
                 );
     }
