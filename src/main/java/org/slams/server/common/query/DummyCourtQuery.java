@@ -1,6 +1,5 @@
 package org.slams.server.common.query;
 
-import lombok.RequiredArgsConstructor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -17,8 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,14 +71,17 @@ public class DummyCourtQuery {
 
     @Transactional
     public void insertExcel() throws IOException, InvalidFormatException {
-        URL res = getClass().getClassLoader().getResource("dummyCourt.xlsx");
 
-        logger.info(String.valueOf(res));
+//        URL res = getClass().getClassLoader().getResource(excelFileName);
+
         List<Court> dataList = new ArrayList<>();
 
-        String dumpDataLocation = ResourceUtils.getFile(resourceLocation + excelFileName).getAbsolutePath();
+        try (
+//                FileInputStream file = new FileInputStream(dumpDataLocation);
+                InputStream file = new ClassPathResource(excelFileName).getInputStream();
 
-        try (FileInputStream file = new FileInputStream(dumpDataLocation)) {
+        ) {
+
 
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             Sheet worksheet = workbook.getSheetAt(0);
@@ -104,6 +107,8 @@ public class DummyCourtQuery {
             dummyCourtRepository.saveAll(dataList);
 
         } catch (Exception e) {
+
+            logger.info(e.getMessage());
             logger.error("insert dumy data ERROR");
             insert();
         }
