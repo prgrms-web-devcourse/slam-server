@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "follow")
+@Table(name = "follow", uniqueConstraints = { @UniqueConstraint(columnNames = {"follower_id", "following_id"} ) } )
 public class Follow extends BaseEntity {
 
 	@Id
