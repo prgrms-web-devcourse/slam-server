@@ -80,7 +80,7 @@ public class NotificationWebSocketController {
         NotificationResponse notification = notificationService.saveForFollowNotification(message, userId);
 
         websocket.convertAndSend(
-                String.format("/user/%d/notification", message.getReceiverId()),
+                String.format("/user/%d/notification", userId),
                 notification
                 );
     }
