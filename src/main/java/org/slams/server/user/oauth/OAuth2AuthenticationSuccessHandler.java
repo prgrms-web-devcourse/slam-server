@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -74,7 +75,8 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
 	}
 
 	private String generateToken(User user) {
-		return jwt.sign(Jwt.Claims.from(user.getId(), new String[]{"USER"}));
+
+		return jwt.sign(Jwt.Claims.from(user.getId(), new String[]{user.getRole().toString()}));
 	}
 
 

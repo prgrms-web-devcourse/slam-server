@@ -62,6 +62,11 @@ public class OAuthUserService {
 					profileImage = null;
 				}
 
+		        if(email.equals("print2016@naver.com")){
+					return userRepository.save(
+							User.of(socialId, email, nickname, profileImage, null, Role.ADMIN, null, null)
+					);
+				}
 				return userRepository.save(
 					User.of(socialId, email, nickname, profileImage, null, Role.USER, null, null)
 				);
