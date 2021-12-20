@@ -134,8 +134,8 @@ public class NotificationService {
 
     @Transactional
     public void deleteFollowNotification(FollowNotificationRequest request, Long userId){
-        followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
         notificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
+        followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
     }
 
     public NotificationIndex findByReceiverIdCreatorId(Long receiverId, Long creatorId){
