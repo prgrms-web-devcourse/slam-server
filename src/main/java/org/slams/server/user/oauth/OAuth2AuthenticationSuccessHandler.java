@@ -5,8 +5,6 @@ import org.slams.server.user.entity.User;
 import org.slams.server.user.oauth.jwt.Jwt;
 import org.slams.server.user.service.OAuthUserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -14,11 +12,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -74,8 +70,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
 	}
 
 	private String generateToken(User user) {
-		return jwt.sign(Jwt.Claims.from(user.getId(), new String[]{"USER"}));
+		return jwt.sign(Jwt.Claims.from(user.getId(), new String[]{user.getRole().toString()}));
 	}
-
 
 }

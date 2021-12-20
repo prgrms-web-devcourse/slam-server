@@ -1,14 +1,17 @@
 package org.slams.server.user.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.utils.JSONObjectMapper;
 import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,14 +19,15 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class OAuthUserService {
-	private final UserRepository userRepository;
 
-	public OAuthUserService(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
+	@Value("${slam.admin.emails}")
+	private final List<String> adminEmails;
+
+	private final UserRepository userRepository;
 
 	public Optional<User> findBySocialId(String socialId) {
 		checkArgument(isNotEmpty(socialId), "socialId must be provided.");
@@ -62,6 +66,11 @@ public class OAuthUserService {
 					profileImage = null;
 				}
 
+		        if(adminEmails.contains(email)){
+					return userRepository.save(
+							User.of(socialId, email, nickname, profileImage, null, Role.ADMIN, null, null)
+					);
+				}
 				return userRepository.save(
 					User.of(socialId, email, nickname, profileImage, null, Role.USER, null, null)
 				);
