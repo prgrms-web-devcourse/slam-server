@@ -105,7 +105,7 @@ public class DummyCourtQuery {
 
             }
             dummyCourtRepository.saveAll(dataList);
-
+            dataList.stream().map(Court::getId).forEach(chatroomMappingService::saveChatRoom);
         } catch (Exception e) {
 
             logger.info(e.getMessage());
