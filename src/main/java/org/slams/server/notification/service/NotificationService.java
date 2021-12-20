@@ -87,7 +87,7 @@ public class NotificationService {
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
-                NotificationIndex.createFollowNoti(userId, followNotificationRepository.save(followNotification))
+                NotificationIndex.createFollowNoti(request.getReceiverId(), followNotificationRepository.save(followNotification))
         ));
     }
 
