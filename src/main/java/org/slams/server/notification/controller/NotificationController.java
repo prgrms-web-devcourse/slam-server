@@ -22,7 +22,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping(value = "/api/v1/notification", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
 
