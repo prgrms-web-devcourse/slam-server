@@ -21,11 +21,13 @@ import static com.google.common.base.Preconditions.checkArgument;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "loudspeaker_notification")
-public class LoudSpeakerNotification extends BaseEntity {
+public class LoudSpeakerNotification {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
     private Court court;
 
@@ -35,35 +37,20 @@ public class LoudSpeakerNotification extends BaseEntity {
     @Column
     private Long userId;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean isRead;
-
-    @Column(columnDefinition = "boolean default false")
-    private boolean isClicked;
-
-    @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
-
-    private LoudSpeakerNotification(Court court, int startTime, Long userId, NotificationType notificationType){
+    private LoudSpeakerNotification(Court court, int startTime, Long userId){
         checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
         checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
-        checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
 
-        this.id = UUID.randomUUID().toString();
         this.court = court;
         this.startTime = startTime;
         this.userId = userId;
-        this.notificationType = notificationType;
     }
 
-
     @Builder
-    public LoudSpeakerNotification(String id, Court court, int startTime, Long userId,
-                                   boolean isRead, boolean isClicked, NotificationType notificationType){
+    public LoudSpeakerNotification(Long id, Court court, int startTime, Long userId){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
-        checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
         checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
 
@@ -71,21 +58,11 @@ public class LoudSpeakerNotification extends BaseEntity {
         this.court = court;
         this.startTime = startTime;
         this.userId = userId;
-        this.isRead = isRead;
-        this.isClicked = isClicked;
-        this.notificationType = notificationType;
     }
 
-    public static LoudSpeakerNotification of(Court court, int startTime, Long userId, NotificationType notificationType){
-        return new LoudSpeakerNotification(court, startTime, userId, notificationType);
+    public static LoudSpeakerNotification of(Court court, int startTime, Long userId){
+        return new LoudSpeakerNotification(court, startTime, userId);
     }
 
-    public void updateIsClicked(boolean isClicked){
-        this.isClicked = isClicked;
-    }
-
-    public void updateIsRead(boolean isRead){
-        this.isRead = isRead;
-    }
 
 }

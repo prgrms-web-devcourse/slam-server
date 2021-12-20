@@ -15,33 +15,8 @@ import java.util.Optional;
 /**
  * Created by yunyun on 2021/12/15.
  */
-public interface FollowNotificationRepository extends JpaRepository<FollowNotification, String> {
+public interface FollowNotificationRepository extends JpaRepository<FollowNotification, Long> {
 
-    @Query("SELECT f FROM FollowNotification f WHERE f.id IN :messageIds")
-    List<FollowNotification> findAllByNotificationIds(
-            @Param("messageIds") List messageIds
-    );
-
-    @Query("SELECT f FROM FollowNotification f WHERE f.id=:messageId")
-    Optional<FollowNotification> findOneById(
-            @Param("messageId") String messageId
-    );
-
-    @Transactional
-    @Modifying()
-    @Query("UPDATE FollowNotification n SET n.isClicked=:status WHERE n.userId=:userId")
-    void updateIsClicked(
-            @Param("userId") Long userId,
-            @Param("status") boolean status
-    );
-
-    @Transactional
-    @Modifying()
-    @Query("UPDATE FollowNotification n SET n.isRead=:status WHERE n.userId=:userId")
-    void updateIsRead(
-            @Param("userId") Long userId,
-            @Param("status") boolean status
-    );
 
     @Query("SELECT f.id FROM FollowNotification f WHERE f.creator.id=:userId AND f.userId=:receiverId")
     List<String> findByReceiverIdAndUserId(
@@ -55,19 +30,5 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("userId") Long userId
     );
 
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM FollowNotification f WHERE f.creator.id=:userId AND f.userId=:receiverId")
-    void deleteByReceiverIdAndUserId(
-            @Param("receiverId") Long receiverId,
-            @Param("userId") Long userId
-    );
 
-//    @Transactional
-//    @Modifying()
-//    @Query("UPDATE FollowNotification n SET n.isDeleted=:status WHERE n.userId=:receiverId")
-//    void updateIsDeleted(
-//            @Param("receiverId") Long receiverId,
-//            @Param("status") boolean status
-//    );
 }
