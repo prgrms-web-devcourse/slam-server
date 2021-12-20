@@ -29,7 +29,7 @@ public class NotificationIndex extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follow_noti_id", referencedColumnName = "id")
     private FollowNotification followNotification;
 

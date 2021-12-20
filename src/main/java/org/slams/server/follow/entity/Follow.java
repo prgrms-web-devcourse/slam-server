@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "follow", uniqueConstraints = { @UniqueConstraint(columnNames = {"follower_id", "following_id"} ) } )
+@Table(name = "follow")
 public class Follow extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "follower_id", nullable = false, referencedColumnName = "id")
 	private User follower;
 
