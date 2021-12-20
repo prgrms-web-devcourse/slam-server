@@ -98,7 +98,7 @@ public class CourtService {
     public List<CourtByDateByBoundaryResponseDto> findByDateByBoundary(RequestParamVo requestParamVo) {
 
         String date=requestParamVo.getDate();
-        String time=requestParamVo.getTime().toUpperCase();
+        String time=requestParamVo.getTime();
 
         List<LocalDateTime> localDateTimes = changeTimeZone(date, time);
         LocalDateTime startLocalDateTime=localDateTimes.get(0);
@@ -150,7 +150,7 @@ public class CourtService {
         LocalDateTime startLocalDateTime;
         LocalDateTime endLocalDateTime;
 
-        TimeEnum timeEnum = TimeEnum.valueOf(time);
+        TimeEnum timeEnum = TimeEnum.valueOf(time.toUpperCase());
         switch (timeEnum) {
             case DAWN:
                 startLocalDateTime=dateTime.atTime(0,0,0);
