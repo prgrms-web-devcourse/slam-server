@@ -46,11 +46,15 @@ public class NotificationIndex extends BaseEntity {
     @Column(columnDefinition = "boolean default false")
     private boolean isClicked;
 
-    private NotificationIndex(Long userId, FollowNotification followNotification){
+    @Column
+    private Long checkCreatorId ;
+
+    private NotificationIndex(Long userId, FollowNotification followNotification, Long checkCreatorId){
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         this.userId = userId;
         this.notificationType = NotificationType.FOLLOWING;
         this.followNotification = followNotification;
+        this.checkCreatorId = checkCreatorId;
     }
 
     private NotificationIndex(Long userId, LoudSpeakerNotification loudSpeakerNotification){
@@ -61,7 +65,7 @@ public class NotificationIndex extends BaseEntity {
     }
 
     public NotificationIndex(Long id, Long userId, FollowNotification followNotification,
-                             NotificationType notificationType, boolean isRead, boolean isClicked){
+                             NotificationType notificationType, boolean isRead, boolean isClicked, Long checkCreatorId){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
@@ -71,6 +75,7 @@ public class NotificationIndex extends BaseEntity {
         this.notificationType = notificationType;
         this.isRead = isRead;
         this.isClicked = isClicked;
+        this.checkCreatorId = checkCreatorId;
     }
 
     public NotificationIndex(Long id, Long userId, LoudSpeakerNotification loudSpeakerNotification,
@@ -91,8 +96,8 @@ public class NotificationIndex extends BaseEntity {
 
     }
 
-    public static NotificationIndex createFollowNoti(Long userId, FollowNotification followNotification){
-        return new NotificationIndex(userId, followNotification);
+    public static NotificationIndex createFollowNoti(Long userId, FollowNotification followNotification, Long checkCreatorId){
+        return new NotificationIndex(userId, followNotification, checkCreatorId);
     }
 
 

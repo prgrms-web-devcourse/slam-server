@@ -57,13 +57,13 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
     );
 
     @Modifying
-    @Query("DELETE FROM NotificationIndex n WHERE n.followNotification.checkCreatorId=:userId AND n.userId=:receiverId")
+    @Query("DELETE FROM NotificationIndex n WHERE n.checkCreatorId=:userId AND n.userId=:receiverId")
     void deleteByReceiverIdAndUserId(
             @Param("receiverId") Long receiverId,
             @Param("userId") Long userId
     );
 
-    @Query("SELECT n FROM NotificationIndex n WHERE n.followNotification.checkCreatorId=:creatorId AND n.userId=:receiverId")
+    @Query("SELECT n FROM NotificationIndex n WHERE n.checkCreatorId=:creatorId AND n.userId=:receiverId")
     NotificationIndex findByReceiverIdAndCreatorId(
             @Param("receiverId") Long receiverId,
             @Param("creatorId") Long creatorId

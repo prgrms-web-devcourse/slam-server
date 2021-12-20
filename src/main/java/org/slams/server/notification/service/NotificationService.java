@@ -83,12 +83,11 @@ public class NotificationService {
 
         FollowNotification followNotification = FollowNotification.of(
                 creator,
-                request.getReceiverId(),
-                userId
+                request.getReceiverId()
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
-                NotificationIndex.createFollowNoti(request.getReceiverId(), followNotificationRepository.save(followNotification))
+                NotificationIndex.createFollowNoti(request.getReceiverId(), followNotificationRepository.save(followNotification), userId)
         ));
     }
 

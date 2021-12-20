@@ -32,22 +32,18 @@ public class FollowNotification {
     private User creator;
 
     @Column
-    private Long checkCreatorId ;
-
-    @Column
     private Long userId;
 
-    private FollowNotification(User creator, Long userId, Long checkCreatorId){
+    private FollowNotification(User creator, Long userId){
         checkArgument(creator != null, "creator 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
 
         this.creator = creator;
         this.userId = userId;
-        this.checkCreatorId = checkCreatorId;
     }
 
     @Builder
-    public FollowNotification(Long id, User creator, Long userId, Long checkCreatorId){
+    public FollowNotification(Long id, User creator, Long userId){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(creator != null, "creator 정보는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
@@ -55,12 +51,11 @@ public class FollowNotification {
         this.id = id;
         this.creator = creator;
         this.userId = userId;
-        this.checkCreatorId = checkCreatorId;
 
     }
 
-    public static FollowNotification of(User creator, Long userId, Long checkCreatorId){
-        return new FollowNotification(creator, userId, checkCreatorId);
+    public static FollowNotification of(User creator, Long userId){
+        return new FollowNotification(creator, userId);
     }
 
 }
