@@ -42,7 +42,6 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             Pageable pageable
     );
 
-    @Transactional
     @Modifying()
     @Query("UPDATE NotificationIndex n SET n.isClicked=:status WHERE n.userId=:userId")
     Integer updateIsClicked(
@@ -50,7 +49,6 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             @Param("status") boolean status
     );
 
-    @Transactional
     @Modifying()
     @Query("UPDATE NotificationIndex n SET n.isRead=:status WHERE n.userId=:userId")
     Integer updateIsRead(
@@ -58,15 +56,14 @@ public interface NotificationIndexRepository extends JpaRepository<NotificationI
             @Param("status") boolean status
     );
 
-    @Transactional
     @Modifying
-    @Query("DELETE FROM NotificationIndex n WHERE n.followNotification.creator.id=:userId AND n.userId=:receiverId")
+    @Query("DELETE FROM NotificationIndex n WHERE n.followNotification.checkCreatorId=:userId AND n.userId=:receiverId")
     void deleteByReceiverIdAndUserId(
             @Param("receiverId") Long receiverId,
             @Param("userId") Long userId
     );
 
-    @Query("SELECT n FROM NotificationIndex n WHERE n.followNotification.creator.id=:creatorId AND n.userId=:receiverId")
+    @Query("SELECT n FROM NotificationIndex n WHERE n.followNotification.checkCreatorId=:creatorId AND n.userId=:receiverId")
     NotificationIndex findByReceiverIdAndCreatorId(
             @Param("receiverId") Long receiverId,
             @Param("creatorId") Long creatorId

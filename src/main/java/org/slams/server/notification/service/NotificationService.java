@@ -83,7 +83,8 @@ public class NotificationService {
 
         FollowNotification followNotification = FollowNotification.of(
                 creator,
-                request.getReceiverId()
+                request.getReceiverId(),
+                userId
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
