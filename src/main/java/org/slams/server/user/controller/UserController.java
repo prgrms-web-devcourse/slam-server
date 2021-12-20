@@ -3,7 +3,6 @@ package org.slams.server.user.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
-import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
 import org.slams.server.user.exception.InvalidTokenException;
 import org.slams.server.user.oauth.jwt.Jwt;
@@ -11,8 +10,10 @@ import org.slams.server.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -84,7 +85,8 @@ public class UserController {
 	}
 
 	@PutMapping("/myprofile/image")
-	public ResponseEntity<ProfileImageResponse> updateUserProfileImage(HttpServletRequest request, @RequestBody ProfileImageRequest profileImageRequest) {
+	public ResponseEntity<ProfileImageResponse> updateUserProfileImage(
+		HttpServletRequest request, @RequestPart("image") MultipartFile profileImageRequest) throws IOException {
 		String authorization = request.getHeader("Authorization");
 		String[] tokenString = authorization.split(" ");
 		if (!tokenString[0].equals("Bearer")) {
