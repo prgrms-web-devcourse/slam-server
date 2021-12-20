@@ -83,7 +83,8 @@ public class NotificationService {
 
         FollowNotification followNotification = FollowNotification.of(
                 creator,
-                request.getReceiverId()
+                request.getReceiverId(),
+                userId
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
@@ -133,6 +134,7 @@ public class NotificationService {
 
     @Transactional
     public void deleteFollowNotification(FollowNotificationRequest request, Long userId){
+        followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
         notificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
     }
 

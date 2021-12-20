@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.CascadeType;
 import java.lang.annotation.Native;
 import java.util.List;
 import java.util.Optional;
@@ -30,5 +31,12 @@ public interface FollowNotificationRepository extends JpaRepository<FollowNotifi
             @Param("userId") Long userId
     );
 
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM FollowNotification n WHERE n.checkCreatorId=:userId AND n.userId=:receiverId")
+    void deleteByReceiverIdAndUserId(
+            @Param("receiverId") Long receiverId,
+            @Param("userId") Long userId
+    );
 
 }
