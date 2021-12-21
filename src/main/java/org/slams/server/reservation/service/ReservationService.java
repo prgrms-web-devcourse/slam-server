@@ -160,7 +160,6 @@ public class ReservationService {
                     reservationResponseDtoList.add(new ReservationResponseDto(joinUser, isFollow,follow.get()));
                 }
                 else {
-                    Optional<Follow> follow=followRepository.findByFollowerAndFollowing(user,rs.getUser());
                     reservationResponseDtoList.add(new ReservationResponseDto(joinUser, isFollow));
                 }
 
