@@ -2,6 +2,7 @@ package org.slams.server.reservation.dto.response;
 
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.slams.server.common.api.BaseResponse;
 import org.slams.server.follow.entity.Follow;
@@ -11,6 +12,7 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Getter
+@EqualsAndHashCode
 public class ReservationResponseDto extends BaseResponse {
     private Long followId;
     private Long userId;
