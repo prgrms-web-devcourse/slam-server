@@ -144,19 +144,19 @@ public class ReservationService {
 
 
         // reservationId -> User 검색 ->
-        List<Reservation> byReservation = reservationRepository.findByReservation(courtId, sTime, eTime);
-        log.info("reservationCount:"+byReservation.size());
+        List<User> byIdLists = reservationRepository.findByReservation(courtId, sTime, eTime);
 
         List<ReservationResponseDto> reservationResponseDtoList=new ArrayList<>();
         Boolean isFollow=false;
 
-        for (Reservation rs:byReservation) {
-            User joinUser = rs.getUser();
+
+        for (User foundUser:byIdLists) {
+            User joinUser = foundUser;
 
             if (user.getId() != joinUser.getId()) {
-                isFollow = followRepository.existsByFollowerAndFollowing(user, rs.getUser());
+                isFollow = followRepository.existsByFollowerAndFollowing(user, foundUser);
                 if (isFollow) {
-                    Optional<Follow> follow=followRepository.findByFollowerAndFollowing(user,rs.getUser());
+                    Optional<Follow> follow=followRepository.findByFollowerAndFollowing(user,foundUser);
                     reservationResponseDtoList.add(new ReservationResponseDto(joinUser, isFollow,follow.get()));
                 }
                 else {
