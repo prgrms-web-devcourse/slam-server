@@ -50,9 +50,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     );
 
 
-
     @Query("SELECT distinct r.user FROM Reservation r WHERE r.court.id=:courtId AND ((:sTime BETWEEN r.startTime AND r.endTime) OR (:eTime BETWEEN r.startTime AND r.endTime))")
     List<User> findByReservation(
+
             @Param("courtId")Long courtId,
             @Param("sTime") LocalDateTime sTime,
             @Param("eTime") LocalDateTime eTime);

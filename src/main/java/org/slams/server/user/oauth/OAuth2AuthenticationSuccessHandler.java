@@ -70,7 +70,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
 	}
 
 	private String generateToken(User user) {
-		return jwt.sign(Jwt.Claims.from(user.getId(), new String[]{user.getRole().toString()}));
+		return jwt.sign(Jwt.Claims.from(user.getId(), user.getEmail(), new String[]{user.getRole().toString()}));
 	}
 
 }
