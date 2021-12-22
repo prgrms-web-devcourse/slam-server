@@ -12,7 +12,6 @@ import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Getter
-@EqualsAndHashCode
 public class ReservationResponseDto extends BaseResponse {
     private Long followId;
     private Long userId;
