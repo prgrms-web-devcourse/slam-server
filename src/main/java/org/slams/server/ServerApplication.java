@@ -27,8 +27,8 @@ public class ServerApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        dummyCourtQuery.insert();
-        dummyCourtQuery.insertExcel();
-        dummyCourtQuery.insertNotificationDummy(1L, 20);
+//        dummyCourtQuery.insertExcel();
+//        dummyCourtQuery.insertNotificationDummy(1L, 20);
 
     }
 }
