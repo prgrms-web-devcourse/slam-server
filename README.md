@@ -16,8 +16,8 @@
 
 |![image 31](https://user-images.githubusercontent.com/88185304/147052066-7c229d7a-1c5d-4c73-9e62-5098d14935b6.png)|![yunyun 1 (1)](https://user-images.githubusercontent.com/88185304/147052427-54500fe5-ff22-4617-9751-bbef433fe828.png)|![Frame 42 (1)](https://user-images.githubusercontent.com/88185304/147052306-172673e9-8f09-428b-9de8-d50f8cdb6324.png)|
 |:---|:---|:---|
-|Hey(서동성)|Flora(류윤정)|Jely(권예경)|
-|- 백앤드 팀장 <br> - 예약도메인 <br> - 즐겨찾기 도메인 <br> - 농구장도메인|- 공지 도메인 <br> - 채팅도메인 <br> - CICD 구축 <br> - SSL 적용|- 카카오로그인 <br> - 스프링스큐리티 <br> - 유저 및 팔로우 도메인 <br> - 관리자 도메인|
+|Hey(서동성)|Flora(류윤정)|Jelly(권예경)|
+|- 백앤드 팀장 <br> - 예약 도메인 <br> - 즐겨찾기 도메인 <br> - 농구장 도메인|- 공지 도메인 <br> - 채팅 도메인 <br> - CICD 구축 <br> - SSL 적용|- 카카오로그인 <br> - 스프링 시큐리티 <br> - 유저 및 팔로우 도메인 <br> - 관리자 도메인|
 
 
 <br>
@@ -33,7 +33,7 @@
 ### 아키텍처
 ![image](https://user-images.githubusercontent.com/88185304/147044361-b98c14b3-5597-439d-8170-abbaa3041e14.png)
 - MySql
-- Jenkins & Gibhub Webhook
+- Jenkins & Github Webhook
 
 ### 협업방식
 - Notion
@@ -67,4 +67,4 @@
 <br>
 
 ## 🔗 Client Git Repo
-[Slam-cliet](https://github.com/prgrms-web-devcourse/slam-client)
+[slam-client](https://github.com/prgrms-web-devcourse/slam-client)
