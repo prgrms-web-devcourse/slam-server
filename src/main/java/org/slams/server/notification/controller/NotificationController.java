@@ -44,7 +44,7 @@ public class NotificationController {
         ));
     }
 
-    @PutMapping("/isClicked")
+    @PutMapping("/read")
     public ResponseEntity<Void> updateIsClicked(HttpServletRequest request){
         Long userId = new TokenGetId(request,jwt).getUserId();
         notificationService.updateIsClickedStatus(new UpdateIsClickedStatusRequest(true), userId);
