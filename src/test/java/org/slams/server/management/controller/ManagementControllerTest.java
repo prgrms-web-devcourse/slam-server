@@ -1,6 +1,5 @@
 package org.slams.server.management.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -154,8 +151,8 @@ class ManagementControllerTest {
 				),
 				responseFields(
 					fieldWithPath("contents").type(JsonFieldType.ARRAY).description("사용자가 추가한 농구장 목록"),
-					fieldWithPath("contents[].newCourtId").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
-					fieldWithPath("contents[].courtName").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
+					fieldWithPath("contents[].id").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
+					fieldWithPath("contents[].name").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
 					fieldWithPath("contents[].latitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 위도"),
 					fieldWithPath("contents[].longitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 경도"),
 					fieldWithPath("contents[].image").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 이미지"),
@@ -189,7 +186,7 @@ class ManagementControllerTest {
 
 		NewCourtResponse response = NewCourtResponse.toResponse(acceptedCourt);
 
-		given(newCourtService.acceptNewCourt(acceptedCourt.getId())).willReturn(response);
+		given(newCourtService.acceptNewCourt(anyLong(), anyLong())).willReturn(response);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/management/newCourt/accept")
@@ -201,8 +198,8 @@ class ManagementControllerTest {
 		// then
 		resultActions.andExpect(status().isAccepted())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("newCourtId").value(acceptedCourt.getId()))
-			.andExpect(jsonPath("courtName").value(acceptedCourt.getName()))
+			.andExpect(jsonPath("id").value(acceptedCourt.getId()))
+			.andExpect(jsonPath("name").value(acceptedCourt.getName()))
 			.andExpect(jsonPath("latitude").value(acceptedCourt.getLatitude()))
 			.andExpect(jsonPath("longitude").value(acceptedCourt.getLongitude()))
 			.andExpect(jsonPath("image").value(acceptedCourt.getImage()))
@@ -215,8 +212,8 @@ class ManagementControllerTest {
 					fieldWithPath("newCourtId").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키")
 				),
 				responseFields(
-					fieldWithPath("newCourtId").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키"),
-					fieldWithPath("courtName").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
+					fieldWithPath("id").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키"),
+					fieldWithPath("name").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
 					fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 위도"),
 					fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 경도"),
 					fieldWithPath("image").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 이미지"),
@@ -249,7 +246,7 @@ class ManagementControllerTest {
 
 		NewCourtResponse response = NewCourtResponse.toResponse(acceptedCourt);
 
-		given(newCourtService.acceptNewCourt(acceptedCourt.getId())).willReturn(response);
+		given(newCourtService.acceptNewCourt(anyLong(), anyLong())).willReturn(response);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/management/newCourt/accept")
@@ -261,8 +258,8 @@ class ManagementControllerTest {
 		// then
 		resultActions.andExpect(status().isAccepted())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("newCourtId").value(acceptedCourt.getId()))
-			.andExpect(jsonPath("courtName").value(acceptedCourt.getName()))
+			.andExpect(jsonPath("id").value(acceptedCourt.getId()))
+			.andExpect(jsonPath("name").value(acceptedCourt.getName()))
 			.andExpect(jsonPath("latitude").value(acceptedCourt.getLatitude()))
 			.andExpect(jsonPath("longitude").value(acceptedCourt.getLongitude()))
 			.andExpect(jsonPath("image").value(acceptedCourt.getImage()))
@@ -275,8 +272,8 @@ class ManagementControllerTest {
 					fieldWithPath("newCourtId").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키")
 				),
 				responseFields(
-					fieldWithPath("newCourtId").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키"),
-					fieldWithPath("courtName").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
+					fieldWithPath("id").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 구별키"),
+					fieldWithPath("name").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 닉네임"),
 					fieldWithPath("latitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 위도"),
 					fieldWithPath("longitude").type(JsonFieldType.NUMBER).description("사용자가 추가한 농구장 경도"),
 					fieldWithPath("image").type(JsonFieldType.STRING).description("사용자가 추가한 농구장 이미지"),
@@ -288,5 +285,5 @@ class ManagementControllerTest {
 				)
 			));
 	}
-	
+
 }
