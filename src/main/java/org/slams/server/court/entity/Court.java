@@ -4,14 +4,11 @@ import lombok.*;
 import org.slams.server.common.BaseEntity;
 
 import javax.persistence.*;
-import org.slams.server.court.entity.*;
+
 import org.slams.server.reservation.entity.Reservation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.util.Assert;
-import javax.persistence.*;
-import javax.validation.constraints.Pattern;
 
 
 /**
@@ -29,11 +26,10 @@ public class Court extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
-
-    @Column(nullable = false,length=50)
+    @Column(nullable = false, length = 50)
     private String name;
 
     @Column(nullable = false)
@@ -50,33 +46,29 @@ public class Court extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Texture texture;
 
-
     //Court - Reservation 양방향 매핑
     @OneToMany(mappedBy = "court")
-    private List<Reservation> reservations=new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "new_court_id", referencedColumnName = "id")
+    private NewCourt newCourt;
 
     public void addReservation(Reservation reservation) {
         reservations.add(reservation);
     }
+
     public void removeReservation(Reservation reservation) {
         reservations.remove(reservation);
     }
 
     public Court(String name, double latitude, double longitude, String image, int basketCount, Texture texture) {
-        this.name=name;
-        this.latitude=latitude;
-        this.longitude=longitude;
-        this.image=image;
-        this.basketCount=basketCount;
-        this.texture=texture;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.image = image;
+        this.basketCount = basketCount;
+        this.texture = texture;
     }
-
-
-    // Court - Favorte 양방향 매핑
-
-
-
-
-
 
 }
