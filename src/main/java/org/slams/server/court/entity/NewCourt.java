@@ -2,6 +2,7 @@ package org.slams.server.court.entity;
 
 import lombok.*;
 import org.slams.server.common.BaseEntity;
+import org.slams.server.user.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,10 +41,18 @@ public class NewCourt extends BaseEntity {
     @Column(nullable = false)
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "proposer_id", nullable = false, referencedColumnName = "id")
+    private User proposer;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "supervisor_id", referencedColumnName = "id")
+    private User supervisor;
+
     @Builder
     public NewCourt(LocalDateTime createdAt, LocalDateTime updateAt,
                     Long id, String name, double latitude, double longitude, String image,
-                    int basketCount, Texture texture, Status status) {
+                    int basketCount, Texture texture, Status status, User proposer) {
         super(createdAt, updateAt);
         this.id = id;
         this.name = name;
@@ -53,6 +62,7 @@ public class NewCourt extends BaseEntity {
         this.basketCount = basketCount;
         this.texture = texture;
         this.status = status;
+        this.proposer = proposer;
     }
 
     @PrePersist
@@ -60,12 +70,14 @@ public class NewCourt extends BaseEntity {
         this.status = this.status == null ? Status.READY : this.status;
     }
 
-    public void acceptNewCourt(){
+    public void acceptNewCourt(User supervisor){
         this.status = Status.ACCEPT;
+        this.supervisor = supervisor;
     }
 
-    public void denyNewCourt(){
+    public void denyNewCourt(User supervisor){
         this.status = Status.DENY;
+        this.supervisor = supervisor;
     }
 
 }

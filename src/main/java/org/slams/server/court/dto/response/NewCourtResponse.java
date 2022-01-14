@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NewCourtResponse {
 
-	private Long newCourtId;
-	private String courtName;
+	private Long id;
+	private String name;
 	private double latitude;
 	private double longitude;
 	private String image;
@@ -24,11 +24,11 @@ public class NewCourtResponse {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	private NewCourtResponse(Long newCourtId, String courtName, double latitude, double longitude,
+	private NewCourtResponse(Long id, String name, double latitude, double longitude,
 							 String image, Texture texture, int basketCount, Status status,
 							 LocalDateTime createdAt, LocalDateTime updatedAt) {
-		this.newCourtId = newCourtId;
-		this.courtName = courtName;
+		this.id = id;
+		this.name = name;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.image = image;
