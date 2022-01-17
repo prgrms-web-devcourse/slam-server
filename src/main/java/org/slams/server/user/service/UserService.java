@@ -16,7 +16,6 @@ import org.slams.server.notification.entity.NotificationIndex;
 import org.slams.server.notification.entity.NotificationType;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
-import org.slams.server.user.dto.request.ProfileImageRequest;
 import org.slams.server.user.dto.response.*;
 import org.slams.server.user.entity.User;
 import org.slams.server.user.exception.SameUserException;
@@ -25,8 +24,10 @@ import org.slams.server.user.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.Notification;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -106,12 +107,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public ProfileImageResponse updateUserProfileImage(Long userId, ProfileImageRequest profileImageRequest) {
+	public ProfileImageResponse updateUserProfileImage(Long userId, MultipartFile profileImageRequest) throws IOException {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException(
 				MessageFormat.format("가입한 사용자를 찾을 수 없습니다. id : {0}", userId)));
 
-		String profileImageUrl = awsS3Uploader.upload(profileImageRequest.getProfileImage(), "profile");
+		String profileImageUrl = awsS3Uploader.upload(profileImageRequest, "profile");
 
 		String profileImage = user.updateProfileImage(profileImageUrl);
 

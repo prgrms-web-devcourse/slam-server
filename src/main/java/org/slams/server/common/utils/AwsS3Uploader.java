@@ -8,9 +8,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -21,40 +26,49 @@ public class AwsS3Uploader {
 	private final AmazonS3Client amazonS3Client;
 
 	@Value("${cloud.aws.s3.bucket}")
-	private String bucket;
+	public String bucket;  // S3 버킷 이름
 
-	public String upload(String base64, String dirName) {
-		if (base64 == null) {
-			log.info("이미지 base64가 비어있습니다. null를 반환합니다.");
-			return null;
+	public String upload(MultipartFile multipartFile, String dirName) throws IOException {
+		File uploadFile = convert(multipartFile)  // 파일 변환할 수 없으면 에러
+			.orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
+
+		return upload(uploadFile, dirName);
+	}
+
+	// S3로 파일 업로드하기
+	private String upload(File uploadFile, String dirName) {
+		String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+		String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
+		removeNewFile(uploadFile);
+		return uploadImageUrl;
+	}
+
+	// S3로 업로드
+	private String putS3(File uploadFile, String fileName) {
+		amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+		return amazonS3Client.getUrl(bucket, fileName).toString();
+	}
+
+	// 로컬에 저장된 이미지 지우기
+	private void removeNewFile(File targetFile) {
+		if (targetFile.delete()) {
+			log.info("File delete success");
+			return;
+		}
+		log.info("File delete fail");
+	}
+
+	// 로컬에 파일 업로드 하기
+	private Optional<File> convert(MultipartFile file) throws IOException {
+		File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
+		if (convertFile.createNewFile()) { // 바로 위에서 지정한 경로에 File이 생성됨 (경로가 잘못되었다면 생성 불가능)
+			try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
+				fos.write(file.getBytes());
+			}
+			return Optional.of(convertFile);
 		}
 
-		// content type 파싱
-		String[] split = base64.split(",");
-		String contentType = split[0].substring(split[0].indexOf(":") + 1, split[0].indexOf(";"));
-
-		// base64 -> byte
-		byte[] decode = Base64.getMimeDecoder().decode(split[1]);
-
-		// byte -> inputStream
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(decode);
-
-		// 메타데이터 생성
-		ObjectMetadata metadata = new ObjectMetadata();
-		metadata.setContentLength(decode.length);
-		metadata.setContentType(contentType);
-
-		// filename 지정
-		String fileName = dirName + "/" + UUID.randomUUID();
-
-		// s3 업로드
-		amazonS3Client.putObject(
-			new PutObjectRequest(bucket, fileName, inputStream, metadata)
-				.withCannedAcl(CannedAccessControlList.PublicRead)
-		);
-
-		log.info("이미지가 S3에 정상적으로 업로드되었습니다.");
-		return amazonS3Client.getUrl(bucket, fileName).toString();
+		return Optional.empty();
 	}
 
 }
