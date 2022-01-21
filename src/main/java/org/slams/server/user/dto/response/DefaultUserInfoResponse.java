@@ -18,40 +18,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultUserInfoResponse {
 
-	private Long userId;
-	private String email;
-	private String nickname;
-	private String profileImage;
-	private String description;
-	private Role role;
-	private Proficiency proficiency;
-	private List<Position> positions;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	private UserResponse user;
 	private List<NotificationResponse> notifications;
 
-	public DefaultUserInfoResponse(Long userId, String email, String nickname,
-								   String profileImage, String description, Role role,
-								   Proficiency proficiency, List<Position> positions,
-								   LocalDateTime createdAt, LocalDateTime updatedAt,
-								   List<NotificationResponse> notifications) {
-		this.userId = userId;
-		this.email = email;
-		this.nickname = nickname;
-		this.profileImage = profileImage;
-		this.description = description;
-		this.role = role;
-		this.proficiency = proficiency;
-		this.positions = positions;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
+	private DefaultUserInfoResponse(UserResponse user, List<NotificationResponse> notifications) {
+		this.user = user;
 		this.notifications = notifications;
 	}
 
 	public static DefaultUserInfoResponse toResponse(User user, List<NotificationResponse> notifications) {
-		return new DefaultUserInfoResponse(user.getId(), user.getEmail(), user.getNickname(), user.getProfileImage(),
-			user.getDescription(), user.getRole(), user.getProficiency(), user.getPositions(),
-			user.getCreatedAt(), user.getUpdateAt(), notifications);
+		return new DefaultUserInfoResponse(UserResponse.toResponse(user), notifications);
 	}
 
 }
