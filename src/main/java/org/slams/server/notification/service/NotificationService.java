@@ -11,7 +11,7 @@ import org.slams.server.notification.dto.request.FollowNotificationRequest;
 import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
 import org.slams.server.notification.dto.request.UpdateIsClickedStatusRequest;
 import org.slams.server.notification.dto.response.NotificationResponse;
-import org.slams.server.notification.entity.LoudSpeakerNotification;
+import org.slams.server.notification.entity.LoudSpeaker;
 import org.slams.server.notification.entity.NotificationIndex;
 import org.slams.server.notification.repository.FollowNotificationRepository;
 import org.slams.server.notification.repository.LoudSpeakerNotificationRepository;
@@ -59,7 +59,7 @@ public class NotificationService {
                 .findById(request.getCourtId())
                 .orElseThrow(() -> new CourtNotFoundException("해당 코트가 존재하지 않습니다."));
 
-        LoudSpeakerNotification loudSpeakerNotification = LoudSpeakerNotification.of(
+        LoudSpeaker loudSpeakerNotification = LoudSpeaker.of(
                 court,
                 request.getStartTime(),
                 userId

@@ -1,14 +1,11 @@
 package org.slams.server.notification.entity;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
 
 import javax.persistence.*;
-
-import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -35,7 +32,7 @@ public class NotificationIndex extends BaseEntity {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "loudspeaker_noti_id", referencedColumnName = "id")
-    private LoudSpeakerNotification loudSpeakerNotification;
+    private LoudSpeaker loudSpeakerNotification;
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
@@ -57,7 +54,7 @@ public class NotificationIndex extends BaseEntity {
         this.checkCreatorId = checkCreatorId;
     }
 
-    private NotificationIndex(Long userId, LoudSpeakerNotification loudSpeakerNotification){
+    private NotificationIndex(Long userId, LoudSpeaker loudSpeakerNotification){
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         this.userId = userId;
         this.notificationType = NotificationType.LOUDSPEAKER;
@@ -78,7 +75,7 @@ public class NotificationIndex extends BaseEntity {
         this.checkCreatorId = checkCreatorId;
     }
 
-    public NotificationIndex(Long id, Long userId, LoudSpeakerNotification loudSpeakerNotification,
+    public NotificationIndex(Long id, Long userId, LoudSpeaker loudSpeakerNotification,
                              NotificationType notificationType, boolean isRead, boolean isClicked){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
@@ -91,7 +88,7 @@ public class NotificationIndex extends BaseEntity {
         this.isClicked = isClicked;
     }
 
-    public static NotificationIndex createLoudSpeakerNoti(Long userId, LoudSpeakerNotification loudSpeakerNotification){
+    public static NotificationIndex createLoudSpeakerNoti(Long userId, LoudSpeaker loudSpeakerNotification){
         return new NotificationIndex(userId, loudSpeakerNotification);
 
     }
