@@ -5,7 +5,7 @@ import org.slams.server.notification.dto.response.CourtInfo;
 import org.slams.server.notification.dto.response.FollowerInfo;
 import org.slams.server.notification.dto.response.LoudspeakerInfo;
 import org.slams.server.notification.dto.response.NotificationResponse;
-import org.slams.server.notification.entity.NotificationIndex;
+import org.slams.server.notification.entity.Notification;
 import org.slams.server.notification.entity.NotificationType;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Component
 public class NotificationConvertor {
 
-    public List<NotificationResponse> toDtoList(List<NotificationIndex> notifications){
+    public List<NotificationResponse> toDtoList(List<Notification> notifications){
         /** null 유효성 검사 추가 **/
         // followNotificationList
 
@@ -28,7 +28,7 @@ public class NotificationConvertor {
                 .collect(Collectors.toList());
     }
 
-    public NotificationResponse toDto(NotificationIndex notification){
+    public NotificationResponse toDto(Notification notification){
         if (notification.getNotificationType().equals(NotificationType.LOUDSPEAKER)){
             return NotificationResponse.createForLoudspeakerNotification(
                     notification.getId(),

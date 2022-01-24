@@ -12,7 +12,7 @@ import org.slams.server.notification.dto.request.LoudspeakerNotificationRequest;
 import org.slams.server.notification.dto.request.UpdateIsClickedStatusRequest;
 import org.slams.server.notification.dto.response.NotificationResponse;
 import org.slams.server.notification.entity.LoudSpeaker;
-import org.slams.server.notification.entity.NotificationIndex;
+import org.slams.server.notification.entity.Notification;
 import org.slams.server.notification.repository.FollowNotificationRepository;
 import org.slams.server.notification.repository.LoudSpeakerNotificationRepository;
 import org.slams.server.notification.repository.NotificationIndexRepository;
@@ -66,7 +66,7 @@ public class NotificationService {
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
-                NotificationIndex.createLoudSpeakerNoti(userId, loudSpeakerNotificationRepository.save(loudSpeakerNotification))
+                Notification.createLoudSpeakerNoti(userId, loudSpeakerNotificationRepository.save(loudSpeakerNotification))
         ));
     }
 
@@ -84,7 +84,7 @@ public class NotificationService {
         );
 
         return notificationConvertor.toDto(notificationRepository.save(
-                NotificationIndex.createFollowNoti(request.getReceiverId(), followNotificationRepository.save(followNotification), userId)
+                Notification.createFollowNoti(request.getReceiverId(), followNotificationRepository.save(followNotification), userId)
         ));
     }
 
@@ -93,7 +93,7 @@ public class NotificationService {
         return notificationConvertor.toDtoList(cursorPageForFindAllByUserId(userId, cursorRequest));
     }
 
-    public List<NotificationIndex> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
+    public List<Notification> cursorPageForFindAllByUserId(Long userId, CursorPageRequest cursorRequest){
         PageRequest pageable = PageRequest.of(0, cursorRequest.getSize());
         return cursorRequest.getIsFirst() ?
                 notificationRepository.findAllByUserByCreated(userId, pageable) :
@@ -134,7 +134,7 @@ public class NotificationService {
         followNotificationRepository.deleteByReceiverIdAndUserId(request.getReceiverId(), userId);
     }
 
-    public NotificationIndex findByReceiverIdCreatorId(Long receiverId, Long creatorId){
+    public Notification findByReceiverIdCreatorId(Long receiverId, Long creatorId){
         return notificationRepository.findByReceiverIdAndCreatorId(receiverId, creatorId);
     }
 

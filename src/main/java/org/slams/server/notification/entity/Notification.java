@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "notification_index")
-public class NotificationIndex extends BaseEntity {
+public class Notification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -46,7 +46,7 @@ public class NotificationIndex extends BaseEntity {
     @Column
     private Long checkCreatorId ;
 
-    private NotificationIndex(Long userId, FollowNotification followNotification, Long checkCreatorId){
+    private Notification(Long userId, FollowNotification followNotification, Long checkCreatorId){
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         this.userId = userId;
         this.notificationType = NotificationType.FOLLOWING;
@@ -54,15 +54,15 @@ public class NotificationIndex extends BaseEntity {
         this.checkCreatorId = checkCreatorId;
     }
 
-    private NotificationIndex(Long userId, LoudSpeaker loudSpeakerNotification){
+    private Notification(Long userId, LoudSpeaker loudSpeakerNotification){
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         this.userId = userId;
         this.notificationType = NotificationType.LOUDSPEAKER;
         this.loudSpeakerNotification = loudSpeakerNotification;
     }
 
-    public NotificationIndex(Long id, Long userId, FollowNotification followNotification,
-                             NotificationType notificationType, boolean isRead, boolean isClicked, Long checkCreatorId){
+    public Notification(Long id, Long userId, FollowNotification followNotification,
+                        NotificationType notificationType, boolean isRead, boolean isClicked, Long checkCreatorId){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
@@ -75,8 +75,8 @@ public class NotificationIndex extends BaseEntity {
         this.checkCreatorId = checkCreatorId;
     }
 
-    public NotificationIndex(Long id, Long userId, LoudSpeaker loudSpeakerNotification,
-                             NotificationType notificationType, boolean isRead, boolean isClicked){
+    public Notification(Long id, Long userId, LoudSpeaker loudSpeakerNotification,
+                        NotificationType notificationType, boolean isRead, boolean isClicked){
         checkArgument(id != null, "id는 null을 허용하지 않습니다.");
         checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
         checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
@@ -88,13 +88,13 @@ public class NotificationIndex extends BaseEntity {
         this.isClicked = isClicked;
     }
 
-    public static NotificationIndex createLoudSpeakerNoti(Long userId, LoudSpeaker loudSpeakerNotification){
-        return new NotificationIndex(userId, loudSpeakerNotification);
+    public static Notification createLoudSpeakerNoti(Long userId, LoudSpeaker loudSpeakerNotification){
+        return new Notification(userId, loudSpeakerNotification);
 
     }
 
-    public static NotificationIndex createFollowNoti(Long userId, FollowNotification followNotification, Long checkCreatorId){
-        return new NotificationIndex(userId, followNotification, checkCreatorId);
+    public static Notification createFollowNoti(Long userId, FollowNotification followNotification, Long checkCreatorId){
+        return new Notification(userId, followNotification, checkCreatorId);
     }
 
 
