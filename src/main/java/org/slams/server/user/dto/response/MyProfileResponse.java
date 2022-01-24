@@ -17,18 +17,18 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MyProfileResponse {
 
-	private UserResponse user;
+	private DefaultUserDto user;
 	private Long followerCount;
 	private Long followingCount;
 
-	private MyProfileResponse(UserResponse user, Long followerCount, Long followingCount) {
+	private MyProfileResponse(DefaultUserDto user, Long followerCount, Long followingCount) {
 		this.user = user;
 		this.followerCount = followerCount;
 		this.followingCount = followingCount;
 	}
 
 	public static MyProfileResponse toResponse(User user, Long followerCount, Long followingCount) {
-		return new MyProfileResponse(UserResponse.toResponse(user), followerCount, followingCount);
+		return new MyProfileResponse(DefaultUserDto.toDto(user), followerCount, followingCount);
 	}
 
 }
