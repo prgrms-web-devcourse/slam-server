@@ -5,13 +5,10 @@ import org.slams.server.notification.dto.response.CourtInfo;
 import org.slams.server.notification.dto.response.FollowerInfo;
 import org.slams.server.notification.dto.response.LoudspeakerInfo;
 import org.slams.server.notification.dto.response.NotificationResponse;
-import org.slams.server.notification.entity.FollowNotification;
-import org.slams.server.notification.entity.LoudSpeakerNotification;
 import org.slams.server.notification.entity.NotificationIndex;
 import org.slams.server.notification.entity.NotificationType;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
