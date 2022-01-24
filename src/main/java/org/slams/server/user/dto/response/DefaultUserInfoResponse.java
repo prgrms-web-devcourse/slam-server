@@ -18,16 +18,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DefaultUserInfoResponse {
 
-	private UserResponse user;
+	private DefaultUserDto user;
 	private List<NotificationResponse> notifications;
 
-	private DefaultUserInfoResponse(UserResponse user, List<NotificationResponse> notifications) {
+	private DefaultUserInfoResponse(DefaultUserDto user, List<NotificationResponse> notifications) {
 		this.user = user;
 		this.notifications = notifications;
 	}
 
 	public static DefaultUserInfoResponse toResponse(User user, List<NotificationResponse> notifications) {
-		return new DefaultUserInfoResponse(UserResponse.toResponse(user), notifications);
+		return new DefaultUserInfoResponse(DefaultUserDto.toDto(user), notifications);
 	}
 
 }
