@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
+import org.slams.server.follow.entity.Follow;
+import org.slams.server.notification.common.ValidationMessage;
 
 import javax.persistence.*;
 
@@ -16,7 +18,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "notification_index")
+@Table(name = "notification")
 public class Notification extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,15 +29,15 @@ public class Notification extends BaseEntity {
     private Long userId;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "follow_noti_id", referencedColumnName = "id")
-    private FollowNotification followNotification;
+    @JoinColumn(name = "follow_id", referencedColumnName = "id")
+    private Follow follow;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "loudspeaker_noti_id", referencedColumnName = "id")
-    private LoudSpeaker loudSpeakerNotification;
+    @JoinColumn(name = "loudspeaker_id", referencedColumnName = "id")
+    private LoudSpeaker loudSpeaker;
 
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    private NotificationType type;
 
     @Column(columnDefinition = "boolean default false")
     private boolean isRead;
@@ -43,58 +45,47 @@ public class Notification extends BaseEntity {
     @Column(columnDefinition = "boolean default false")
     private boolean isClicked;
 
-    @Column
-    private Long checkCreatorId ;
-
-    private Notification(Long userId, FollowNotification followNotification, Long checkCreatorId){
-        checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
-        this.userId = userId;
-        this.notificationType = NotificationType.FOLLOWING;
-        this.followNotification = followNotification;
-        this.checkCreatorId = checkCreatorId;
-    }
-
-    private Notification(Long userId, LoudSpeaker loudSpeakerNotification){
-        checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
-        this.userId = userId;
-        this.notificationType = NotificationType.LOUDSPEAKER;
-        this.loudSpeakerNotification = loudSpeakerNotification;
-    }
-
-    public Notification(Long id, Long userId, FollowNotification followNotification,
-                        NotificationType notificationType, boolean isRead, boolean isClicked, Long checkCreatorId){
-        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
-        checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
-        checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
+    public Notification(Long id,
+                        Long userId,
+                        Follow follow,
+                        LoudSpeaker loudSpeaker,
+                        NotificationType type,
+                        boolean isRead,
+                        boolean isClicked){
+        checkArgument(id != null, ValidationMessage.NOTNULL_ID);
+        checkArgument(userId != null, ValidationMessage.NOTNULL_USERID);
+        checkArgument(type != null, ValidationMessage.NOTNULL_NOTIFICATION_TYPE);
         this.id = id;
         this.userId = userId;
-        this.followNotification = followNotification;
-        this.notificationType = notificationType;
-        this.isRead = isRead;
-        this.isClicked = isClicked;
-        this.checkCreatorId = checkCreatorId;
-    }
-
-    public Notification(Long id, Long userId, LoudSpeaker loudSpeakerNotification,
-                        NotificationType notificationType, boolean isRead, boolean isClicked){
-        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
-        checkArgument(userId != null, "userId는 null을 허용하지 않습니다.");
-        checkArgument(notificationType != null, "notificationType 정보는 null을 허용하지 않습니다.");
-        this.id = id;
-        this.userId = userId;
-        this.loudSpeakerNotification = loudSpeakerNotification;
-        this.notificationType = notificationType;
+        this.follow = follow;
+        this.loudSpeaker = loudSpeaker;
         this.isRead = isRead;
         this.isClicked = isClicked;
     }
 
-    public static Notification createLoudSpeakerNoti(Long userId, LoudSpeaker loudSpeakerNotification){
-        return new Notification(userId, loudSpeakerNotification);
+    private Notification(
+            Long userId,
+            Follow follow,
+            LoudSpeaker loudSpeaker,
+            NotificationType type
+    ){
+        checkArgument(id != null, ValidationMessage.NOTNULL_ID);
+        checkArgument(userId != null, ValidationMessage.NOTNULL_USERID);
+        checkArgument(type != null, ValidationMessage.NOTNULL_NOTIFICATION_TYPE);
+        this.userId = userId;
+        this.follow = follow;
+        this.loudSpeaker = loudSpeaker;
+        this.type = type;
+    }
+
+
+    public static Notification createLoudSpeaker(Long userId, LoudSpeaker loudSpeaker){
+        return new Notification(userId, null, loudSpeaker, NotificationType.LOUDSPEAKER);
 
     }
 
-    public static Notification createFollowNoti(Long userId, FollowNotification followNotification, Long checkCreatorId){
-        return new Notification(userId, followNotification, checkCreatorId);
+    public static Notification createFollow(Long userId,  Follow follow){
+        return new Notification(userId, follow, null, NotificationType.FOLLOW);
     }
 
 

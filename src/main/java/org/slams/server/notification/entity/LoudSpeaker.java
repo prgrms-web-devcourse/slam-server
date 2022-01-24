@@ -1,12 +1,16 @@
 package org.slams.server.notification.entity;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.slams.server.common.BaseEntity;
 import org.slams.server.court.entity.Court;
+import org.slams.server.notification.common.ValidationMessage;
+import org.slams.server.user.entity.User;
 
 import javax.persistence.*;
+
+import java.time.LocalDateTime;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -17,49 +21,69 @@ import static com.google.common.base.Preconditions.checkArgument;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "loudspeaker_notification")
-public class LoudSpeaker {
+@Table(name = "loudspeaker")
+public class LoudSpeaker extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "court_id", nullable = false, referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "court_id", referencedColumnName = "id")
     private Court court;
 
     @Column
-    private int startTime;
+    private LocalDateTime startTime;
 
     @Column
-    private Long userId;
+    private LocalDateTime endTime;
 
-    private LoudSpeaker(Court court, int startTime, Long userId){
-        checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
-        checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
-        checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
-
-        this.court = court;
-        this.startTime = startTime;
-        this.userId = userId;
-    }
-
-    @Builder
-    public LoudSpeaker(Long id, Court court, int startTime, Long userId){
-        checkArgument(id != null, "id는 null을 허용하지 않습니다.");
-        checkArgument(court != null, "court 정보는 null을 허용하지 않습니다.");
-        checkArgument(userId != null, "userId 정보는 null을 허용하지 않습니다.");
-        checkArgument(0<= startTime && startTime<25, "경기 시작시간은 0이상 24시이하만 가능합니다.");
-
+    public LoudSpeaker (
+            Long id,
+            User user,
+            Court court,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    ){
+        checkArgument(id != null, ValidationMessage.NOTNULL_ID);
+        checkArgument(user != null, ValidationMessage.NOTNULL_USER);
+        checkArgument(court != null, ValidationMessage.NOTNULL_COURT);
+        checkArgument(startTime != null, ValidationMessage.NOTNULL_START_TIME);
+        checkArgument(endTime != null, ValidationMessage.NOTNULL_END_TIME);
         this.id = id;
+        this.user = user;
         this.court = court;
         this.startTime = startTime;
-        this.userId = userId;
+        this.endTime = endTime;
     }
 
-    public static LoudSpeaker of(Court court, int startTime, Long userId){
-        return new LoudSpeaker(court, startTime, userId);
+    private LoudSpeaker(
+            User user,
+            Court court,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    ){
+        checkArgument(user != null, ValidationMessage.NOTNULL_USER);
+        checkArgument(court != null, ValidationMessage.NOTNULL_COURT);
+        checkArgument(startTime != null, ValidationMessage.NOTNULL_START_TIME);
+        checkArgument(endTime != null, ValidationMessage.NOTNULL_END_TIME);
+        this.user = user;
+        this.court = court;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-
+    public static LoudSpeaker createLoudSpeaker(
+            User user,
+            Court court,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    ){
+        return new LoudSpeaker(user, court, startTime, endTime);
+    }
 }
