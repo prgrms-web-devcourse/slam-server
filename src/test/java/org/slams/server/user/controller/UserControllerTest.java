@@ -179,85 +179,90 @@ class UserControllerTest {
 //				)
 //			));
 //	}
-
-	@Test
-	void addExtraUserInfo() throws Exception {
-		// given
-		ExtraUserInfoRequest request = ExtraUserInfoRequest.builder()
-			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.build();
-
-		ExtraUserInfoResponse response = ExtraUserInfoResponse.builder()
-			.userId(1L)
-			.email("jelly@gmail.com")
-			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
-			.profileImage("www.s3_asdfjkl.com")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
-			.build();
-
-		given(userService.addExtraUserInfo(anyLong(), any())).willReturn(response);
-
-		// when
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/myprofile")
-				.header("Authorization", jwtToken)
-				.content(objectMapper.writeValueAsString(request))
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print());
-
-		// then
-		resultActions.andExpect(status().isAccepted())
-			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("userId").value(1L))
-			.andExpect(jsonPath("email").value("jelly@gmail.com"))
-			.andExpect(jsonPath("nickname").value("젤리"))
-			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
-			.andExpect(jsonPath("profileImage").value("www.s3_asdfjkl.com"))
-			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
-			.andDo(document("users/user-addExtraUserInfo", preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				requestFields(
-					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
-					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
-					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도")
-				),
-				responseFields(
-					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
-					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-					fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
-					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
-					fieldWithPath("role").type(JsonFieldType.STRING).description("사용자 권한"),
-					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
-					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
-					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
-					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
-				)
-			));
-	}
-
+//
+//	@Test
+//	void addExtraUserInfo() throws Exception {
+//		// given
+//		ExtraUserInfoRequest request = ExtraUserInfoRequest.builder()
+//			.nickname("젤리")
+//			.description("나는 젤리가 정말 좋아")
+//			.positions(Arrays.asList(Position.SG, Position.PG))
+//			.proficiency(Proficiency.INTERMEDIATE)
+//			.build();
+//
+//		ExtraUserInfoResponse response = ExtraUserInfoResponse.builder()
+//			.userId(1L)
+//			.email("jelly@gmail.com")
+//			.nickname("젤리")
+//			.description("나는 젤리가 정말 좋아")
+//			.profileImage("www.s3_asdfjkl.com")
+//			.role(Role.USER)
+//			.positions(Arrays.asList(Position.SG, Position.PG))
+//			.proficiency(Proficiency.INTERMEDIATE)
+//			.createdAt(LocalDateTime.now())
+//			.updatedAt(LocalDateTime.now())
+//			.build();
+//
+//		given(userService.addExtraUserInfo(anyLong(), any())).willReturn(response);
+//
+//		// when
+//		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/users/myprofile")
+//				.header("Authorization", jwtToken)
+//				.content(objectMapper.writeValueAsString(request))
+//				.contentType(MediaType.APPLICATION_JSON))
+//			.andDo(print());
+//
+//		// then
+//		resultActions.andExpect(status().isAccepted())
+//			.andExpect(content().contentType("application/json;charset=UTF-8"))
+//			.andExpect(jsonPath("userId").value(1L))
+//			.andExpect(jsonPath("email").value("jelly@gmail.com"))
+//			.andExpect(jsonPath("nickname").value("젤리"))
+//			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
+//			.andExpect(jsonPath("profileImage").value("www.s3_asdfjkl.com"))
+//			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
+//			.andDo(document("users/user-addExtraUserInfo", preprocessRequest(prettyPrint()),
+//				preprocessResponse(prettyPrint()),
+//				requestFields(
+//					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+//					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+//					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+//					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도")
+//				),
+//				responseFields(
+//					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+//					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+//					fieldWithPath("email").type(JsonFieldType.STRING).description("사용자 이메일"),
+//					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+//					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+//					fieldWithPath("role").type(JsonFieldType.STRING).description("사용자 권한"),
+//					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+//					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+//					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+//					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+//				)
+//			));
+//	}
+//
 	@Test
 	void getMyInfo() throws Exception {
 		// given
-		MyProfileResponse response = MyProfileResponse.builder()
-			.userId(1L)
+		User user = User.builder()
+			.id(1L)
+			.email("jelly@gmail.com")
 			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
-			.profileImage("s3에 저장된 프로필 이미지 url")
+			.profileImage("s3에 저장된 이미지 url")
+			.description("한줄 소개")
+			.role(Role.USER)
+			.proficiency(Proficiency.BEGINNER)
 			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.followerCount(325L)
-			.followingCount(118L)
 			.createdAt(LocalDateTime.now())
 			.updatedAt(LocalDateTime.now())
+			.build();
+		MyProfileResponse response = MyProfileResponse.builder()
+			.user(DefaultUserDto.toDto(user))
+			.followerCount(325L)
+			.followingCount(118L)
 			.build();
 
 		given(userService.getMyInfo(anyLong())).willReturn(response);
@@ -271,111 +276,114 @@ class UserControllerTest {
 		// then
 		resultActions.andExpect(status().isOk())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("userId").value(1L))
-			.andExpect(jsonPath("nickname").value("젤리"))
-			.andExpect(jsonPath("description").value("나는 젤리가 정말 좋아"))
-			.andExpect(jsonPath("profileImage").value("s3에 저장된 프로필 이미지 url"))
-			.andExpect(jsonPath("proficiency").value("INTERMEDIATE"))
+			.andExpect(jsonPath("user.id").value(1L))
+			.andExpect(jsonPath("user.nickname").value("젤리"))
+			.andExpect(jsonPath("user.description").value("한줄 소개"))
+			.andExpect(jsonPath("user.profileImage").value("s3에 저장된 이미지 url"))
+			.andExpect(jsonPath("user.proficiency").value("BEGINNER"))
 			.andExpect(jsonPath("followerCount").value(325L))
 			.andExpect(jsonPath("followingCount").value(118L))
 			.andDo(document("users/user-getMyInfo", preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
 				responseFields(
-					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
-					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
-					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
-					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
-					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자"),
+					fieldWithPath("user.id").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+					fieldWithPath("user.email").type(JsonFieldType.STRING).description("사용자 이메일"),
+					fieldWithPath("user.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+					fieldWithPath("user.description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+					fieldWithPath("user.profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+					fieldWithPath("user.role").type(JsonFieldType.STRING).description("사용자 권한"),
+					fieldWithPath("user.positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+					fieldWithPath("user.proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("user.createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+					fieldWithPath("user.updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간"),
 					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
-					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
-					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
-					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수")
 				)
 			));
 	}
-
-	@Test
-	void getUserInfo() throws Exception {
-		// given
-		User user = User.builder()
-			.id(1L)
-			.email("jelly@gmail.com")
-			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
-			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
-			.build();
-		Court court1 = Court.builder()
-			.id(1L)
-			.name("관악구민운동장 농구장")
-			.latitude(38.987654)
-			.longitude(124.309472)
-			.image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
-			.texture(Texture.ASPHALT)
-			.basketCount(2)
-			.build();
-		Court court2 = Court.builder()
-			.id(2L)
-			.name("용산구민운동장 농구장")
-			.latitude(37.987654)
-			.longitude(125.309472)
-			.image("aHR0cHM6Ly9pYmIuY28v123g")
-			.texture(Texture.ASPHALT)
-			.basketCount(4)
-			.build();
-
-		List<FavoriteCourtResponse> favoriteCourts = List.of(
-			new FavoriteCourtResponse(court1.getId(), court1.getName()),
-			new FavoriteCourtResponse(court2.getId(), court2.getName()));
-
-		Long followerCount = 325L;
-		Long followingCount = 129L;
-
-		UserProfileResponse response = UserProfileResponse.toResponse(user, true, followerCount, followingCount, favoriteCourts);
-
-		given(userService.getUserInfo(anyLong(), anyLong())).willReturn(response);
-
-		// when
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/{userId}", user.getId())
-				.header("Authorization", jwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print());
-
-		// then
-		resultActions.andExpect(status().isOk())
-			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("userId").value(user.getId()))
-			.andExpect(jsonPath("nickname").value(user.getNickname()))
-			.andExpect(jsonPath("description").value(user.getDescription()))
-			.andExpect(jsonPath("profileImage").value(user.getProfileImage()))
-			.andExpect(jsonPath("proficiency").value(user.getProficiency().toString()))
-			.andExpect(jsonPath("followerCount").value(followerCount))
-			.andExpect(jsonPath("followingCount").value(followingCount))
-			.andDo(document("users/user-getUserInfo", preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
-					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
-					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
-					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
-					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
-					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
-					fieldWithPath("isFollowing").type(JsonFieldType.BOOLEAN).description("팔로우 여부"),
-					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
-					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
-					fieldWithPath("favoriteCourts").type(JsonFieldType.ARRAY).description("즐겨찾기한 농구장 목록"),
-					fieldWithPath("favoriteCourts[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기한 농구장 구별키"),
-					fieldWithPath("favoriteCourts[].courtName").type(JsonFieldType.STRING).description("즐겨찾기한 농구장 이름"),
-					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
-					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
-				)
-			));
-	}
+//
+//	@Test
+//	void getUserInfo() throws Exception {
+//		// given
+//		User user = User.builder()
+//			.id(1L)
+//			.email("jelly@gmail.com")
+//			.nickname("젤리")
+//			.description("나는 젤리가 정말 좋아")
+//			.profileImage("s3에 저장된 프로필 이미지 url")
+//			.role(Role.USER)
+//			.positions(Arrays.asList(Position.SG, Position.PG))
+//			.proficiency(Proficiency.INTERMEDIATE)
+//			.createdAt(LocalDateTime.now())
+//			.updatedAt(LocalDateTime.now())
+//			.build();
+//		Court court1 = Court.builder()
+//			.id(1L)
+//			.name("관악구민운동장 농구장")
+//			.latitude(38.987654)
+//			.longitude(124.309472)
+//			.image("aHR0cHM6Ly9pYmIuY28vcXMwSnZXYg")
+//			.texture(Texture.ASPHALT)
+//			.basketCount(2)
+//			.build();
+//		Court court2 = Court.builder()
+//			.id(2L)
+//			.name("용산구민운동장 농구장")
+//			.latitude(37.987654)
+//			.longitude(125.309472)
+//			.image("aHR0cHM6Ly9pYmIuY28v123g")
+//			.texture(Texture.ASPHALT)
+//			.basketCount(4)
+//			.build();
+//
+//		List<FavoriteCourtResponse> favoriteCourts = List.of(
+//			new FavoriteCourtResponse(court1.getId(), court1.getName()),
+//			new FavoriteCourtResponse(court2.getId(), court2.getName()));
+//
+//		Long followerCount = 325L;
+//		Long followingCount = 129L;
+//
+//		UserProfileResponse response = UserProfileResponse.toResponse(user, true, followerCount, followingCount, favoriteCourts);
+//
+//		given(userService.getUserInfo(anyLong(), anyLong())).willReturn(response);
+//
+//		// when
+//		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/users/{userId}", user.getId())
+//				.header("Authorization", jwtToken)
+//				.contentType(MediaType.APPLICATION_JSON))
+//			.andDo(print());
+//
+//		// then
+//		resultActions.andExpect(status().isOk())
+//			.andExpect(content().contentType("application/json;charset=UTF-8"))
+//			.andExpect(jsonPath("userId").value(user.getId()))
+//			.andExpect(jsonPath("nickname").value(user.getNickname()))
+//			.andExpect(jsonPath("description").value(user.getDescription()))
+//			.andExpect(jsonPath("profileImage").value(user.getProfileImage()))
+//			.andExpect(jsonPath("proficiency").value(user.getProficiency().toString()))
+//			.andExpect(jsonPath("followerCount").value(followerCount))
+//			.andExpect(jsonPath("followingCount").value(followingCount))
+//			.andDo(document("users/user-getUserInfo", preprocessRequest(prettyPrint()),
+//				preprocessResponse(prettyPrint()),
+//				responseFields(
+//					fieldWithPath("userId").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+//					fieldWithPath("nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+//					fieldWithPath("description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+//					fieldWithPath("profileImage").type(JsonFieldType.STRING).description("사용자 프로필 이미지"),
+//					fieldWithPath("positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+//					fieldWithPath("proficiency").type(JsonFieldType.STRING).description("숙련도"),
+//					fieldWithPath("isFollowing").type(JsonFieldType.BOOLEAN).description("팔로우 여부"),
+//					fieldWithPath("followerCount").type(JsonFieldType.NUMBER).description("사용자 팔로워 수"),
+//					fieldWithPath("followingCount").type(JsonFieldType.NUMBER).description("사용자 팔로잉 수"),
+//					fieldWithPath("favoriteCourts").type(JsonFieldType.ARRAY).description("즐겨찾기한 농구장 목록"),
+//					fieldWithPath("favoriteCourts[].courtId").type(JsonFieldType.NUMBER).description("즐겨찾기한 농구장 구별키"),
+//					fieldWithPath("favoriteCourts[].courtName").type(JsonFieldType.STRING).description("즐겨찾기한 농구장 이름"),
+//					fieldWithPath("createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+//					fieldWithPath("updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+//				)
+//			));
+//	}
 
 //	@Test
 //	void updateUserProfileImage() throws Exception {
@@ -405,28 +413,28 @@ class UserControllerTest {
 //			));
 //	}
 
-	@Test
-	void deleteUserProfileImage() throws Exception {
-		// given
-		ProfileImageResponse response = new ProfileImageResponse(null);
-
-		given(userService.deleteUserProfileImage(anyLong())).willReturn(response);
-
-		// when
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/myprofile/image")
-				.header("Authorization", jwtToken)
-				.contentType(MediaType.APPLICATION_JSON))
-			.andDo(print());
-
-		// then
-		resultActions.andExpect(status().isOk())
-			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andDo(document("users/user-deleteUserProfileImage", preprocessRequest(prettyPrint()),
-				preprocessResponse(prettyPrint()),
-				responseFields(
-					fieldWithPath("profileImage").type(JsonFieldType.NULL).description("사용자 프로필 이미지")
-				)
-			));
-	}
+//	@Test
+//	void deleteUserProfileImage() throws Exception {
+//		// given
+//		ProfileImageResponse response = new ProfileImageResponse(null);
+//
+//		given(userService.deleteUserProfileImage(anyLong())).willReturn(response);
+//
+//		// when
+//		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/myprofile/image")
+//				.header("Authorization", jwtToken)
+//				.contentType(MediaType.APPLICATION_JSON))
+//			.andDo(print());
+//
+//		// then
+//		resultActions.andExpect(status().isOk())
+//			.andExpect(content().contentType("application/json;charset=UTF-8"))
+//			.andDo(document("users/user-deleteUserProfileImage", preprocessRequest(prettyPrint()),
+//				preprocessResponse(prettyPrint()),
+//				responseFields(
+//					fieldWithPath("profileImage").type(JsonFieldType.NULL).description("사용자 프로필 이미지")
+//				)
+//			));
+//	}
 
 }
