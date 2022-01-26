@@ -41,7 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers("/assets/**", "/h2-console/**");
+		web.ignoring().antMatchers("/assets/**", "/h2-console/**",
+			"/swagger-ui.html/**", "/configuration/**", "/swagger-resources/**", "/v2/api-docs",
+			"/webjars/**", "/webjars/springfox-swagger-ui/*.{js,css}");
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			 * Jwt 필터
 			 */
 			.addFilterAfter(jwtAuthenticationFilter(), SecurityContextPersistenceFilter.class)
-			//.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+		//.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
 		;
 	}
 
