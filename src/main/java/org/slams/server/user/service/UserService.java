@@ -114,9 +114,9 @@ public class UserService {
 
 		String profileImageUrl = awsS3Uploader.upload(profileImageRequest, "profile");
 
-		String profileImage = user.updateProfileImage(profileImageUrl);
+		user.updateProfileImage(profileImageUrl);
 
-		return new ProfileImageResponse(profileImage);
+		return ProfileImageResponse.toResponse(user);
 	}
 
 	@Transactional
@@ -128,7 +128,7 @@ public class UserService {
 
 		user.deleteProfileImage();
 
-		return new ProfileImageResponse(null);
+		return ProfileImageResponse.toResponse(user);
 	}
 
 }
