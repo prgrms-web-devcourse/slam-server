@@ -78,7 +78,7 @@ public class LoudSpeaker extends BaseEntity {
         this.endTime = endTime;
     }
 
-    public static LoudSpeaker createLoudSpeaker(
+    public static LoudSpeaker of(
             User user,
             Court court,
             LocalDateTime startTime,
