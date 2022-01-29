@@ -79,7 +79,7 @@ public class ChatContentsService {
                 .orElseThrow(() -> new UserNotFoundException("해당 작성자는 존재하지 않는 사용자입니다."));
 
         ChatLoudSpeakerContent chatLoudSpeakerContent = chatLoudSpeakerContentRepository.save(
-                ChatLoudSpeakerContent.of(request.getStartTime())
+                ChatLoudSpeakerContent.of(request.getStartTime().getHour())
         );
         ChatContents chatContents = ChatContents.createLoudspeakerContent(
                 ChatContentType.LOUDSPEAKER,
