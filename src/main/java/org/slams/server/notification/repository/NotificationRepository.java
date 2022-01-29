@@ -1,6 +1,7 @@
 package org.slams.server.notification.repository;
 
 import org.slams.server.notification.entity.Notification;
+import org.slams.server.notification.entity.NotificationType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by yunyun on 2021/12/08.
  */
 
-public interface NotificationIndexRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     @Query("SELECT a.id FROM Notification a WHERE a.userId =:userId AND a.id < :lastId ORDER BY a.createdAt desc")
     List<Long> findIdByUserLessThanAlarmIdByCreated(
@@ -60,16 +61,16 @@ public interface NotificationIndexRepository extends JpaRepository<Notification,
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM Notification n WHERE n.checkCreatorId=:userId AND n.userId=:receiverId")
-    void deleteByReceiverIdAndUserId(
+    @Query("DELETE FROM Notification n WHERE n.follow.follower.id=:sendId AND n.userId=:receiverId AND n.type='FOLLOW'")
+    void deleteByReceiverIdAndSendIdOnFollowNotification(
             @Param("receiverId") Long receiverId,
-            @Param("userId") Long userId
-    );
+            @Param("sendId") Long sendId
+            );
 
-    @Query("SELECT n FROM Notification n WHERE n.checkCreatorId=:creatorId AND n.userId=:receiverId")
-    Notification findByReceiverIdAndCreatorId(
-            @Param("receiverId") Long receiverId,
-            @Param("creatorId") Long creatorId
-    );
+//    @Query("SELECT n FROM Notification n WHERE n.checkCreatorId=:creatorId AND n.userId=:receiverId")
+//    Notification findByReceiverIdAndCreatorId(
+//            @Param("receiverId") Long receiverId,
+//            @Param("creatorId") Long creatorId
+//    );
 
 }
