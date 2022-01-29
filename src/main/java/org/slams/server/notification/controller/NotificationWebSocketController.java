@@ -105,21 +105,21 @@ public class NotificationWebSocketController {
             LoudspeakerNotificationRequest request,
             SimpMessageHeaderAccessor headerAccessor
     ){
-        Long userId = websocketUtil.findTokenFromHeader(headerAccessor);
-        List<Long> bookerIds = reservationRepository.findBeakerIdByCourtId(request.getCourtId());
+        Long sendId = websocketUtil.findTokenFromHeader(headerAccessor);
+        List<Long> receiverIds = reservationRepository.findBeakerIdByCourtId(request.getCourtId());
 
-        for (Long bookId : bookerIds){
-            if (bookId.equals(userId)){
+        for (Long receiverId : receiverIds){
+            if (receiverId.equals(sendId)){
                 continue;
             }
-            NotificationResponse notification = notificationService.saveForLoudSpeakerNotification(request, bookId);
+            NotificationResponse notification = notificationService.saveForLoudSpeakerNotification(request, receiverId, sendId);
             websocket.convertAndSend(
-                    String.format("/user/%d/notification", bookId),
+                    String.format("/user/%d/notification", receiverId),
                     notification
             );
         }
 
-        ChatContentsResponse chatContentsResponse = chatContentsService.saveChatLoudSpeakerContent(request, userId);
+        ChatContentsResponse chatContentsResponse = chatContentsService.saveChatLoudSpeakerContent(request, sendId);
         websocket.convertAndSend(
                 String.format("/user/%d/chat", request.getCourtId()),
                 chatContentsResponse
