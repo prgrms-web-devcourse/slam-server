@@ -452,7 +452,8 @@ class UserControllerTest {
 					fieldWithPath("user.positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
 					fieldWithPath("user.proficiency").type(JsonFieldType.STRING).description("숙련도"),
 					fieldWithPath("user.createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
-					fieldWithPath("user.updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")				)
+					fieldWithPath("user.updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+				)
 			));
 	}
 
