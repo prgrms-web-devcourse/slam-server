@@ -8,7 +8,7 @@
 //import org.slams.server.favorite.dto.response.FavoriteInsertResponseDto;
 //import org.slams.server.favorite.entity.Favorite;
 //import org.slams.server.favorite.service.FavoriteService;
-//import org.slams.server.follow.dto.FollowerResponse;
+//import org.slams.server.follow.dto.response.FollowerResponse;
 //import org.slams.server.reservation.service.ReservationService;
 //import org.slams.server.user.entity.Position;
 //import org.slams.server.user.entity.Proficiency;

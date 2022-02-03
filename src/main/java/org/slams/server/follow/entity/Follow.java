@@ -1,14 +1,13 @@
 package org.slams.server.follow.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.common.BaseEntity;
 import org.slams.server.user.entity.User;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +29,14 @@ public class Follow extends BaseEntity {
 
 	private Follow(User follower, User following) {
 		super();
+		this.follower = follower;
+		this.following = following;
+	}
+
+	@Builder
+	public Follow(Long id, User follower, User following) {
+		super();
+		this.id = id;
 		this.follower = follower;
 		this.following = following;
 	}
