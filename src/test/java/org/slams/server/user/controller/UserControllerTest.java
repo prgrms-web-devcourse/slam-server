@@ -218,7 +218,7 @@ class UserControllerTest {
 		// then
 		resultActions.andExpect(status().isAccepted())
 			.andExpect(content().contentType("application/json;charset=UTF-8"))
-			.andExpect(jsonPath("user.id").value(1L))
+			.andExpect(jsonPath("user.id").value("1"))
 			.andExpect(jsonPath("user.email").value("jelly@gmail.com"))
 			.andExpect(jsonPath("user.nickname").value("젤리"))
 			.andExpect(jsonPath("user.description").value("나는 젤리가 정말 좋아"))
@@ -234,7 +234,7 @@ class UserControllerTest {
 				),
 				responseFields(
 					fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자"),
-					fieldWithPath("user.id").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+					fieldWithPath("user.id").type(JsonFieldType.STRING).description("사용자 구별키"),
 					fieldWithPath("user.email").type(JsonFieldType.STRING).description("사용자 이메일"),
 					fieldWithPath("user.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
 					fieldWithPath("user.description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
