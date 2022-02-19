@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### slam ###
+*.yml
+*.yaml
+*.properties
+
+# dummy data 엑셀
+*.xlsx
