@@ -5,13 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.common.api.CursorPageResponse;
-import org.slams.server.follow.dto.FollowerResponse;
-import org.slams.server.follow.dto.FollowingResponse;
+import org.slams.server.follow.dto.response.FollowerResponse;
+import org.slams.server.follow.dto.response.FollowingResponse;
 import org.slams.server.follow.entity.Follow;
 import org.slams.server.follow.service.FollowService;
-import org.slams.server.user.entity.Position;
-import org.slams.server.user.entity.Proficiency;
-import org.slams.server.user.entity.Role;
 import org.slams.server.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -30,7 +27,6 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -89,46 +85,37 @@ class FollowControllerTest {
 
 		User user1 = User.builder()
 			.id(1L)
-			.email("jelly@gmail.com")
 			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
 			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
 		User user2 = User.builder()
 			.id(2L)
-			.email("chocolate@gmail.com")
 			.nickname("초코")
-			.description("나는 초코가 정말 좋아")
 			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.C))
-			.proficiency(Proficiency.BEGINNER)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
 		User user3 = User.builder()
 			.id(3L)
 			.email("candy@gmail.com")
 			.nickname("캔디")
-			.description("나는 캔디가 정말 좋아")
-			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.PF, Position.C))
-			.proficiency(Proficiency.MASTER)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
-		Follow follow1 = Follow.of(user1, user2);
-		Follow follow2 = Follow.of(user3, user2);
+		Follow follow1 = Follow.builder()
+			.id(1L)
+			.follower(user1)
+			.following(user2)
+			.build();
+		follow1.setCreatedAt(LocalDateTime.now());
+		follow1.setUpdateAt(LocalDateTime.now());
+		Follow follow2 = Follow.builder()
+			.id(2L)
+			.follower(user3)
+			.following(user2)
+			.build();
+		follow2.setCreatedAt(LocalDateTime.now());
+		follow2.setUpdateAt(LocalDateTime.now());
 
 		List<FollowerResponse> followerList = List.of(
-			FollowerResponse.toResponse(2L, user3, LocalDateTime.now(), LocalDateTime.now()),
-			FollowerResponse.toResponse(1L, user1, LocalDateTime.now(), LocalDateTime.now())
+			FollowerResponse.toResponse(follow2),
+			FollowerResponse.toResponse(follow1)
 		);
 
 		CursorPageResponse<List<FollowerResponse>> response = new CursorPageResponse<>(followerList, 1L);
@@ -153,14 +140,15 @@ class FollowControllerTest {
 					parameterWithName("userId").description("사용자 구별키")
 				),
 				responseFields(
-					fieldWithPath("contents").type(JsonFieldType.ARRAY).description("팔로워 목록"),
-					fieldWithPath("contents[].followId").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
-					fieldWithPath("contents[].creatorId").type(JsonFieldType.NUMBER).description("사용자(팔로워) 구별키"),
-					fieldWithPath("contents[].nickname").type(JsonFieldType.STRING).description("사용자(팔로워) 닉네임"),
-					fieldWithPath("contents[].profileImage").type(JsonFieldType.STRING).description("사용자(팔로워) 프로필 이미지"),
+					fieldWithPath("contents").type(JsonFieldType.ARRAY).description("팔로잉 목록"),
+					fieldWithPath("contents[].id").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
+					fieldWithPath("contents[].creator").type(JsonFieldType.OBJECT).description("사용자(팔로워)"),
+					fieldWithPath("contents[].creator.id").type(JsonFieldType.NUMBER).description("사용자(팔로워) 구별키"),
+					fieldWithPath("contents[].creator.nickname").type(JsonFieldType.STRING).description("사용자(팔로워) 이름"),
+					fieldWithPath("contents[].creator.profileImage").type(JsonFieldType.STRING).description("사용자(팔로워) 프로필 이미지").optional(),
 					fieldWithPath("contents[].createdAt").type(JsonFieldType.STRING).description("팔로우 최초 생성시간"),
 					fieldWithPath("contents[].updatedAt").type(JsonFieldType.STRING).description("팔로우 최근 수정시간"),
-					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키")
+					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키").optional()
 				)
 			));
 	}
@@ -172,46 +160,37 @@ class FollowControllerTest {
 
 		User user1 = User.builder()
 			.id(1L)
-			.email("jelly@gmail.com")
 			.nickname("젤리")
-			.description("나는 젤리가 정말 좋아")
 			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.SG, Position.PG))
-			.proficiency(Proficiency.INTERMEDIATE)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
 		User user2 = User.builder()
 			.id(2L)
-			.email("chocolate@gmail.com")
 			.nickname("초코")
-			.description("나는 초코가 정말 좋아")
 			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.C))
-			.proficiency(Proficiency.BEGINNER)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
 		User user3 = User.builder()
 			.id(3L)
 			.email("candy@gmail.com")
 			.nickname("캔디")
-			.description("나는 캔디가 정말 좋아")
-			.profileImage("s3에 저장된 프로필 이미지 url")
-			.role(Role.USER)
-			.positions(Arrays.asList(Position.PF, Position.C))
-			.proficiency(Proficiency.MASTER)
-			.createdAt(LocalDateTime.now())
-			.updatedAt(LocalDateTime.now())
 			.build();
-		Follow follow1 = Follow.of(user1, user2);
-		Follow follow2 = Follow.of(user1, user3);
+		Follow follow1 = Follow.builder()
+			.id(1L)
+			.follower(user1)
+			.following(user2)
+			.build();
+		follow1.setCreatedAt(LocalDateTime.now());
+		follow1.setUpdateAt(LocalDateTime.now());
+		Follow follow2 = Follow.builder()
+			.id(2L)
+			.follower(user1)
+			.following(user3)
+			.build();
+		follow2.setCreatedAt(LocalDateTime.now());
+		follow2.setUpdateAt(LocalDateTime.now());
 
 		List<FollowingResponse> followingList = List.of(
-			FollowingResponse.toResponse(2L, user3, LocalDateTime.now(), LocalDateTime.now()),
-			FollowingResponse.toResponse(1L, user2, LocalDateTime.now(), LocalDateTime.now())
+			FollowingResponse.toResponse(follow2),
+			FollowingResponse.toResponse(follow1)
 		);
 
 		CursorPageResponse<List<FollowingResponse>> response = new CursorPageResponse<>(followingList, 1L);
@@ -237,13 +216,14 @@ class FollowControllerTest {
 				),
 				responseFields(
 					fieldWithPath("contents").type(JsonFieldType.ARRAY).description("팔로잉 목록"),
-					fieldWithPath("contents[].followId").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
-					fieldWithPath("contents[].receiverId").type(JsonFieldType.NUMBER).description("사용자(팔로잉) 구별키"),
-					fieldWithPath("contents[].nickname").type(JsonFieldType.STRING).description("사용자(팔로잉) 닉네임"),
-					fieldWithPath("contents[].profileImage").type(JsonFieldType.STRING).description("사용자(팔로잉) 프로필 이미지"),
+					fieldWithPath("contents[].id").type(JsonFieldType.NUMBER).description("팔로우 구별키"),
+					fieldWithPath("contents[].receiver").type(JsonFieldType.OBJECT).description("사용자(팔로잉)"),
+					fieldWithPath("contents[].receiver.id").type(JsonFieldType.NUMBER).description("사용자(팔로잉) 구별키"),
+					fieldWithPath("contents[].receiver.nickname").type(JsonFieldType.STRING).description("사용자(팔로잉) 이름"),
+					fieldWithPath("contents[].receiver.profileImage").type(JsonFieldType.STRING).description("사용자(팔로잉) 프로필 이미지").optional(),
 					fieldWithPath("contents[].createdAt").type(JsonFieldType.STRING).description("팔로우 최초 생성시간"),
 					fieldWithPath("contents[].updatedAt").type(JsonFieldType.STRING).description("팔로우 최근 수정시간"),
-					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키")
+					fieldWithPath("lastId").type(JsonFieldType.NUMBER).description("서버에서 제공한 마지막 데이터의 구별키").optional()
 				)
 			));
 	}

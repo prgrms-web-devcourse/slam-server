@@ -15,7 +15,6 @@ import org.slams.server.court.entity.Texture;
 import org.slams.server.court.repository.CourtRepository;
 import org.slams.server.court.service.CourtService;
 import org.slams.server.court.service.NewCourtService;
-import org.slams.server.follow.dto.FollowingResponse;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.response.ReservationInsertResponseDto;
 import org.slams.server.reservation.dto.response.ReservationUpcomingResponseDto;

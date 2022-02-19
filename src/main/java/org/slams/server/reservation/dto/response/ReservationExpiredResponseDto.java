@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slams.server.court.entity.Court;
-import org.slams.server.follow.dto.FollowerResponse;
 import org.slams.server.reservation.entity.Reservation;
 import java.time.LocalDateTime;
 

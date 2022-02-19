@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slams.server.common.api.CursorPageRequest;
 import org.slams.server.common.api.CursorPageResponse;
 import org.slams.server.common.api.TokenGetId;
-import org.slams.server.follow.dto.FollowerResponse;
 import org.slams.server.reservation.dto.request.ReservationInsertRequestDto;
 import org.slams.server.reservation.dto.request.ReservationUpdateRequestDto;
 import org.slams.server.reservation.dto.response.ReservationDeleteResponseDto;
