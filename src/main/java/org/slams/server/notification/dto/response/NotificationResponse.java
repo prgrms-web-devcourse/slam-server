@@ -1,7 +1,8 @@
 package org.slams.server.notification.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import org.slams.server.common.dto.Follow;
 import org.slams.server.notification.entity.NotificationType;
 
 import java.time.LocalDateTime;
@@ -13,17 +14,16 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NotificationResponse {
 
     private final Long id;
 
     private final NotificationType type;
 
-    @JsonProperty("followerInfo")
-    private final FollowerInfo followerInfo;
+    private final Follow follow;
 
-    @JsonProperty("loudspeakerInfo")
-    private final LoudspeakerInfo loudspeakerInfo;
+    private final Loudspeaker loudspeaker;
 
     private final Boolean isRead;
 
@@ -36,8 +36,8 @@ public class NotificationResponse {
     private NotificationResponse(
             Long id,
             NotificationType type,
-            FollowerInfo followerInfo,
-            LoudspeakerInfo loudspeakerInfo,
+            Follow follow,
+            Loudspeaker loudspeaker,
             boolean isRead,
             boolean isClicked,
             LocalDateTime createdAt,
@@ -45,8 +45,8 @@ public class NotificationResponse {
     ){
         this.id = id;
         this.type = type;
-        this.followerInfo = followerInfo;
-        this.loudspeakerInfo = loudspeakerInfo;
+        this.follow = follow;
+        this.loudspeaker = loudspeaker;
         this.isRead = isRead;
         this.isClicked = isClicked;
         this.createdAt = createdAt;
@@ -56,25 +56,25 @@ public class NotificationResponse {
     public static NotificationResponse createForFollowNotification(
             Long id,
             NotificationType type,
-            FollowerInfo followerInfo,
+            Follow follow,
             boolean isRead,
             boolean isClicked,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){
-        return new NotificationResponse(id, type, followerInfo, null, isRead, isClicked, createdAt, updatedAt);
+        return new NotificationResponse(id, type, follow, null, isRead, isClicked, createdAt, updatedAt);
     }
 
     public static NotificationResponse createForLoudspeakerNotification(
             Long id,
             NotificationType type,
-            LoudspeakerInfo loudspeakerInfo,
+            Loudspeaker loudspeaker,
             boolean isRead,
             boolean isClicked,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ){
-        return new NotificationResponse(id, type, null, loudspeakerInfo, isRead, isClicked, createdAt, updatedAt);
+        return new NotificationResponse(id, type, null, loudspeaker, isRead, isClicked, createdAt, updatedAt);
     }
 
 }

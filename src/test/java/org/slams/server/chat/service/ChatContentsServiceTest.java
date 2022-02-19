@@ -139,7 +139,8 @@ class ChatContentsServiceTest {
         //Given
         LoudspeakerNotificationRequest request = new LoudspeakerNotificationRequest(
                 court.getId(),
-                10,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusHours(2L),
                 reservation.getId()
                 );
         Long userId = user.getId();

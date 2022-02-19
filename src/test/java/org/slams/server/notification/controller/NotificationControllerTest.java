@@ -3,9 +3,8 @@ package org.slams.server.notification.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.slams.server.court.repository.CourtRepository;
-import org.slams.server.notification.repository.FollowNotificationRepository;
-import org.slams.server.notification.repository.LoudSpeakerNotificationRepository;
-import org.slams.server.notification.repository.NotificationIndexRepository;
+import org.slams.server.notification.repository.LoudspeakerRepository;
+import org.slams.server.notification.repository.NotificationRepository;
 import org.slams.server.notification.service.NotificationService;
 import org.slams.server.user.repository.UserRepository;
 import org.slams.server.user.service.UserService;
@@ -46,7 +45,7 @@ class NotificationControllerTest {
     ObjectMapper objectMapper;
 
     @Autowired
-    private NotificationIndexRepository notificationIndexRepository;
+    private NotificationRepository notificationIndexRepository;
 
     @Autowired
     private NotificationService notificationService;
@@ -58,10 +57,7 @@ class NotificationControllerTest {
     private UserRepository userRepository;
 
     @Autowired
-    private FollowNotificationRepository followNotificationRepository;
-
-    @Autowired
-    private LoudSpeakerNotificationRepository loudSpeakerNotificationRepository;
+    private LoudspeakerRepository loudSpeakerNotificationRepository;
 
     @Autowired
     private UserService userService;
