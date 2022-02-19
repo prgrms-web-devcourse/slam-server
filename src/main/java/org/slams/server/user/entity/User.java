@@ -111,10 +111,8 @@ public class User extends BaseEntity {
 		this.positions = positions;
 	}
 
-	public String updateProfileImage(String profileImage) {
+	public void updateProfileImage(String profileImage) {
 		this.profileImage = profileImage;
-
-		return this.profileImage;
 	}
 
 	public void deleteProfileImage() {

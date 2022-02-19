@@ -87,9 +87,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(extraUserInfoResponse);
 	}
 
+	@ApiOperation("내 프로필 이미지 수정")
 	@PutMapping("/myprofile/image")
 	public ResponseEntity<ProfileImageResponse> updateUserProfileImage(
-		HttpServletRequest request, @RequestPart("image") MultipartFile profileImageRequest) throws IOException {
+		HttpServletRequest request, @RequestPart("profileImage") MultipartFile profileImageRequest) throws IOException {
 		String authorization = request.getHeader("Authorization");
 		String[] tokenString = authorization.split(" ");
 		if (!tokenString[0].equals("Bearer")) {
@@ -103,6 +104,7 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(profileImageResponse);
 	}
 
+	@ApiOperation("내 프로필 이미지 삭제")
 	@DeleteMapping("/myprofile/image")
 	public ResponseEntity<ProfileImageResponse> deleteUserProfileImage(HttpServletRequest request) {
 		String authorization = request.getHeader("Authorization");

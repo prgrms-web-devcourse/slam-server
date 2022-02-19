@@ -417,28 +417,48 @@ class UserControllerTest {
 //			));
 //	}
 
-//	@Test
-//	void deleteUserProfileImage() throws Exception {
-//		// given
-//		ProfileImageResponse response = new ProfileImageResponse(null);
-//
-//		given(userService.deleteUserProfileImage(anyLong())).willReturn(response);
-//
-//		// when
-//		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/myprofile/image")
-//				.header("Authorization", jwtToken)
-//				.contentType(MediaType.APPLICATION_JSON))
-//			.andDo(print());
-//
-//		// then
-//		resultActions.andExpect(status().isOk())
-//			.andExpect(content().contentType("application/json;charset=UTF-8"))
-//			.andDo(document("users/user-deleteUserProfileImage", preprocessRequest(prettyPrint()),
-//				preprocessResponse(prettyPrint()),
-//				responseFields(
-//					fieldWithPath("profileImage").type(JsonFieldType.NULL).description("사용자 프로필 이미지")
-//				)
-//			));
-//	}
+	@Test
+	void deleteUserProfileImage() throws Exception {
+		// given
+		User user = User.builder()
+			.id(1L)
+			.nickname("젤리")
+			.profileImage(null)
+			.description("한줄 소개")
+			.role(Role.USER)
+			.proficiency(Proficiency.BEGINNER)
+			.positions(Arrays.asList(Position.SG, Position.PG))
+			.createdAt(LocalDateTime.now())
+			.updatedAt(LocalDateTime.now())
+			.build();
+		ProfileImageResponse response = ProfileImageResponse.toResponse(user);
+
+		given(userService.deleteUserProfileImage(anyLong())).willReturn(response);
+
+		// when
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/users/myprofile/image")
+				.header("Authorization", jwtToken)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andDo(print());
+
+		// then
+		resultActions.andExpect(status().isOk())
+			.andExpect(content().contentType("application/json;charset=UTF-8"))
+			.andDo(document("users/user-deleteUserProfileImage", preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				responseFields(
+					fieldWithPath("user").type(JsonFieldType.OBJECT).description("사용자"),
+					fieldWithPath("user.id").type(JsonFieldType.NUMBER).description("사용자 구별키"),
+					fieldWithPath("user.nickname").type(JsonFieldType.STRING).description("사용자 닉네임"),
+					fieldWithPath("user.description").type(JsonFieldType.STRING).description("사용자 한줄 소개"),
+					fieldWithPath("user.profileImage").type(JsonFieldType.NULL).description("사용자 프로필 이미지"),
+					fieldWithPath("user.role").type(JsonFieldType.STRING).description("사용자 권한"),
+					fieldWithPath("user.positions").type(JsonFieldType.ARRAY).description("선호하는 포지션들"),
+					fieldWithPath("user.proficiency").type(JsonFieldType.STRING).description("숙련도"),
+					fieldWithPath("user.createdAt").type(JsonFieldType.STRING).description("사용자 정보 최초 생성시간"),
+					fieldWithPath("user.updatedAt").type(JsonFieldType.STRING).description("사용자 정보 최근 수정시간")
+				)
+			));
+	}
 
 }
