@@ -1,5 +1,6 @@
 package org.slams.server.user.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slams.server.user.dto.request.ExtraUserInfoRequest;
@@ -39,6 +40,7 @@ public class UserController {
 		return ResponseEntity.ok(defaultUserInfoResponse);
 	}
 
+	@ApiOperation("내 프로필 정보 조회")
 	@GetMapping(value = "/myprofile", produces = "application/json; charset=utf-8;")
 	public ResponseEntity<MyProfileResponse> getMyInfo(HttpServletRequest request) {
 		String authorization = request.getHeader("Authorization");
@@ -69,6 +71,7 @@ public class UserController {
 		return ResponseEntity.ok(userProfileResponse);
 	}
 
+	@ApiOperation("내 정보 수정(추가 입력)")
 	@PutMapping("/myprofile")
 	public ResponseEntity<ExtraUserInfoResponse> addExtraUserInfo(HttpServletRequest request, @RequestBody ExtraUserInfoRequest extraUserInfoRequest) {
 		String authorization = request.getHeader("Authorization");
